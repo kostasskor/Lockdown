@@ -1,0 +1,11 @@
+{
+  "format": {
+    "name": "Asset name as published",
+    "source": "Source URL, or Poly Haven ID",
+    "license": "CC0 / CC-BY 4.0 / Unity Asset Store EULA",
+    "author": "Author or publisher, as the license requires it to be credited",
+    "files": "Folder under Assets/Lockdown/ThirdParty/",
+    "usedIn": "Where it's used in the map"
+  },
+  "assets": []
+}
