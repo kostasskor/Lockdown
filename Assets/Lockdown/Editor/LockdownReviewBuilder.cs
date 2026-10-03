@@ -43,7 +43,7 @@ namespace Lockdown.EditorTools
             camGo.transform.localPosition = new Vector3(0f, 1.6f, 0f);
             var cam = camGo.AddComponent<Camera>();
             cam.nearClipPlane = 0.05f;
-            cam.farClipPlane = 3000f;
+            cam.farClipPlane = 30000f; // the real backdrop reaches 20 km (Task 3)
             cam.fieldOfView = 64f;
             var camData = camGo.AddComponent<UniversalAdditionalCameraData>();
             camData.renderPostProcessing = true;
