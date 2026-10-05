@@ -7,5 +7,112 @@
     "files": "Folder under Assets/Lockdown/ThirdParty/",
     "usedIn": "Where it's used in the map"
   },
-  "assets": []
+  "assets": [
+    {
+      "name": "painted_plaster_wall",
+      "source": "https://polyhaven.com/a/painted_plaster_wall",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/painted_plaster_wall",
+      "usedIn": "Whitewashed render (upper floors); blue paint over plaster"
+    },
+    {
+      "name": "white_rough_plaster",
+      "source": "https://polyhaven.com/a/white_rough_plaster",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/white_rough_plaster",
+      "usedIn": "Patchy, rough whitewash on ground floors and kerbs"
+    },
+    {
+      "name": "concrete_wall_009",
+      "source": "https://polyhaven.com/a/concrete_wall_009",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/concrete_wall_009",
+      "usedIn": "Bare concrete: rooftop room, sills, porch floor"
+    },
+    {
+      "name": "stone_tiles_02",
+      "source": "https://polyhaven.com/a/stone_tiles_02",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/stone_tiles_02",
+      "usedIn": "Grey stone tiles on outside stairs and balconies"
+    },
+    {
+      "name": "asphalt_02",
+      "source": "https://polyhaven.com/a/asphalt_02",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/asphalt_02",
+      "usedIn": "Village street surface"
+    },
+    {
+      "name": "weathered_brown_planks",
+      "source": "https://polyhaven.com/a/weathered_brown_planks",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/weathered_brown_planks",
+      "usedIn": "Timber pergolas, wooden doors and shutters"
+    },
+    {
+      "name": "white_planks_clean",
+      "source": "https://polyhaven.com/a/white_planks_clean",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/white_planks_clean",
+      "usedIn": "White painted shutters, window and door frames"
+    },
+    {
+      "name": "rusty_metal_02",
+      "source": "https://polyhaven.com/a/rusty_metal_02",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/rusty_metal_02",
+      "usedIn": "Black painted iron railings and flues (darkened)"
+    },
+    {
+      "name": "potted_plant_01",
+      "source": "https://polyhaven.com/a/potted_plant_01",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/potted_plant_01",
+      "usedIn": "Potted plants along house walls",
+      "derived": "Simplified LOD0/LOD1 + baked soil layer in Models/Generated/Props/potted_plant_01 (Tools/assets/lockdown_props.py), prefab Prefabs/Props/potted_plant_01.prefab"
+    },
+    {
+      "name": "potted_plant_02",
+      "source": "https://polyhaven.com/a/potted_plant_02",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/potted_plant_02",
+      "usedIn": "Potted plants along house walls",
+      "derived": "Simplified LOD0/LOD1 + baked soil layer in Models/Generated/Props/potted_plant_02 (Tools/assets/lockdown_props.py), prefab Prefabs/Props/potted_plant_02.prefab"
+    },
+    {
+      "name": "Leaking009",
+      "source": "https://ambientcg.com/view?id=Leaking009",
+      "license": "CC0",
+      "author": "ambientCG",
+      "files": "AmbientCG/Decals/Leaking009",
+      "usedIn": "Source of the rising-damp and road-splash decal atlas (Textures/Decals/T_Decal_Damp_diff.png, Tools/assets/lockdown_decals.py)"
+    },
+    {
+      "name": "Leaking012A",
+      "source": "https://ambientcg.com/view?id=Leaking012A",
+      "license": "CC0",
+      "author": "ambientCG",
+      "files": "AmbientCG/Decals/Leaking012A",
+      "usedIn": "Source of the roof-edge drip and sill-streak decal atlases (Textures/Decals/T_Decal_Grime_diff.png, T_Decal_Streak_diff.png, Tools/assets/lockdown_decals.py)"
+    },
+    {
+      "name": "Leaking016A",
+      "source": "https://ambientcg.com/view?id=Leaking016A",
+      "license": "CC0",
+      "author": "ambientCG",
+      "files": "AmbientCG/Decals/Leaking016A",
+      "usedIn": "Water and rust streaks under balcony edges and railings (decal)"
+    }
+  ]
 }

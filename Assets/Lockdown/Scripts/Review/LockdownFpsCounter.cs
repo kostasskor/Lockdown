@@ -58,11 +58,39 @@ namespace Lockdown
                 _text.Append(walker.IsCrouching ? "crouch" : (walker.IsSprinting ? "sprint" : "stand"));
             }
 
-            var rect = new Rect(12, 8, 420, 52);
+            // Input readout: which movement keys the game sees, the walker's move value, ground contact.
+            var keyboard = Keyboard.current;
+            if (walker != null)
+            {
+                _text.Append("\nkeys ");
+                if (keyboard == null) _text.Append("(no keyboard)");
+                else
+                {
+                    _text.Append(keyboard.wKey.isPressed ? 'W' : '-').Append(keyboard.aKey.isPressed ? 'A' : '-')
+                         .Append(keyboard.sKey.isPressed ? 'S' : '-').Append(keyboard.dKey.isPressed ? 'D' : '-');
+                }
+                Vector2 m = walker.MoveInput;
+                _text.Append("   move ").Append(m.x.ToString("0.0")).Append(", ").Append(m.y.ToString("0.0"))
+                     .Append(walker.IsGrounded ? "   grounded" : "   in air");
+            }
+
+            int lines = walker != null ? 3 : 1;
+            var rect = new Rect(12, 8, 420, 26 * lines);
             GUI.color = new Color(0f, 0f, 0f, 0.45f);
-            GUI.DrawTexture(new Rect(6, 6, 330, walker != null ? 50 : 28), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(6, 6, 330, 24 * lines + 2), Texture2D.whiteTexture);
             GUI.color = Color.white;
             GUI.Label(rect, _text.ToString(), _style);
+
+            // Keyboard and mouse only reach the game once the Game view has focus: say so until it does.
+            if (Cursor.lockState != CursorLockMode.Locked)
+            {
+                var hint = new Rect(0, Screen.height * 0.5f - 20, Screen.width, 40);
+                var style = new GUIStyle(_style) { alignment = TextAnchor.MiddleCenter, fontSize = 22 };
+                GUI.color = new Color(0f, 0f, 0f, 0.45f);
+                GUI.DrawTexture(hint, Texture2D.whiteTexture);
+                GUI.color = Color.white;
+                GUI.Label(hint, "Click the Game view to play  (Esc frees the mouse)", style);
+            }
         }
     }
 }

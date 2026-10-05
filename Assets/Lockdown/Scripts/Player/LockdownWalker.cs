@@ -43,6 +43,8 @@ namespace Lockdown
         public bool IsSprinting { get; private set; }
         public bool IsWideFov { get; private set; } = true;
         public float HorizontalSpeed { get; private set; }
+        public Vector2 MoveInput { get; private set; }
+        public bool IsGrounded => _controller != null && _controller.isGrounded;
 
         CharacterController _controller;
         InputAction _move, _look, _jump, _sprint, _crouch, _fov;
@@ -187,6 +189,7 @@ namespace Lockdown
         void UpdateMovement()
         {
             Vector2 input = Vector2.ClampMagnitude(_move.ReadValue<Vector2>(), 1f);
+            MoveInput = input;
             IsSprinting = _sprint.IsPressed() && !IsCrouching && input.y > 0.1f && _controller.isGrounded;
 
             float speed = IsCrouching ? crouchSpeed : (IsSprinting ? sprintSpeed : walkSpeed);
