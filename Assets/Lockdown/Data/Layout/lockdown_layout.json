@@ -1,0 +1,559 @@
+{
+  "version": 1,
+  "notes": "LOCKDOWN layout (Task 6). Frame coordinates in metres: u runs along the main street (west -> east), v runs uphill (south -> north). world_x = cx + u*cos(rot) - v*sin(rot), world_z = cz + u*sin(rot) + v*cos(rot), with rot in degrees (negative = clockwise from true east). World = local TM, +X east, +Z true north, origin = real village centre.",
+  "frame": {
+    "center": [15.0, -10.0],
+    "rotation_deg": -27.0,
+    "size": [150.0, 120.0]
+  },
+  "metrics": {
+    "sprint_mps": 6.5,
+    "player_radius": 0.4
+  },
+  "lanes": [
+    {
+      "id": "upper",
+      "name": "Upper lane - the rock road",
+      "width": 5.0,
+      "surface": "dirt",
+      "points": [[-74, 52], [-58, 54], [-40, 50], [-22, 40], [-4, 34], [12, 32], [30, 30], [46, 30], [62, 32], [74, 34]]
+    },
+    {
+      "id": "main",
+      "name": "Main street",
+      "width": 7.0,
+      "surface": "asphalt west, pavers east",
+      "points": [[-75, 2], [-62, 8], [-48, 10], [-36, 2], [-24, -5], [-8, -5], [5, -2], [18, -5], [32, -1], [46, -9], [60, -6], [75, -8]]
+    },
+    {
+      "id": "lower",
+      "name": "Lower lane - gardens and olives",
+      "width": 4.0,
+      "surface": "concrete and dirt",
+      "points": [[-74, -40], [-58, -44], [-42, -47], [-24, -46], [-6, -44], [6, -47], [22, -49], [40, -46], [56, -41], [74, -37]]
+    }
+  ],
+  "ravine": {
+    "name": "The ravine",
+    "width": 10.0,
+    "depth": 3.5,
+    "walkable_floor": 3.0,
+    "points": [[-8, 60], [-5, 46], [-2, 35], [0, 22], [5, -2], [7, -24], [5, -46], [3, -60]],
+    "crossings": [
+      {
+        "name": "Upper culvert",
+        "lane": "upper",
+        "at": [-2, 35]
+      },
+      {
+        "name": "Main bridge",
+        "lane": "main",
+        "at": [5, -2]
+      },
+      {
+        "name": "Lower footbridge",
+        "lane": "lower",
+        "at": [5, -46]
+      }
+    ]
+  },
+  "connectors": [
+    {
+      "name": "West stair alley",
+      "pair": "upper-main",
+      "width": 3.0,
+      "points": [[-56, 53], [-55, 30], [-54, 9]]
+    },
+    {
+      "name": "Memorial switchback stair",
+      "pair": "upper-main",
+      "width": 3.0,
+      "points": [[-26, 43], [-32, 30], [-24, 18], [-26, 4]]
+    },
+    {
+      "name": "Ravine east-bank path",
+      "pair": "upper-main",
+      "width": 2.5,
+      "points": [[8, 33], [10, 18], [12, -2]]
+    },
+    {
+      "name": "East stepped alley",
+      "pair": "upper-main",
+      "width": 3.0,
+      "points": [[38, 30], [37, 14], [36, -3]]
+    },
+    {
+      "name": "Aloni track",
+      "pair": "upper-main",
+      "width": 3.0,
+      "points": [[62, 31], [62, 18], [62, -5]]
+    },
+    {
+      "name": "West garden stair",
+      "pair": "main-lower",
+      "width": 3.0,
+      "points": [[-60, 5], [-61, -20], [-58, -44]]
+    },
+    {
+      "name": "Church stair",
+      "pair": "main-lower",
+      "width": 3.0,
+      "points": [[-40, 3], [-42, -18], [-38, -36], [-36, -46]]
+    },
+    {
+      "name": "Ravine floor",
+      "pair": "main-lower",
+      "width": 3.0,
+      "points": [[3, -6], [7, -24], [5, -42]]
+    },
+    {
+      "name": "Terrace steps",
+      "pair": "main-lower",
+      "width": 3.0,
+      "points": [[24, -3], [26, -20], [30, -48]]
+    },
+    {
+      "name": "Press path",
+      "pair": "main-lower",
+      "width": 3.0,
+      "points": [[44, -8], [45, -20], [40, -46]]
+    },
+    {
+      "name": "East lane",
+      "pair": "main-lower",
+      "width": 4.0,
+      "points": [[62, -6], [62, -18], [58, -40]]
+    },
+    {
+      "name": "Rooftop route (south side)",
+      "pair": "main-lower",
+      "width": 3.0,
+      "roof": true,
+      "points": [[-16, -8], [-14, -24], [-18, -44]]
+    }
+  ],
+  "areas": [
+    {
+      "id": "plateia",
+      "name": "Plateia (street widening)",
+      "shape": "rect",
+      "center": [-16, -4],
+      "size": [22, 18]
+    },
+    {
+      "id": "west_yard",
+      "name": "Compound yard",
+      "shape": "circle",
+      "center": [-66, -8],
+      "radius": 10
+    },
+    {
+      "id": "east_yard",
+      "name": "Threshing-floor courtyard",
+      "shape": "circle",
+      "center": [67, -16],
+      "radius": 10
+    },
+    {
+      "id": "aloni",
+      "name": "Aloni",
+      "shape": "circle",
+      "center": [62, 18],
+      "radius": 7
+    },
+    {
+      "id": "church_yard",
+      "name": "Church yard",
+      "shape": "rect",
+      "center": [-30, -31],
+      "size": [18, 16]
+    },
+    {
+      "id": "press_terraces",
+      "name": "Olive press terraces",
+      "shape": "rect",
+      "center": [32, -33],
+      "size": [20, 16]
+    },
+    {
+      "id": "skeleton_yard",
+      "name": "Skeleton yard",
+      "shape": "rect",
+      "center": [19, -15],
+      "size": [16, 12]
+    },
+    {
+      "id": "rock_roofs",
+      "name": "Rock-edge rooftops",
+      "shape": "rect",
+      "center": [-14, 22],
+      "size": [20, 10],
+      "roof": true
+    },
+    {
+      "id": "gravel_yard",
+      "name": "Gravel yard",
+      "shape": "circle",
+      "center": [-66, 22],
+      "radius": 7
+    },
+    {
+      "id": "empty_lot",
+      "name": "Empty lot",
+      "shape": "rect",
+      "center": [-44, 24],
+      "size": [12, 14]
+    }
+  ],
+  "spawns": [
+    {
+      "id": "Spawn_West",
+      "callout": "The Compound",
+      "at": [-63, -4]
+    },
+    {
+      "id": "Spawn_East",
+      "callout": "The Threshing Floor",
+      "at": [74, -15]
+    }
+  ],
+  "flags": [
+    {
+      "id": "Flag_A",
+      "callout": "Church Yard",
+      "at": [-30, -31]
+    },
+    {
+      "id": "Flag_B",
+      "callout": "The Bridge",
+      "at": [5, -2]
+    },
+    {
+      "id": "Flag_C",
+      "callout": "Olive Press",
+      "at": [32, -33]
+    }
+  ],
+  "landmarks": [
+    {
+      "name": "Main street",
+      "label": "ADAPTED",
+      "at": [-50, 9],
+      "note": "Real through road: 6-9 m, climbing west, two bends kept so there is no full-length sightline; 700 m condensed to 150 m."
+    },
+    {
+      "name": "Plateia",
+      "label": "REAL",
+      "at": [-16, -4],
+      "note": "At the real centre: memorial terrace, kafeneio and mini-market within 30 m where the street widens. Widened a little for play."
+    },
+    {
+      "name": "War memorial terrace",
+      "label": "REAL",
+      "at": [-22, 10],
+      "note": "Real stepped terrace on the uphill side; high ground over the plateia. Inscription illegible, no names."
+    },
+    {
+      "name": "Kafeneio",
+      "label": "REAL",
+      "at": [-6, -14],
+      "note": "Real beige corner building, arched windows; tables on the street."
+    },
+    {
+      "name": "Mini-market",
+      "label": "REAL",
+      "at": [-30, -12],
+      "note": "Real stone-and-plaster shop under a deep balcony; generic sign."
+    },
+    {
+      "name": "The ravine",
+      "label": "ADAPTED",
+      "at": [-4, 14],
+      "note": "Real tree-lined gully comes down from the rock here; in reality it meets the street 30 m further east and turns along it. Straightened and carried on south across the lower lane."
+    },
+    {
+      "name": "Main bridge",
+      "label": "ADAPTED",
+      "at": [5, -11],
+      "note": "Real road crosses the gully; made a visible bridge with parapets (Flag B)."
+    },
+    {
+      "name": "The Skeleton",
+      "label": "ADAPTED",
+      "at": [19, -15],
+      "note": "Real exploded one-storey house, moved here (its real spot does not decide this). Neutral, next to Flag B; front pushed further; roof by scaffolding."
+    },
+    {
+      "name": "Rock-edge rooftops",
+      "label": "ADAPTED",
+      "at": [-14, 24],
+      "note": "Real flat-roof core under the rock; pulled close to the ravine as the power position."
+    },
+    {
+      "name": "Upper rock road",
+      "label": "ADAPTED",
+      "at": [-40, 56],
+      "note": "Real dirt road at the foot of the bare rock, about 80 m higher in reality; pulled down to make the upper lane."
+    },
+    {
+      "name": "Unfinished frames",
+      "label": "ADAPTED",
+      "at": [-50, 16],
+      "note": "Real row of concrete-frame buildings on the west main street, condensed to two."
+    },
+    {
+      "name": "Empty lot with fig",
+      "label": "REAL",
+      "at": [-44, 24],
+      "note": "Real dry-grass lot with fig, firewood and the old stove, from the west end of the street."
+    },
+    {
+      "name": "Community office",
+      "label": "ADAPTED",
+      "at": [-64, 14],
+      "note": "Real office with rooftop loudspeakers at the west junction, 160 m further west in reality; plaques generic."
+    },
+    {
+      "name": "Small bridge & dry stream",
+      "label": "ADAPTED",
+      "at": [-72, -14],
+      "note": "Real galvanised-railing bridge over the dry stream at the west junction; brought into the spawn edge."
+    },
+    {
+      "name": "Gravel yard & beehives",
+      "label": "ADAPTED",
+      "at": [-66, 22],
+      "note": "Real yard with trucks and beehive stacks under the cliff."
+    },
+    {
+      "name": "West clan courtyard",
+      "label": "INVENTED",
+      "at": [-56, -16],
+      "note": "Composite: pergola, compact pickups, wood-carving workshop. Never one real house."
+    },
+    {
+      "name": "East clan courtyard",
+      "label": "INVENTED",
+      "at": [56, -20],
+      "note": "Composite in the village style, hay bales and sacks."
+    },
+    {
+      "name": "Aloni (threshing floor)",
+      "label": "INVENTED",
+      "at": [62, 18],
+      "note": "Circular stone threshing floor with a carob tree: very Cretan, none recorded at this spot."
+    },
+    {
+      "name": "Lamp-lit east entry",
+      "label": "ADAPTED",
+      "at": [52, 0],
+      "note": "Real paver street with pink sidewalk, lantern lamps and guardrail from the east entry."
+    },
+    {
+      "name": "Church & chapel",
+      "label": "ADAPTED",
+      "at": [-44, -24],
+      "note": "Real stone church with bell tower and chapel, ~65 m further downhill in reality; moved up to the lower lane (Flag A). Paved yard, pithoi."
+    },
+    {
+      "name": "Olive press",
+      "label": "INVENTED",
+      "at": [40, -41],
+      "note": "Small stone press shed on real-style garden terraces (Flag C)."
+    },
+    {
+      "name": "Garden terraces & olives",
+      "label": "REAL",
+      "at": [20, -40],
+      "note": "Real south-side terraces, dry-stone walls, olives and tall trees."
+    },
+    {
+      "name": "Primary school",
+      "label": "REAL",
+      "at": [150, -15],
+      "outside": true,
+      "note": "Real school at the east bend, outside the play area (scenery only)."
+    }
+  ],
+  "cordon": [
+    {
+      "name": "Main road west (to Kamares)",
+      "at": [-92, 2]
+    },
+    {
+      "name": "Main road east (to Zaros)",
+      "at": [92, 0]
+    },
+    {
+      "name": "Mountain road",
+      "at": [-88, 42]
+    },
+    {
+      "name": "Upper road east",
+      "at": [88, 36]
+    },
+    {
+      "name": "Field road west",
+      "at": [-88, -44]
+    },
+    {
+      "name": "Field road east",
+      "at": [88, -40]
+    }
+  ],
+  "sightlines": [
+    {
+      "name": "Lower lane (vista edge)",
+      "a": [-58, -45],
+      "b": [12, -47]
+    },
+    {
+      "name": "Main street west",
+      "a": [-8, -5],
+      "b": [-42, 7]
+    },
+    {
+      "name": "Main street east",
+      "a": [8, -3],
+      "b": [44, -8]
+    },
+    {
+      "name": "Plateia -> bridge",
+      "a": [-24, -5],
+      "b": [18, -5]
+    },
+    {
+      "name": "Upper lane",
+      "a": [-22, 40],
+      "b": [30, 30]
+    },
+    {
+      "name": "Rooftops -> plateia",
+      "a": [-14, 22],
+      "b": [-18, -6]
+    },
+    {
+      "name": "Rooftops -> Skeleton",
+      "a": [-10, 20],
+      "b": [20, -12]
+    },
+    {
+      "name": "Ravine floor",
+      "a": [1, 22],
+      "b": [6, -34]
+    },
+    {
+      "name": "Aloni -> Olive press",
+      "a": [60, 14],
+      "b": [44, -24]
+    },
+    {
+      "name": "Church tower -> lower lane",
+      "a": [-28, -29],
+      "b": [-4, -44]
+    }
+  ],
+  "initial_spawns": {
+    "west": [[-70, -2], [-66, -1], [-62, -3], [-70, -9], [-66, -10], [-62, -12]],
+    "east": [[64, -10], [68, -9], [72, -11], [64, -18], [68, -20], [72, -19]]
+  },
+  "capture_radius": 7.0,
+  "callouts": [
+    {
+      "name": "UPPER ROAD",
+      "at": [-46, 52],
+      "kind": "lane"
+    },
+    {
+      "name": "MAIN STREET",
+      "at": [-58, 13],
+      "kind": "lane"
+    },
+    {
+      "name": "LOWER LANE",
+      "at": [-52, -50],
+      "kind": "lane"
+    },
+    {
+      "name": "THE RAVINE",
+      "at": [-6, 50],
+      "kind": "lane"
+    },
+    {
+      "name": "Plateia",
+      "at": [-16, -1]
+    },
+    {
+      "name": "Memorial Terrace",
+      "at": [-24, 11]
+    },
+    {
+      "name": "Kafeneio",
+      "at": [-6, -15]
+    },
+    {
+      "name": "Mini-market",
+      "at": [-30, -14]
+    },
+    {
+      "name": "The Skeleton",
+      "at": [19, -15]
+    },
+    {
+      "name": "Rock Roofs",
+      "at": [-14, 22]
+    },
+    {
+      "name": "Unfinished Frames",
+      "at": [-50, 18]
+    },
+    {
+      "name": "Empty Lot",
+      "at": [-38, 27]
+    },
+    {
+      "name": "Community Office",
+      "at": [-60, 31]
+    },
+    {
+      "name": "Gravel Yard",
+      "at": [-62, 41]
+    },
+    {
+      "name": "Dry Stream",
+      "at": [-62, -26]
+    },
+    {
+      "name": "Aloni",
+      "at": [62, 18]
+    },
+    {
+      "name": "East Entry",
+      "at": [50, 4]
+    },
+    {
+      "name": "Garden Terraces",
+      "at": [12, -32]
+    },
+    {
+      "name": "Olive Grove",
+      "at": [58, -50]
+    },
+    {
+      "name": "Upper Culvert",
+      "at": [-2, 39]
+    },
+    {
+      "name": "Footbridge",
+      "at": [5, -54]
+    },
+    {
+      "name": "Rock Steps",
+      "at": [-30, 33]
+    },
+    {
+      "name": "Church Stair",
+      "at": [-50, -8]
+    }
+  ]
+}
