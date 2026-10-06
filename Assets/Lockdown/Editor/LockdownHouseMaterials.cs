@@ -56,6 +56,11 @@ namespace Lockdown.EditorTools
             { "InteriorPaint", new Def { set = "Textures/painted_plaster_wall", target = new Color32(218, 215, 206, 255), tileMetres = 2.6f, normalScale = 0.3f, smoothScale = 0.8f } },
             { "InteriorPaintOld", new Def { set = "Textures/painted_plaster_wall", target = new Color32(210, 204, 190, 255), tileMetres = 2.6f, normalScale = 0.35f, smoothScale = 0.8f } },
             { "Street", new Def { set = "Textures/asphalt_02", target = new Color32(92, 92, 88, 255), tileMetres = 3.5f } },
+            // Rough limestone masonry of the retaining and garden walls: grey-white stones, flush lime mortar
+            // (streets/main_02, sampled 160/156/150 under overcast light). A 2 m scan.
+            { "StoneRubble", new Def { set = "Textures/old_stone_wall", target = new Color32(165, 160, 150, 255), tileMetres = 2.0f, normalScale = 1.3f } },
+            // Dry, stony red-brown earth of yards and verges (late summer). A 4 m scan.
+            { "Earth", new Def { set = "Textures/dry_ground_rocks", target = new Color32(150, 124, 100, 255), tileMetres = 4.0f } },
         };
 
         // Decal materials: texture folder, draw order. Every kind has its own order: overlapping decals with the
@@ -72,7 +77,7 @@ namespace Lockdown.EditorTools
         const string MacroNormalPath = "Assets/Lockdown/Textures/Noise/T_Noise_Macro_nor.png";
         const string ToneMapPath = "Assets/Lockdown/Textures/Noise/T_Noise_MacroTone.png";
         const string DecalTexDir = "Assets/Lockdown/Textures/Decals";
-        static readonly HashSet<string> LayeredOnly = new() { "Render", "Wood", "Metal", "WoodBleached", "Rust", "Concrete", "FrameWhite", "FrameFaded", "CurtainWhite", "CurtainCream", "InteriorPaint", "InteriorPaintOld" };
+        static readonly HashSet<string> LayeredOnly = new() { "Render", "Wood", "Metal", "WoodBleached", "Rust", "Concrete", "FrameWhite", "FrameFaded", "CurtainWhite", "CurtainCream", "InteriorPaint", "InteriorPaintOld", "StoneRubble" };
 
         // Settings of the two-layer shader per material (see LockdownPlaster.shader).
         class Layering
@@ -91,7 +96,7 @@ namespace Lockdown.EditorTools
             foreach (var kv in Defs)
             {
                 if (LayeredOnly.Contains(kv.Key)) continue; // two-layer Lockdown/Plaster materials, built below
-                string path = kv.Key == "Street" ? "Assets/Lockdown/Materials/Ground/M_Street.mat" : $"{MatDir}/M_House_{kv.Key}.mat";
+                string path = kv.Key is "Street" or "Earth" ? $"Assets/Lockdown/Materials/Ground/M_{kv.Key}.mat" : $"{MatDir}/M_House_{kv.Key}.mat";
                 report.Add(BuildLit(path, kv.Value));
             }
             BuildGlass($"{MatDir}/M_House_Glass.mat", new Color32(22, 30, 30, 255), 0.13f, 0.97f);
@@ -120,6 +125,8 @@ namespace Lockdown.EditorTools
             }));
             // Bare concrete block and cement (rooftop room, sills, plinths, porch floor): one scan in both layers.
             report.Add(BuildPlaster($"{MatDir}/M_House_Concrete.mat", Defs["Concrete"], Defs["Concrete"], new Layering { hex = true, tone = true }));
+            // Rubble stone walls: one scan in both layers, never repeating (hex + tone), so no stone shows twice.
+            report.Add(BuildPlaster($"{MatDir}/M_House_StoneRubble.mat", Defs["StoneRubble"], Defs["StoneRubble"], new Layering { hex = true, tone = true }));
             // White paint (A) worn through to grey wood (B) in patches, by vertex R = how faded each frame / leaf is.
             report.Add(BuildPlaster($"{MatDir}/M_House_FrameWhite.mat", Defs["FrameWhite"], Defs["FrameFaded"], new Layering
             {

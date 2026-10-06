@@ -6,7 +6,7 @@ namespace Lockdown.EditorTools
 {
     // Material slots of a generated house. Each slot becomes one submesh and one shared material
     // (Assets/Lockdown/Materials/Houses/M_House_<Slot>.mat), so every house shares the same set.
-    public enum Slot { Render, RenderOld, Concrete, PaintBlue, Stone, Wood, Tile, Metal, Glass, FrameWhite, Dark, GlassDusty, Aluminium, Hardware, Interior, Curtain, Brass, InteriorWall }
+    public enum Slot { Render, RenderOld, Concrete, PaintBlue, Stone, Wood, Tile, Metal, Glass, FrameWhite, Dark, GlassDusty, Aluminium, Hardware, Interior, Curtain, Brass, InteriorWall, StoneRubble }
 
     // Accumulates flat-shaded geometry per material slot. UVs are projected in metres from the
     // house's local space, so every texture tiles at real-world scale whatever the part's size.

@@ -715,6 +715,115 @@ namespace Lockdown.EditorTools
             hm.ColorFn = null;
         }
 
+        // A hand-hewn timber post: slightly tapered and out of plumb, uneven, chamfered, with iron collars, drying checks and
+        // a diagonal knee brace mitred into both the post and the beam.
+        static void BuildPost(HouseMesh hm, PergolaSpec p, Vector3 post, float beamH, ImperfectionSettings imp,
+            System.Func<Vector3, Vector3, float, float, Color> Wood)
+        {
+            var rnd = new System.Random(Seed(p.name + "/post"));
+            float R() => (float)rnd.NextDouble();
+            float J(float a) => imp != null ? (R() * 2f - 1f) * a : 0f;
+            float yPost = post.y, yTop = p.yUnder - beamH;
+            float lean = J(0.6f); // degrees, about z
+            var rot = Quaternion.Euler(0f, 0f, lean);
+            float len = yTop - yPost;
+            var c = new Vector3(post.x, yPost + len * 0.5f, post.z);
+
+            // Rings of an octagon (square with big chamfers), each a little different in size and place.
+            const int rings = 5;
+            var half = new float[rings]; var off = new Vector2[rings];
+            for (int j = 0; j < rings; j++)
+            {
+                half[j] = Mathf.Lerp(0.079f, 0.066f, j / (rings - 1f)) + J(0.002f);
+                off[j] = new Vector2(J(0.003f), J(0.003f));
+            }
+            float HalfAt(float y) { float t = Mathf.Clamp01((y - yPost) / len) * (rings - 1); int j = Mathf.Min((int)t, rings - 2); return Mathf.Lerp(half[j], half[j + 1], t - j); }
+            Vector3 Ring(int j, int k)
+            {
+                float h = half[j], ch = 0.016f, e = h - ch;
+                Vector2 q = k switch { 0 => new(h, -e), 1 => new(h, e), 2 => new(e, h), 3 => new(-e, h), 4 => new(-h, e), 5 => new(-h, -e), 6 => new(-e, -h), _ => new(e, -h) };
+                float y = yPost + len * j / (rings - 1f);
+                return c + rot * (new Vector3(post.x + off[j].x + q.x, y, post.z + off[j].y + q.y) - c);
+            }
+            hm.Tag = p.name + "/post";
+            float postShade = 0.5f + 0.15f * R();
+            hm.ColorFn = (q, n) => Wood(q, n, postShade, Mathf.Clamp01(1f - (q.y - yPost) / 0.7f) * 0.85f);
+            hm.UvTurn = true; // vertical faces: grain runs up the post
+            for (int j = 0; j < rings - 1; j++)
+                for (int k = 0; k < 8; k++)
+                {
+                    int k1 = (k + 1) % 8;
+                    Vector3 mid = (Ring(j, k) + Ring(j, k1)) * 0.5f;
+                    mid.y = c.y; // outward is horizontal
+                    Vector3 outward = mid - c;
+                    hm.Lod0.Quad(Ring(j, k), Ring(j, k1), Ring(j + 1, k1), Ring(j + 1, k), outward, Slot.Wood);
+                }
+            hm.Lod1.Box(c, new Vector3(0.145f, len, 0.145f), rot, Slot.Wood);
+            hm.UvTurn = false;
+            hm.Collision.Box(c, new Vector3(0.15f, len, 0.15f), rot, Slot.Render);
+
+            // Knee brace toward the house: a 45 degree timber whose ends are cut flush to the post and to the beam underside.
+            hm.ColorFn = (q, n) => Wood(q, n, 0.6f, 0f);
+            hm.Tag = p.name + "/postBrace";
+            const float run = 0.6f, tv = 0.12f, depth = 0.1f, emb = 0.01f;
+            float xp = post.x - 0.05f, y0 = yTop - run;
+            var poly = new[]
+            {
+                new Vector2(xp, y0), new Vector2(xp, y0 - tv),
+                new Vector2(xp - run - tv - emb, yTop + emb), new Vector2(xp - run - emb, yTop + emb),
+            };
+            Vector2 cen = (poly[0] + poly[1] + poly[2] + poly[3]) * 0.25f;
+            float zb0 = post.z - depth * 0.5f, zb1 = post.z + depth * 0.5f;
+            hm.UvTurn = true;
+            foreach (var part in new[] { hm.Lod0, hm.Lod1 })
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 a = poly[i], b = poly[(i + 1) % 4], m = (a + b) * 0.5f - cen;
+                    part.Quad(new Vector3(a.x, a.y, zb0), new Vector3(b.x, b.y, zb0), new Vector3(b.x, b.y, zb1), new Vector3(a.x, a.y, zb1), new Vector3(m.x, m.y, 0f), Slot.Wood);
+                }
+                part.Quad(new Vector3(poly[0].x, poly[0].y, zb0), new Vector3(poly[1].x, poly[1].y, zb0), new Vector3(poly[2].x, poly[2].y, zb0), new Vector3(poly[3].x, poly[3].y, zb0), Vector3.back, Slot.Wood);
+                part.Quad(new Vector3(poly[0].x, poly[0].y, zb1), new Vector3(poly[1].x, poly[1].y, zb1), new Vector3(poly[2].x, poly[2].y, zb1), new Vector3(poly[3].x, poly[3].y, zb1), Vector3.forward, Slot.Wood);
+            }
+            hm.UvTurn = false;
+
+            // Iron: two collars on the post, and a bolt head near each end of the brace.
+            hm.ColorFn = null;
+            hm.Tag = p.name + "/postIron";
+            foreach (float yc in new[] { yTop - 0.12f, yPost + 0.3f })
+            {
+                float cw = HalfAt(yc) * 2f + 0.014f;
+                var cc = c + rot * new Vector3(0f, yc - c.y, 0f);
+                hm.Lod0.ChamferBox(cc, new Vector3(cw, 0.04f, cw), rot, 0.004f, Slot.Metal);
+                hm.Lod1.Box(cc, new Vector3(cw, 0.04f, cw), rot, Slot.Metal);
+            }
+            hm.Detail = true;
+            foreach (float bx in new[] { xp - 0.13f, xp - run + 0.06f })
+            {
+                float by = y0 - tv * 0.5f + (xp - bx);
+                hm.Cylinder(new Vector3(bx, by, zb0 - 0.001f), new Vector3(bx, by, zb0 - 0.016f), 0.014f, Slot.Metal);
+            }
+
+            // Drying checks: thin dark cracks along the grain on each face (LOD0 only).
+            hm.Tag = p.name + "/postChecks";
+            for (int i = 0; i < 7; i++)
+            {
+                float cl = 0.25f + R() * 0.7f, cy = yPost + 0.45f + R() * (len - 0.9f - cl);
+                float h = HalfAt(cy) - 0.03f, o = (R() * 2f - 1f) * h * 0.8f, hf = HalfAt(cy) + 0.001f;
+                int face = i % 4;
+                Vector3 size = face % 2 == 0 ? new Vector3(0.004f, cl, 0.003f) : new Vector3(0.003f, cl, 0.004f);
+                Vector3 pos = face switch
+                {
+                    0 => new Vector3(post.x + o, cy, post.z - hf),
+                    1 => new Vector3(post.x + hf, cy, post.z + o),
+                    2 => new Vector3(post.x + o, cy, post.z + hf),
+                    _ => new Vector3(post.x - hf, cy, post.z + o),
+                };
+                hm.Lod0.Box(c + rot * (pos - c), size, rot, Slot.Dark);
+            }
+            hm.Detail = false;
+        }
+
         static void BuildPergola(HouseMesh hm, PergolaSpec p, ImperfectionSettings imp)
         {
             const float rafterH = 0.16f, beamH = 0.2f, board = 0.025f;
@@ -748,11 +857,7 @@ namespace Lockdown.EditorTools
             hm.Box(new Vector3(p.x0, p.yUnder - beamH, p.z0), new Vector3(p.x1, p.yUnder, p.z0 + 0.14f), Slot.Wood);
             hm.Tag = p.name + "/posts";
             foreach (var post in p.posts)
-            {
-                float yPost = post.y;
-                hm.ColorFn = (q, n) => Wood(q, n, 0.55f, Mathf.Clamp01(1f - (q.y - yPost) / 0.6f) * 0.8f);
-                hm.Box(new Vector3(post.x - 0.06f, post.y, post.z - 0.06f), new Vector3(post.x + 0.06f, p.yUnder - beamH, post.z + 0.06f), Slot.Wood, true);
-            }
+                BuildPost(hm, p, post, beamH, imp, Wood);
             hm.ColorFn = (q, n) => Wood(q, n, 0.7f, WetEnd(q) * 0.5f);
             // Boards: individual planks on LOD0, one sheet on LOD1.
             float yb = p.yUnder + rafterH;
@@ -800,6 +905,7 @@ namespace Lockdown.EditorTools
             { Slot.Curtain, (new Color(0.85f, 0.83f, 0.78f), 0.1f) },
             { Slot.Brass, (new Color(0.55f, 0.44f, 0.25f), 0.45f) },
             { Slot.InteriorWall, (new Color(0.85f, 0.84f, 0.81f), 0.2f) },
+            { Slot.StoneRubble, (new Color(0.65f, 0.63f, 0.59f), 0.15f) },
         };
 
         public static Material GetMaterial(Slot slot)
@@ -815,7 +921,7 @@ namespace Lockdown.EditorTools
             return mat;
         }
 
-        static Mesh SaveMesh(Mesh mesh, string path)
+        internal static Mesh SaveMesh(Mesh mesh, string path)
         {
             var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing == null) { AssetDatabase.CreateAsset(mesh, path); return mesh; }
@@ -877,7 +983,7 @@ namespace Lockdown.EditorTools
         }
 
         // Game-ready prop prefabs only (LODs, budgeted), never the raw scans (project prop rule).
-        static void PlaceProp(GameObject parent, string prop, Vector3 pos, float yaw, float scale)
+        internal static void PlaceProp(GameObject parent, string prop, Vector3 pos, float yaw, float scale)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LockdownPropBuilder.PrefabPath(prop));
             if (prefab == null) { LockdownPropBuilder.BuildAll(); prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LockdownPropBuilder.PrefabPath(prop)); }
@@ -911,7 +1017,7 @@ namespace Lockdown.EditorTools
             go.tag = EditorOnly;
         }
 
-        static void PlaceDummy(GameObject parent, string prefabName, Vector3 pos, float yaw)
+        internal static void PlaceDummy(GameObject parent, string prefabName, Vector3 pos, float yaw)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Lockdown/Prefabs/Review/{prefabName}.prefab");
             if (prefab == null) return;
@@ -920,7 +1026,7 @@ namespace Lockdown.EditorTools
             go.transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, yaw, 0f));
         }
 
-        static void ReviewCamera(GameObject parent, string name, Vector3 pos, Vector3 target, float fov)
+        internal static void ReviewCamera(GameObject parent, string name, Vector3 pos, Vector3 target, float fov)
         {
             var go = new GameObject(name);
             go.transform.SetParent(parent.transform, false);

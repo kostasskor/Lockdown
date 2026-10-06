@@ -60,12 +60,17 @@ namespace Lockdown.EditorTools
             hm.Collision.Box((a + b) * 0.5f, Abs(b - a), Quaternion.identity, Slot.Render);
         }
 
-        // One pane, facing out, in both LODs: clean or dusty by the seed.
+        // One pane in both LODs: clean or dusty by the seed. The glass material is single-sided, so the pane is two quads,
+        // one facing out and one facing the room 2 mm further in, so it shows from both sides.
         static void GlassW(HouseMesh hm, Frame f, OpeningSpec o, float s0, float s1, float y0, float y1, float d)
         {
             Slot slot = o.dustyGlass ? Slot.GlassDusty : Slot.Glass;
             foreach (var part in new[] { hm.Lod0, hm.Lod1 })
+            {
                 part.Quad(f.P(s0, y0, d), f.P(s1, y0, d), f.P(s1, y1, d), f.P(s0, y1, d), f.outward, slot);
+                float di = d + 0.002f;
+                part.Quad(f.P(s0, y0, di), f.P(s1, y0, di), f.P(s1, y1, di), f.P(s0, y1, di), -f.outward, slot);
+            }
         }
 
         // Old brass lever handle: a long chamfered backplate with its keyhole and two screws, a round rose, the neck, and a

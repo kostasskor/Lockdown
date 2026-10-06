@@ -110,7 +110,8 @@ namespace Lockdown.EditorTools
                     }
                 }
 
-                if (!plaster && w.slot != Slot.Concrete) continue;
+                bool stone = w.slot == Slot.StoneRubble; // rubble walls: drips from the top and damp at the base, nothing to peel
+                if (!plaster && w.slot != Slot.Concrete && !stone) continue;
 
                 // ---- Drips from the wall top: under the roof edge / coping, unevenly spaced ----
                 var prof = w.topFree && imp != null ? new WarpProfile
@@ -143,13 +144,13 @@ namespace Lockdown.EditorTools
                     len = Mathf.Min(len, w.y1 - Mathf.Max(w.y0, 0f) - 0.1f);
                     if (len < 0.25f) continue;
                     float width = R(0.5f, 1.3f);
-                    float strength = (sheltered ? 0.25f : R(0.4f, 0.75f)) * (w.slot == Slot.Concrete ? 0.7f : 1f) + (d == 0 && prof.active ? 0.2f : 0f);
+                    float strength = (sheltered ? 0.25f : R(0.4f, 0.75f)) * (w.slot == Slot.Concrete || stone ? 0.7f : 1f) + (d == 0 && prof.active ? 0.2f : 0f);
                     float sc = Mathf.Clamp(s + J(0.1f), width * 0.5f, length - width * 0.5f);
                     Add(DecalKind.Grime, $"Drip_{w.name}_{d++}", w.facing, f.P(sc, w.y1 - 0.02f - len * 0.5f, 0f), width, len, strength, J(2f));
                 }
 
                 // ---- Base of the wall: rising damp, road splash, peeling whitewash ----
-                if (!plaster) continue;
+                if (!plaster && !stone) continue;
                 int p = 0;
                 for (float s = R(-0.3f, 0.2f); s < length; p++)
                 {
@@ -177,7 +178,7 @@ namespace Lockdown.EditorTools
                     s += width - R(0.3f, 0.6f);
                 }
                 // Peeling: one or two patches per wall, never a band along it.
-                if (w.y0 < 0.5f)
+                if (plaster && w.y0 < 0.5f)
                 {
                     int count = length > 4f ? 1 + rnd.Next(2) : rnd.Next(2);
                     for (int k = 0; k < count; k++)

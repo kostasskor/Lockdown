@@ -302,7 +302,8 @@ namespace Lockdown.EditorTools
             s.boxes.Add(new BoxSpec { name = "Ceiling1_Back", min = new Vector3(xL + 0.25f, ceil1 - 0.012f, zRecess + 0.01f), max = new Vector3(xR - 0.25f, ceil1 - 0.002f, zBack - 0.25f), slot = Slot.InteriorWall, collide = false });
             s.boxes.Add(new BoxSpec { name = "Ceiling1_Front", min = new Vector3(xL + 0.25f, ceil1 - 0.012f, 0.25f), max = new Vector3(xQ - 0.01f, ceil1 - 0.002f, zRecess + 0.01f), slot = Slot.InteriorWall, collide = false });
 
-            s.boxes.Add(new BoxSpec { name = "Ceiling0_UnderTerrace", min = new Vector3(xQ - 0.01f, floor1 - 0.312f, 0.25f), max = new Vector3(xR - 0.25f, floor1 - 0.302f, zRecess + 0.01f), slot = Slot.InteriorWall, collide = false }); // ground-floor ceiling under the terrace slab
+            // Ground-floor ceiling: one skim under the whole floor (Task 5: a skim under the terrace only sat 12 mm below the slab next to it, a visible step line).
+            s.boxes.Add(new BoxSpec { name = "Ceiling0", min = new Vector3(xL + 0.25f, floor1 - 0.312f, 0.25f), max = new Vector3(xR - 0.25f, floor1 - 0.302f, zBack - 0.25f), slot = Slot.InteriorWall, collide = false });
 
             // ---- Slabs, columns, roof ----
             s.boxes.Add(new BoxSpec { name = "PorchFloor", min = new Vector3(xL + 0.3f, -0.2f, balZ), max = new Vector3(xR, porch, 0f), slot = Slot.Concrete, chamfer = 0.02f });
@@ -336,10 +337,6 @@ namespace Lockdown.EditorTools
             s.cylinders.Add(new CylinderSpec { name = "Chimney", a = new Vector3(0.75f, roofTop + 0.05f, 3.7f), b = new Vector3(0.75f, roofTop + 2.6f, 3.7f), radius = 0.15f, slot = Slot.Concrete });
             s.boxes.Add(new BoxSpec { name = "ChimneyBase", min = new Vector3(0.5f, roofTop, 3.45f), max = new Vector3(1.0f, roofTop + 0.35f, 3.95f), chamfer = 0.02f, collide = false });
 
-            // ---- Stove flue (black steel, 02/03), corner downpipe (02) ----
-            s.cylinders.Add(new CylinderSpec { name = "Flue_Up", a = new Vector3(0.45f, 5.45f, -0.3f), b = new Vector3(0.45f, roofTop + 1.4f, -0.3f), radius = 0.065f, slot = Slot.Metal });
-            s.cylinders.Add(new CylinderSpec { name = "Flue_Out", a = new Vector3(0.45f, 5.45f, 0.05f), b = new Vector3(0.45f, 5.45f, -0.3f), radius = 0.065f, slot = Slot.Metal });
-            s.cylinders.Add(new CylinderSpec { name = "Flue_Cap", a = new Vector3(0.45f, roofTop + 1.4f, -0.3f), b = new Vector3(0.45f, roofTop + 1.55f, -0.3f), radius = 0.11f, slot = Slot.Metal, detail = true });
             s.cylinders.Add(new CylinderSpec { name = "Downpipe", a = new Vector3(-0.08f, 0.1f, balZ + 0.25f), b = new Vector3(-0.08f, ceil1, balZ + 0.25f), radius = 0.045f, slot = Slot.Concrete, detail = true });
 
             // ---- Quoins at the step in the upper floor (03) ----
@@ -384,11 +381,25 @@ namespace Lockdown.EditorTools
             // Damp, road splash, peeling, roof-edge drips and sill streaks are placed by the generator's weathering
             // pass (LockdownHouseBuilder.Weathering.cs), from where water and dirt really go. Only stains tied to one
             // specific object are listed here.
-            // Rust running down from the iron railing and the flue (01, 03).
+            // Rust running down from the iron railing (01, 03).
             s.decals.Add(new DecalSpec { name = "Rust_Railing", kind = DecalKind.Rust, facing = Facing.South, center = new Vector3(8.4f, floor1 - 0.35f, balZ), width = 1.7f, height = 0.9f, opacity = 0.9f });
             s.decals.Add(new DecalSpec { name = "Rust_Pillar", kind = DecalKind.Rust, facing = Facing.South, center = new Vector3(7.4f, floor1 + 0.4f, balZ - 0.01f), width = 0.28f, height = 1.4f, opacity = 0.6f });
-            s.decals.Add(new DecalSpec { name = "Rust_Flue", kind = DecalKind.Rust, facing = Facing.South, center = new Vector3(0.45f, 4.9f, 0f), width = 0.5f, height = 1.1f, opacity = 0.7f });
 
+            return s;
+        }
+
+        // Test corner (Task 5): a rough limestone garden wall along the alley east of the test house, turning along the
+        // street (streets/main_02: grey-white stones, flush lime mortar). It stands on the far side of the alley from the
+        // house's outside stair (whose side wall ends at x 10.65), so the alley is ~2.4 m wide, wider behind the landing.
+        public static HouseSpec CornerWalls()
+        {
+            const float xA = 13.0f, t = 0.5f, zStreet = -2.2f;
+            var s = new HouseSpec { id = "Corner_Walls", reference = "streets/main_02 (stone retaining wall)" };
+            s.imperfections.chipsPer3m = 0f;  // chips are plaster chips: rubble has none to lose
+            s.imperfections.crackChance = 0f;
+            s.imperfections.leanMax = 0.04f;  // dry-laid rubble leans a little more than a rendered house
+            s.walls.Add(new WallSpec { name = "Alley_Wall", facing = Facing.West, plane = xA, min = zStreet, max = 10f, y0 = -0.2f, y1 = 2.4f, thickness = t, slot = Slot.StoneRubble, topFree = true, lined = false });
+            s.walls.Add(new WallSpec { name = "Street_Wall", facing = Facing.South, plane = zStreet, min = xA + t, max = 20f, y0 = -0.2f, y1 = 1.5f, thickness = t, slot = Slot.StoneRubble, topFree = true, lined = false });
             return s;
         }
 

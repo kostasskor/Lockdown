@@ -1,7 +1,7 @@
 """Downloads the CC0 texture sets, decals and props the map uses into Assets/Lockdown/ThirdParty/,
 and records each one in Assets/Lockdown/thirdparty_manifest.json.
 
-    uv run --with requests --with pillow Tools/assets/lockdown_fetch.py
+    uv run --with requests --with pillow --with numpy Tools/assets/lockdown_fetch.py
 
 Re-running skips files that already exist. Sources: Poly Haven (api.polyhaven.com) and ambientCG, both CC0.
 """
@@ -27,10 +27,14 @@ POLYHAVEN_TEXTURES = {
     "weathered_brown_planks": ("1k", "PolyHaven/Props", "Timber pergolas, wooden doors and shutters"),
     "white_planks_clean": ("1k", "PolyHaven/Props", "White painted shutters, window and door frames"),
     "rusty_metal_02": ("1k", "PolyHaven/Props", "Black painted iron railings and flues (darkened)"),
+    "old_stone_wall": ("2k", "PolyHaven/Textures", "Rough limestone masonry: retaining and garden walls (tinted grey, streets/main_02)"),
+    "dry_ground_rocks": ("2k", "PolyHaven/Textures", "Dry stony earth: yards, verges, under olive trees"),
 }
 POLYHAVEN_MODELS = {
     "potted_plant_01": ("1k", "PolyHaven/Props", "Potted plants along house walls"),
     "potted_plant_02": ("1k", "PolyHaven/Props", "Potted plants along house walls"),
+    "Barrel_02": ("1k", "PolyHaven/Props", "Blue plastic drums in yards and on rooftops"),
+    "cardboard_box_01": ("1k", "PolyHaven/Props", "Street clutter by doors and shops"),
 }
 # id: (used in, decal colour baked into the texture; None keeps the scan's own colour)
 AMBIENTCG_DECALS = {

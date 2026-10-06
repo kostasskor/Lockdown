@@ -39,8 +39,10 @@ PROPS = {
         "potted_plant_02_dirt": ("bake", (8, 32), (3, 16)),
         "potted_plant_02_pot": 800,
     },
+    "Barrel_02": {"Barrel_02": 1500},                # blue plastic drum
+    "cardboard_box_01": {"cardboard_box_01": 1200},  # a crumpled box: most of its 8.7k verts are folds and tape
 }
-LOD1_DISTANCE = {"potted_plant_01": 12.0, "potted_plant_02": 12.0}  # metres
+LOD1_DISTANCE = {"potted_plant_01": 12.0, "potted_plant_02": 12.0, "Barrel_02": 12.0, "cardboard_box_01": 12.0}  # metres
 PIXEL_AT_1M = 2 * np.tan(np.radians(32)) / 1080  # one pixel at 1 m: player FOV 64, 1080p
 UV_WEIGHT, NORMAL_WEIGHT = 1.0, 0.3
 

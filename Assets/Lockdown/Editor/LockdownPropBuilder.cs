@@ -18,13 +18,15 @@ namespace Lockdown.EditorTools
         const string PrefabDir = "Assets/Lockdown/Prefabs/Props";
         const string MaterialDir = "Assets/Lockdown/Materials/Props";
         const string ShaderPath = "Assets/Lockdown/Shaders/LockdownProp_glTFPbr.shadergraph";
-        public static readonly string[] Props = { "potted_plant_01", "potted_plant_02" };
+        public static readonly string[] Props = { "potted_plant_01", "potted_plant_02", "Barrel_02", "cardboard_box_01" };
         // Where LOD1 takes over (metres). Same values as LOD1_DISTANCE in lockdown_props.py, which simplifies LOD1 to a
         // one-pixel shape error at this distance; confirmed by the LockdownHouseReview.CaptureLodPair sweep.
         static readonly Dictionary<string, float> Lod1Distance = new Dictionary<string, float>
         {
             { "potted_plant_01", 12f },
             { "potted_plant_02", 12f },
+            { "Barrel_02", 12f },
+            { "cardboard_box_01", 12f },
         };
         const float CullDistance = 25f, PlayerFov = 64f, FadeStart = 0.85f;
 
@@ -34,7 +36,10 @@ namespace Lockdown.EditorTools
             if (!AssetDatabase.IsValidFolder(PrefabDir)) AssetDatabase.CreateFolder("Assets/Lockdown/Prefabs", "Props");
             if (!AssetDatabase.IsValidFolder(MaterialDir)) AssetDatabase.CreateFolder("Assets/Lockdown/Materials", "Props");
             var report = new List<string>();
-            foreach (var name in Props) report.Add(Build(name));
+            // Approved props are frozen (project rule: approved generated content is never rebuilt): only props without a prefab yet are built. To rebuild one,
+            // delete its prefab deliberately first.
+            foreach (var name in Props)
+                if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath(name)) == null) report.Add(Build(name));
             AssetDatabase.SaveAssets();
             Debug.Log("[Lockdown] Props built (verts LOD0 / LOD1):\n  " + string.Join("\n  ", report));
         }

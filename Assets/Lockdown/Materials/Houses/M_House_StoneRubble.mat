@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_House_StoneRubble
+  m_Shader: {fileID: 4800000, guid: 7c502acb450eb454cb11bf1b05e1542b, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _HEXTILE
+  - _TONE
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 45e05da939b4e7f4f9417617c3ab2cf8, type: 3}
+        m_Scale: {x: 0.5, y: 0.5}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMapB:
+        m_Texture: {fileID: 2800000, guid: 45e05da939b4e7f4f9417617c3ab2cf8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 9b84f230138b66a49ad65d365d461b41, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMapB:
+        m_Texture: {fileID: 2800000, guid: 9b84f230138b66a49ad65d365d461b41, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MacroNoise:
+        m_Texture: {fileID: 2800000, guid: b6b408133d65400488573ce7619ac4d7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MacroNormal:
+        m_Texture: {fileID: 2800000, guid: 0d69a0dfbb4bd1444aa88269651395da, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 2800000, guid: 4fc89ccbe2a475c479093f20871825bc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMapB:
+        m_Texture: {fileID: 2800000, guid: 4fc89ccbe2a475c479093f20871825bc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseMap:
+        m_Texture: {fileID: 2800000, guid: 8f39472c3eac69647b68c5ac84099e67, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ToneMap:
+        m_Texture: {fileID: 2800000, guid: c8699dc6094cdc64ba2952c18e8c4bf6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BlendWidth: 0.12
+    - _BumpScale: 1.3
+    - _BumpScaleB: 1.3
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DesaturateA: 0
+    - _DesaturateB: 0
+    - _HexCell: 1.5
+    - _HexContrast: 0.6
+    - _HexRotate: 0.05
+    - _MacroScale: 0.16666667
+    - _MacroStrength: 0
+    - _Metallic: 1
+    - _NoiseAmp: 0.45
+    - _NoiseScale: 0.37
+    - _OcclusionStrength: 1
+    - _PatchRim: 0.08
+    - _PatchScale: 0.125
+    - _PatchSmoothness: 0.05
+    - _PatchThreshold: 0.95
+    - _Smoothness: 1
+    - _SmoothnessB: 1
+    - _Speckle: 0
+    - _SpeckleScale: 2
+    - _Surface: 0
+    - _TilingB: 0.5
+    - _ToneBleach: 0.5
+    - _ToneDirt: 0.5
+    - _ToneGrey: 0.4
+    - _ToneScale: 0.015625
+    - _UseHex: 1
+    - _UseMacro: 0
+    - _UsePatches: 0
+    - _UseSpeckle: 0
+    - _UseTone: 1
+    - _VertexDarken: 0
+    m_Colors:
+    - _BaseColor: {r: 1.2258596, g: 1.3488233, b: 1.5143478, a: 1}
+    - _BaseColorB: {r: 1.2258596, g: 1.3488233, b: 1.5143478, a: 1}
+    - _PatchTint: {r: 1.045, g: 1.035, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

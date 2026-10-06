@@ -7934,7 +7934,6 @@ Transform:
   m_Children:
   - {fileID: 3670008011490743165}
   - {fileID: 1760747571709848766}
-  - {fileID: 7702804838119267301}
   - {fileID: 6348398604551406099}
   - {fileID: 3010429583555674297}
   - {fileID: 5378122038895086880}
@@ -10179,66 +10178,6 @@ MonoBehaviour:
   m_Offset: {x: 0, y: 0, z: 0}
   m_Size: {x: 1.0297166, y: 1.1888678, z: 0.12}
   m_FadeFactor: 0.28967753
-  version: 1
-  m_DecalLayerMask: 1
---- !u!1 &8996687394209621245
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7702804838119267301}
-  - component: {fileID: 5732297472911838638}
-  m_Layer: 0
-  m_Name: Rust_Flue
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 83
-  m_IsActive: 1
---- !u!4 &7702804838119267301
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8996687394209621245}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.45, y: 4.9, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6325233591715404346}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5732297472911838638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8996687394209621245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: e5c173168f46427479a722df03ee9fc2, type: 2}
-  m_DrawDistance: 120
-  m_FadeScale: 0.9
-  m_StartAngleFade: 30
-  m_EndAngleFade: 60
-  m_UVScale: {x: 0.4181818, y: 1}
-  m_UVBias: {x: 0, y: 0}
-  m_RenderingLayerMask:
-    serializedVersion: 0
-    m_Bits: 1
-  m_ScaleMode: 0
-  m_Offset: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0.46, y: 1.1, z: 0.12}
-  m_FadeFactor: 0.7
   version: 1
   m_DecalLayerMask: 1
 --- !u!1 &9043174829712428187

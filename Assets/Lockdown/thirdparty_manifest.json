@@ -113,6 +113,38 @@
       "author": "ambientCG",
       "files": "AmbientCG/Decals/Leaking016A",
       "usedIn": "Water and rust streaks under balcony edges and railings (decal)"
+    },
+    {
+      "name": "old_stone_wall",
+      "source": "https://polyhaven.com/a/old_stone_wall",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/old_stone_wall",
+      "usedIn": "Rough limestone masonry: retaining and garden walls (tinted grey, streets/main_02)"
+    },
+    {
+      "name": "dry_ground_rocks",
+      "source": "https://polyhaven.com/a/dry_ground_rocks",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Textures/dry_ground_rocks",
+      "usedIn": "Dry stony earth: yards, verges, under olive trees"
+    },
+    {
+      "name": "cardboard_box_01",
+      "source": "https://polyhaven.com/a/cardboard_box_01",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/cardboard_box_01",
+      "usedIn": "Street clutter by doors and shops"
+    },
+    {
+      "name": "Barrel_02",
+      "source": "https://polyhaven.com/a/Barrel_02",
+      "license": "CC0",
+      "author": "Poly Haven",
+      "files": "PolyHaven/Props/Barrel_02",
+      "usedIn": "Blue plastic drums in yards and on rooftops"
     }
   ]
 }

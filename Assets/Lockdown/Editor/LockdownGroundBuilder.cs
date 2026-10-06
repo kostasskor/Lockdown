@@ -26,7 +26,7 @@ namespace Lockdown.EditorTools
         const string EditorOnly = "EditorOnly";
 
         // Sun approximation for reviews until Task 5/66: azimuth 263 deg (just south of west), 20 deg up.
-        public const float SunAzimuth = 263f, SunElevation = 20f;
+        public const float SunAzimuth = LockdownReviewLighting.SunAzimuth, SunElevation = LockdownReviewLighting.SunElevation; // Task 5: computed sun
         const float SkirtDepth = 8f;
 
         [Serializable] class GridInfo { public string file; public float size; public int resolution; public int hole_first_cell; public int hole_cells; }
