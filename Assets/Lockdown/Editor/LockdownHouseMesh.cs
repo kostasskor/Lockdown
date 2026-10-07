@@ -58,7 +58,9 @@ namespace Lockdown.EditorTools
             if (Field != null) { EmitWarped(new List<Vector3> { a, b, c, d }, n, slot); return; }
             int i = verts.Count;
             Add(a, n); Add(b, n); Add(c, n); Add(d, n);
-            tris[(int)slot].AddRange(new[] { i, i + 1, i + 2, i, i + 2, i + 3 });
+            var t = tris[(int)slot];
+            t.Add(i); t.Add(i + 1); t.Add(i + 2);
+            t.Add(i); t.Add(i + 2); t.Add(i + 3);
         }
 
         public void Tri(Vector3 a, Vector3 b, Vector3 c, Vector3 outward, Slot slot)
@@ -73,7 +75,8 @@ namespace Lockdown.EditorTools
             if (Field != null) { EmitWarped(new List<Vector3> { a, b, c }, n, slot); return; }
             int i = verts.Count;
             Add(a, n); Add(b, n); Add(c, n);
-            tris[(int)slot].AddRange(new[] { i, i + 1, i + 2 });
+            var t = tris[(int)slot];
+            t.Add(i); t.Add(i + 1); t.Add(i + 2);
         }
 
         void Add(Vector3 p, Vector3 n)
@@ -109,22 +112,99 @@ namespace Lockdown.EditorTools
                 pieces = next;
             }
             bool walkable = slot == Slot.Tile && n.y > 0.9f;
+            var slotTris = tris[(int)slot];
+            string part = PartName(Tag);
             foreach (var pc in pieces)
             {
                 int i = verts.Count;
                 foreach (var p in pc)
                 {
-                    Vector3 d = Field.Displace(p, Profile);
+                    Vector3 d = Displace(p);
                     if (walkable) MaxWalkableDy = Mathf.Max(MaxWalkableDy, Mathf.Abs(d.y));
                     verts.Add(p + d);
-                    normals.Add(Field.Normal(p, n, Profile));
+                    normals.Add(n); // replaced by the warped normal in ResolveWarpedNormals
+                    warpedNormals.Add((normals.Count - 1, NormalJob(p, n)));
                     uvs.Add(UV(p, n));
                     colors.Add(ColorFn != null ? ColorFn(p, n) : new Color(0f, 0f, 0f, 1f));
                 }
-                for (int k = 1; k < pc.Count - 1; k++) tris[(int)slot].AddRange(new[] { i, i + k, i + k + 1 });
-                string part = Tag.Split('/')[0];
+                for (int k = 1; k < pc.Count - 1; k++) { slotTris.Add(i); slotTris.Add(i + k); slotTris.Add(i + k + 1); }
                 TrisByPart[part] = (TrisByPart.TryGetValue(part, out int t) ? t : 0) + pc.Count - 2;
             }
+        }
+
+        // The warp is a pure function of (position, normal, profile), and neighbouring grid pieces share their
+        // corners, so each value is computed once per mesh part and reused: the very same float result
+        // (keys compare exact float bits). Warped normals (6 noise displacements each, most of the build time) are
+        // collected as jobs and computed in parallel in ToMesh; each is still exactly Field.Normal(p, n, profile).
+        readonly Dictionary<WarpKey, Vector3> displaceCache = new();
+        readonly Dictionary<WarpKey, int> normalJobIndex = new();
+        readonly List<(WarpField field, Vector3 p, Vector3 n, WarpProfile prof)> normalJobs = new();
+        readonly List<(int vertex, int job)> warpedNormals = new();
+
+        Vector3 Displace(Vector3 p)
+        {
+            var key = new WarpKey(p, Vector3.zero, Profile);
+            if (!displaceCache.TryGetValue(key, out var d)) displaceCache[key] = d = Field.Displace(p, Profile);
+            return d;
+        }
+
+        int NormalJob(Vector3 p, Vector3 n)
+        {
+            var key = new WarpKey(p, n, Profile);
+            if (!normalJobIndex.TryGetValue(key, out int j))
+            {
+                normalJobIndex[key] = j = normalJobs.Count;
+                normalJobs.Add((Field, p, n, Profile));
+            }
+            return j;
+        }
+
+        void ResolveWarpedNormals()
+        {
+            if (normalJobs.Count == 0) return;
+            var result = new Vector3[normalJobs.Count];
+            System.Threading.Tasks.Parallel.For(0, normalJobs.Count, j =>
+            {
+                var (field, p, n, prof) = normalJobs[j];
+                result[j] = field.Normal(p, n, prof);
+            });
+            foreach (var (vertex, job) in warpedNormals) normals[vertex] = result[job];
+            normalJobs.Clear();
+            normalJobIndex.Clear();
+            warpedNormals.Clear();
+        }
+
+        readonly struct WarpKey : System.IEquatable<WarpKey>
+        {
+            readonly int px, py, pz, nx, ny, nz;
+            readonly WarpProfile prof;
+
+            public WarpKey(Vector3 p, Vector3 n, in WarpProfile prof)
+            {
+                px = Bits(p.x); py = Bits(p.y); pz = Bits(p.z);
+                nx = Bits(n.x); ny = Bits(n.y); nz = Bits(n.z);
+                this.prof = prof;
+            }
+
+            static int Bits(float f) => System.BitConverter.SingleToInt32Bits(f);
+            static bool Same(Vector3 a, Vector3 b) => Bits(a.x) == Bits(b.x) && Bits(a.y) == Bits(b.y) && Bits(a.z) == Bits(b.z);
+
+            public bool Equals(WarpKey o) =>
+                px == o.px && py == o.py && pz == o.pz && nx == o.nx && ny == o.ny && nz == o.nz &&
+                prof.active == o.prof.active && prof.seed == o.prof.seed && Same(prof.a, o.prof.a) && Same(prof.b, o.prof.b) &&
+                Bits(prof.yPin) == Bits(o.prof.yPin) && Bits(prof.yFree) == Bits(o.prof.yFree) && Bits(prof.amp) == Bits(o.prof.amp);
+
+            public override bool Equals(object obj) => obj is WarpKey k && Equals(k);
+            public override int GetHashCode() => System.HashCode.Combine(px, py, pz, nx, ny, nz, prof.seed);
+        }
+
+        // Triangle budget key: the first segment of the tag ("Wall_South/op2" -> "Wall_South"), split once per tag.
+        string lastTag, lastPart;
+
+        string PartName(string tag)
+        {
+            if (!ReferenceEquals(tag, lastTag)) { lastTag = tag; lastPart = tag.Split('/')[0]; }
+            return lastPart;
         }
 
         void Cut(List<Vector3> poly, int axis, List<List<Vector3>> output)
@@ -296,6 +376,7 @@ namespace Lockdown.EditorTools
         // Builds a mesh holding only the slots that received geometry; usedSlots maps submesh -> slot.
         public Mesh ToMesh(string name, out List<Slot> usedSlots)
         {
+            ResolveWarpedNormals();
             usedSlots = new List<Slot>();
             for (int i = 0; i < SlotCount; i++) if (tris[i].Count > 0) usedSlots.Add((Slot)i);
             var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };

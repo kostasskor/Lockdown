@@ -112,16 +112,57 @@ def extend(pts, length):
     return np.vstack([pts[0] + d0 / np.linalg.norm(d0) * length, pts, pts[-1] + d1 / np.linalg.norm(d1) * length])
 
 
+def grid_cache(key):
+    """Memoizes a whole-grid field function on its exact inputs. grade() runs five times and most of its fields
+    (lanes, connectors, ravine, pads) do not depend on the balance offsets. Results are made read-only, so a caller
+    can never change a cached field in place."""
+    def deco(fn):
+        cache = {}
+
+        def wrapper(*args):
+            k = key(*args)
+            r = cache.get(k)
+            if r is None:
+                r = fn(*args)
+                for arr in (r if isinstance(r, tuple) else (r,)):
+                    arr.setflags(write=False)
+                cache[k] = r
+            return r
+        return wrapper
+    return deco
+
+
+def _pts_key(pts):
+    pts = np.asarray(pts, float)
+    return pts.shape, pts.tobytes()
+
+
+@grid_cache(_pts_key)
 def polyline_field(pts):
     """Distance from every grid point to the polyline (frame coords) and the station of the nearest point."""
     best_d = np.full(UU.shape, np.inf)
     best_s = np.zeros(UU.shape)
+    # Scratch grids, reused per segment; the in-place steps are the same arithmetic in the same order as
+    # t = clip(((UU - a0) * ab0 + (VV - a1) * ab1) / L^2, 0, 1) and d = hypot(UU - (a0 + t*ab0), VV - (a1 + t*ab1)).
+    t, du, dv, d = (np.empty(UU.shape) for _ in range(4))
     s0 = 0.0
     for a, b in zip(pts[:-1], pts[1:]):
         ab = b - a
         L = float(np.hypot(*ab))
-        t = np.clip(((UU - a[0]) * ab[0] + (VV - a[1]) * ab[1]) / (L * L), 0, 1)
-        d = np.hypot(UU - (a[0] + t * ab[0]), VV - (a[1] + t * ab[1]))
+        np.subtract(UU, a[0], out=t)
+        t *= ab[0]
+        np.subtract(VV, a[1], out=dv)
+        dv *= ab[1]
+        t += dv
+        t /= L * L
+        np.clip(t, 0, 1, out=t)
+        np.multiply(t, ab[0], out=du)
+        du += a[0]
+        np.subtract(UU, du, out=du)
+        np.multiply(t, ab[1], out=dv)
+        dv += a[1]
+        np.subtract(VV, dv, out=dv)
+        np.hypot(du, dv, out=d)
         closer = d < best_d
         best_d[closer] = d[closer]
         best_s[closer] = s0 + t[closer] * L
@@ -149,6 +190,7 @@ def limit_grade(h, spacing, grade):
     return h
 
 
+@grid_cache(lambda a: json.dumps(a, sort_keys=True))
 def area_distance(a):
     if a["shape"] == "circle":
         return np.maximum(np.hypot(UU - a["center"][0], VV - a["center"][1]) - a["radius"], 0)
@@ -406,6 +448,7 @@ def crossing_geom(rv, profiles):
     return out
 
 
+@grid_cache(lambda *args: np.array(args, float).tobytes())
 def rect_distance(cu, cv, du, dv, length, width):
     """Distance from every grid point to an oriented rectangle (0 inside)."""
     a = (UU - cu) * du + (VV - cv) * dv
@@ -418,6 +461,7 @@ FLAG_B_PRINT = 0.0
 ROCK = np.zeros(UU.shape, bool)  # rock faces made by grade() (Upper Road cliff, rock ridges): no houses or terrace walls
 
 
+@grid_cache(_pts_key)
 def polygon_distance(poly):
     """Distance from every grid point to a frame polygon (0 inside)."""
     P = np.asarray(poly, float)
@@ -835,9 +879,19 @@ def box(name, group, mat, cu, cv, y_bottom, y_top, length, width, du, dv, pitch=
 def footprint(cu, cv, length, width, du, dv):
     n = math.hypot(du, dv)
     du, dv = du / n, dv / n
-    a = (UU - cu) * du + (VV - cv) * dv
-    b = -(UU - cu) * dv + (VV - cv) * du
-    return (np.abs(a) <= length / 2) & (np.abs(b) <= width / 2)
+    # Only a window around the rectangle can be inside it (its half-diagonal plus a 2-cell margin); every cell in the
+    # window gets exactly the same test as before, every cell outside stays False.
+    x, z = to_world(cu, cv)
+    r = math.hypot(length, width) / 2 + 2 * STEP
+    c0, c1 = max(int(math.floor((x - r - X0) / STEP)), 0), min(int(math.ceil((x + r - X0) / STEP)) + 1, RES)
+    r0, r1 = max(int(math.floor((z - r - Z0) / STEP)), 0), min(int(math.ceil((z + r - Z0) / STEP)) + 1, RES)
+    out = np.zeros(UU.shape, bool)
+    if c0 < c1 and r0 < r1:
+        U, V = UU[r0:r1, c0:c1], VV[r0:r1, c0:c1]
+        a = (U - cu) * du + (V - cv) * dv
+        b = -(U - cu) * dv + (V - cv) * du
+        out[r0:r1, c0:c1] = (np.abs(a) <= length / 2) & (np.abs(b) <= width / 2)
+    return out
 
 
 def inside_frame(cu, cv, length, width, du, dv):

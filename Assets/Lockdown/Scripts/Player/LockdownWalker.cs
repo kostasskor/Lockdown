@@ -48,6 +48,7 @@ namespace Lockdown
 
         CharacterController _controller;
         InputAction _move, _look, _jump, _sprint, _crouch, _fov;
+        InputAction[] _actions; // all of the above, for enable / disable / dispose
         Vector3 _velocity;
         float _pitch;
         float _currentHeight;
@@ -94,23 +95,26 @@ namespace Lockdown
             _fov = new InputAction("ToggleFov", InputActionType.Button);
             _fov.AddBinding("<Keyboard>/f");
             _fov.AddBinding("<Gamepad>/select");
+
+            _actions = new[] { _move, _look, _jump, _sprint, _crouch, _fov };
         }
 
         void OnEnable()
         {
-            if (_move == null) return;
-            _move.Enable(); _look.Enable(); _jump.Enable(); _sprint.Enable(); _crouch.Enable(); _fov.Enable();
+            if (_actions == null) return;
+            foreach (var a in _actions) a.Enable();
         }
 
         void OnDisable()
         {
-            if (_move == null) return;
-            _move.Disable(); _look.Disable(); _jump.Disable(); _sprint.Disable(); _crouch.Disable(); _fov.Disable();
+            if (_actions == null) return;
+            foreach (var a in _actions) a.Disable();
         }
 
         void OnDestroy()
         {
-            _move?.Dispose(); _look?.Dispose(); _jump?.Dispose(); _sprint?.Dispose(); _crouch?.Dispose(); _fov?.Dispose();
+            if (_actions == null) return;
+            foreach (var a in _actions) a.Dispose();
         }
 
         void Update()
@@ -190,16 +194,17 @@ namespace Lockdown
         {
             Vector2 input = Vector2.ClampMagnitude(_move.ReadValue<Vector2>(), 1f);
             MoveInput = input;
-            IsSprinting = _sprint.IsPressed() && !IsCrouching && input.y > 0.1f && _controller.isGrounded;
+            bool grounded = _controller.isGrounded; // from the last Move; it cannot change before the Move below
+            IsSprinting = _sprint.IsPressed() && !IsCrouching && input.y > 0.1f && grounded;
 
             float speed = IsCrouching ? crouchSpeed : (IsSprinting ? sprintSpeed : walkSpeed);
             Vector3 wish = (transform.right * input.x + transform.forward * input.y) * speed;
 
             Vector3 horizontal = new Vector3(_velocity.x, 0f, _velocity.z);
-            float accel = _controller.isGrounded ? acceleration : acceleration * airControl;
+            float accel = grounded ? acceleration : acceleration * airControl;
             horizontal = Vector3.MoveTowards(horizontal, wish, accel * Time.deltaTime);
 
-            if (_controller.isGrounded)
+            if (grounded)
             {
                 if (_velocity.y < 0f) _velocity.y = -2f;
                 if (_jump.WasPressedThisFrame())

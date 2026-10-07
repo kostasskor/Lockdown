@@ -6,6 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using static Lockdown.EditorTools.LockdownEditorUtil;
 
 namespace Lockdown.EditorTools
 {
@@ -163,7 +164,6 @@ namespace Lockdown.EditorTools
             foreach (var r in spec.railings) BuildRailing(hm, r, imp);
             foreach (var p in spec.pergolas) BuildPergola(hm, p, imp);
             foreach (var p in spec.prisms) { hm.Tag = p.name; hm.Detail = false; hm.PrismX(p.x0, p.x1, p.zy, p.slot, true); }
-            hm.Detail = false;
             LastTrisByPart = hm.Lod0.TrisByPart;
             if (imp != null)
             {
@@ -1017,15 +1017,6 @@ namespace Lockdown.EditorTools
             go.tag = EditorOnly;
         }
 
-        internal static void PlaceDummy(GameObject parent, string prefabName, Vector3 pos, float yaw)
-        {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Lockdown/Prefabs/Review/{prefabName}.prefab");
-            if (prefab == null) return;
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent.scene);
-            go.transform.SetParent(parent.transform, false);
-            go.transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, yaw, 0f));
-        }
-
         internal static void ReviewCamera(GameObject parent, string name, Vector3 pos, Vector3 target, float fov)
         {
             var go = new GameObject(name);
@@ -1040,14 +1031,6 @@ namespace Lockdown.EditorTools
             var data = go.AddComponent<UniversalAdditionalCameraData>();
             data.renderPostProcessing = true;
             data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
-        }
-
-        static void EnsureFolder(string path)
-        {
-            if (AssetDatabase.IsValidFolder(path)) return;
-            string parent = Path.GetDirectoryName(path).Replace('\\', '/');
-            EnsureFolder(parent);
-            AssetDatabase.CreateFolder(parent, Path.GetFileName(path));
         }
     }
 }

@@ -18,8 +18,13 @@ namespace Lockdown
         float _worstFrame;
         float _fps;
         float _worstMs;
-        GUIStyle _style;
+        GUIStyle _style, _hintStyle;
         readonly System.Text.StringBuilder _text = new System.Text.StringBuilder(128);
+        string _label = "";
+        int _labelFrame = -1;
+
+        // Only GUI.Label / GUI.DrawTexture are used, so Unity can skip the extra Layout pass of OnGUI.
+        void Awake() => useGUILayout = false;
 
         void Update()
         {
@@ -47,50 +52,58 @@ namespace Lockdown
             {
                 _style = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
                 _style.normal.textColor = Color.white;
+                _hintStyle = new GUIStyle(_style) { alignment = TextAnchor.MiddleCenter, fontSize = 22 };
             }
 
-            _text.Clear();
-            _text.Append(_fps.ToString("0")).Append(" fps   worst ").Append(_worstMs.ToString("0.0")).Append(" ms");
-            if (walker != null)
+            bool hasWalker = walker != null;
+            // OnGUI runs several times a frame (one per GUI event); the text only changes once a frame.
+            if (_labelFrame != Time.frameCount)
             {
-                _text.Append("\nFOV ").Append(walker.IsWideFov ? "64° (BO2 80)" : "51° (BO2 65)");
-                _text.Append("   ").Append(walker.HorizontalSpeed.ToString("0.0")).Append(" m/s   ");
-                _text.Append(walker.IsCrouching ? "crouch" : (walker.IsSprinting ? "sprint" : "stand"));
+                _labelFrame = Time.frameCount;
+                _label = BuildLabel(hasWalker);
             }
 
-            // Input readout: which movement keys the game sees, the walker's move value, ground contact.
-            var keyboard = Keyboard.current;
-            if (walker != null)
-            {
-                _text.Append("\nkeys ");
-                if (keyboard == null) _text.Append("(no keyboard)");
-                else
-                {
-                    _text.Append(keyboard.wKey.isPressed ? 'W' : '-').Append(keyboard.aKey.isPressed ? 'A' : '-')
-                         .Append(keyboard.sKey.isPressed ? 'S' : '-').Append(keyboard.dKey.isPressed ? 'D' : '-');
-                }
-                Vector2 m = walker.MoveInput;
-                _text.Append("   move ").Append(m.x.ToString("0.0")).Append(", ").Append(m.y.ToString("0.0"))
-                     .Append(walker.IsGrounded ? "   grounded" : "   in air");
-            }
-
-            int lines = walker != null ? 3 : 1;
+            int lines = hasWalker ? 3 : 1;
             var rect = new Rect(12, 8, 420, 26 * lines);
             GUI.color = new Color(0f, 0f, 0f, 0.45f);
             GUI.DrawTexture(new Rect(6, 6, 330, 24 * lines + 2), Texture2D.whiteTexture);
             GUI.color = Color.white;
-            GUI.Label(rect, _text.ToString(), _style);
+            GUI.Label(rect, _label, _style);
 
             // Keyboard and mouse only reach the game once the Game view has focus: say so until it does.
             if (Cursor.lockState != CursorLockMode.Locked)
             {
                 var hint = new Rect(0, Screen.height * 0.5f - 20, Screen.width, 40);
-                var style = new GUIStyle(_style) { alignment = TextAnchor.MiddleCenter, fontSize = 22 };
                 GUI.color = new Color(0f, 0f, 0f, 0.45f);
                 GUI.DrawTexture(hint, Texture2D.whiteTexture);
                 GUI.color = Color.white;
-                GUI.Label(hint, "Click the Game view to play  (Esc frees the mouse)", style);
+                GUI.Label(hint, "Click the Game view to play  (Esc frees the mouse)", _hintStyle);
             }
+        }
+
+        string BuildLabel(bool hasWalker)
+        {
+            _text.Clear();
+            _text.Append(_fps.ToString("0")).Append(" fps   worst ").Append(_worstMs.ToString("0.0")).Append(" ms");
+            if (!hasWalker) return _text.ToString();
+
+            _text.Append("\nFOV ").Append(walker.IsWideFov ? "64° (BO2 80)" : "51° (BO2 65)");
+            _text.Append("   ").Append(walker.HorizontalSpeed.ToString("0.0")).Append(" m/s   ");
+            _text.Append(walker.IsCrouching ? "crouch" : (walker.IsSprinting ? "sprint" : "stand"));
+
+            // Input readout: which movement keys the game sees, the walker's move value, ground contact.
+            var keyboard = Keyboard.current;
+            _text.Append("\nkeys ");
+            if (keyboard == null) _text.Append("(no keyboard)");
+            else
+            {
+                _text.Append(keyboard.wKey.isPressed ? 'W' : '-').Append(keyboard.aKey.isPressed ? 'A' : '-')
+                     .Append(keyboard.sKey.isPressed ? 'S' : '-').Append(keyboard.dKey.isPressed ? 'D' : '-');
+            }
+            Vector2 m = walker.MoveInput;
+            _text.Append("   move ").Append(m.x.ToString("0.0")).Append(", ").Append(m.y.ToString("0.0"))
+                 .Append(walker.IsGrounded ? "   grounded" : "   in air");
+            return _text.ToString();
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Object = UnityEngine.Object;
+using static Lockdown.EditorTools.LockdownEditorUtil;
 
 namespace Lockdown.EditorTools
 {
@@ -358,14 +359,6 @@ namespace Lockdown.EditorTools
             Object.DestroyImmediate(t);
             AssetDatabase.ImportAsset(FlatTexPath);
             return AssetDatabase.LoadAssetAtPath<Texture2D>(FlatTexPath);
-        }
-
-        static void EnsureFolder(string path)
-        {
-            if (AssetDatabase.IsValidFolder(path)) return;
-            string parent = Path.GetDirectoryName(path).Replace('\\', '/');
-            EnsureFolder(parent);
-            AssetDatabase.CreateFolder(parent, Path.GetFileName(path));
         }
     }
 }

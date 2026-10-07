@@ -3,6 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using static Lockdown.EditorTools.LockdownEditorUtil;
 
 namespace Lockdown.EditorTools
 {
@@ -298,14 +299,6 @@ namespace Lockdown.EditorTools
             c.name = typeof(T).Name;
             AssetDatabase.AddObjectToAsset(c, p);
             return c;
-        }
-
-        static void EnsureFolder(string path)
-        {
-            if (AssetDatabase.IsValidFolder(path)) return;
-            string parent = System.IO.Path.GetDirectoryName(path).Replace('\\', '/');
-            EnsureFolder(parent);
-            AssetDatabase.CreateFolder(parent, System.IO.Path.GetFileName(path));
         }
     }
 }

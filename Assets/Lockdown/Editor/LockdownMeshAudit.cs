@@ -28,15 +28,27 @@ namespace Lockdown.EditorTools
             var hits = new Dictionary<(string, string), (float area, Vector3 at)>();
             foreach (var list in groups.Values)
             {
-                if (list.Count < 2 || list.Select(i => faces[i].tag).Distinct().Count() < 2) continue;
+                if (list.Count < 2 || !MixedTags(faces, list)) continue;
                 Vector3 n = faces[list[0]].n;
                 int drop = Mathf.Abs(n.x) > Mathf.Abs(n.y) ? (Mathf.Abs(n.x) > Mathf.Abs(n.z) ? 0 : 2) : (Mathf.Abs(n.y) > Mathf.Abs(n.z) ? 1 : 2);
-                var tri2 = list.Select(i => new[] { To2(faces[i].a, drop), To2(faces[i].b, drop), To2(faces[i].c, drop) }).ToList();
-                for (int x = 0; x < list.Count; x++)
-                for (int y = x + 1; y < list.Count; y++)
+                int count = list.Count;
+                var tri2 = new Vector2[count][];
+                var bMin = new Vector2[count];
+                var bMax = new Vector2[count];
+                for (int i = 0; i < count; i++)
+                {
+                    var f = faces[list[i]];
+                    var t = tri2[i] = new[] { To2(f.a, drop), To2(f.b, drop), To2(f.c, drop) };
+                    bMin[i] = Vector2.Min(t[0], Vector2.Min(t[1], t[2]));
+                    bMax[i] = Vector2.Max(t[0], Vector2.Max(t[1], t[2]));
+                }
+                for (int x = 0; x < count; x++)
+                for (int y = x + 1; y < count; y++)
                 {
                     string ta = faces[list[x]].tag, tb = faces[list[y]].tag;
                     if (ta == tb) continue;
+                    // Bounding boxes that only touch or miss cannot overlap (precomputed once per triangle).
+                    if (bMax[x].x <= bMin[y].x || bMax[y].x <= bMin[x].x || bMax[x].y <= bMin[y].y || bMax[y].y <= bMin[x].y) continue;
                     float area = OverlapArea(tri2[x], tri2[y]);
                     if (area < MinArea) continue;
                     var k = string.CompareOrdinal(ta, tb) < 0 ? (ta, tb) : (tb, ta);
@@ -48,15 +60,20 @@ namespace Lockdown.EditorTools
                 .Select(h => $"{h.Key.Item1}  <->  {h.Key.Item2}   {h.Value.area * 10000f:0.#} cm2 near {h.Value.at}").ToList();
         }
 
+        static bool MixedTags(List<(Vector3 a, Vector3 b, Vector3 c, Vector3 n, string tag)> faces, List<int> list)
+        {
+            string first = faces[list[0]].tag;
+            for (int i = 1; i < list.Count; i++)
+                if (faces[list[i]].tag != first) return true;
+            return false;
+        }
+
         static Vector2 To2(Vector3 p, int drop) => drop == 0 ? new Vector2(p.y, p.z) : drop == 1 ? new Vector2(p.x, p.z) : new Vector2(p.x, p.y);
 
-        // Area of the intersection of two triangles (Sutherland-Hodgman clipping).
+        // Area of the intersection of two triangles (Sutherland-Hodgman clipping); the caller has already rejected
+        // pairs whose bounding boxes do not overlap.
         static float OverlapArea(Vector2[] a, Vector2[] b)
         {
-            Vector2 aMin = Vector2.Min(a[0], Vector2.Min(a[1], a[2])), aMax = Vector2.Max(a[0], Vector2.Max(a[1], a[2]));
-            Vector2 bMin = Vector2.Min(b[0], Vector2.Min(b[1], b[2])), bMax = Vector2.Max(b[0], Vector2.Max(b[1], b[2]));
-            if (aMax.x <= bMin.x || bMax.x <= aMin.x || aMax.y <= bMin.y || bMax.y <= aMin.y) return 0f;
-
             var clip = SignedArea(b) < 0f ? new[] { b[0], b[2], b[1] } : b;
             var poly = new List<Vector2>(a);
             for (int e = 0; e < 3 && poly.Count > 0; e++)

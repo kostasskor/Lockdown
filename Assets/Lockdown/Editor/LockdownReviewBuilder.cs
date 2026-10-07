@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static Lockdown.EditorTools.LockdownEditorUtil;
 
 namespace Lockdown.EditorTools
 {
@@ -277,13 +278,6 @@ namespace Lockdown.EditorTools
 
         // ---------- Helpers ----------
 
-        static GameObject Group(GameObject parent, string name)
-        {
-            var g = new GameObject(name);
-            g.transform.SetParent(parent.transform, false);
-            return g;
-        }
-
         static GameObject Box(GameObject parent, string name, Material mat, Vector3 pos, Vector3 size)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -375,14 +369,6 @@ namespace Lockdown.EditorTools
         static void SetTagRecursive(GameObject go, string tag)
         {
             foreach (var t in go.GetComponentsInChildren<Transform>(true)) t.gameObject.tag = tag;
-        }
-
-        static void EnsureFolder(string path)
-        {
-            if (AssetDatabase.IsValidFolder(path)) return;
-            string parent = Path.GetDirectoryName(path).Replace('\\', '/');
-            EnsureFolder(parent);
-            AssetDatabase.CreateFolder(parent, Path.GetFileName(path));
         }
     }
 }

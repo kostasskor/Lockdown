@@ -10,12 +10,13 @@ Prints one table; every check states how it is measured.
 """
 import heapq
 import json
+import os
 import math
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
-from scipy.ndimage import label as cc_label, map_coordinates
+from scipy.ndimage import map_coordinates
 
 ROOT = Path(__file__).resolve().parents[2] if '__file__' in globals() else Path.cwd()
 PG = ROOT / "SourceData" / "playground"
@@ -85,7 +86,6 @@ for b in META["boxes"]:
         blocked |= fp
 # PLANNED_ROWS=1: add the brief's assumption, solid two-storey house rows 1 m back from each lane edge, 9 m deep,
 # left open at connectors, pads, the ravine and the bridges (the street walls Tasks 8-10 will build).
-import os
 PLANNED = os.environ.get("PLANNED_ROWS") == "1"
 
 gz, gx = np.gradient(walk_h, STEP)
@@ -105,13 +105,40 @@ def chaikin(pts, n=2):
     return pts
 
 
+_poly_dist_cache = {}
+
+
 def poly_dist(pts):
+    """Distance from every grid point to the polyline. Memoized on the exact points and returned read-only (several
+    checks ask for the same path); the in-place steps are the same arithmetic in the same order as
+    tt = clip(((UU - a0) * ab0 + (VV - a1) * ab1) / L2, 0, 1), best = minimum(best, hypot(UU - (a0 + tt*ab0), ...))."""
+    pts = np.asarray(pts, float)
+    key = (pts.shape, pts.tobytes())
+    best = _poly_dist_cache.get(key)
+    if best is not None:
+        return best
     best = np.full(UU.shape, np.inf)
+    tt, du, dv = (np.empty(UU.shape) for _ in range(3))
     for a, b in zip(pts[:-1], pts[1:]):
         ab = b - a
         L2 = float(ab @ ab)
-        tt = np.clip(((UU - a[0]) * ab[0] + (VV - a[1]) * ab[1]) / L2, 0, 1)
-        best = np.minimum(best, np.hypot(UU - (a[0] + tt * ab[0]), VV - (a[1] + tt * ab[1])))
+        np.subtract(UU, a[0], out=tt)
+        tt *= ab[0]
+        np.subtract(VV, a[1], out=dv)
+        dv *= ab[1]
+        tt += dv
+        tt /= L2
+        np.clip(tt, 0, 1, out=tt)
+        np.multiply(tt, ab[0], out=du)
+        du += a[0]
+        np.subtract(UU, du, out=du)
+        np.multiply(tt, ab[1], out=dv)
+        dv += a[1]
+        np.subtract(VV, dv, out=dv)
+        np.hypot(du, dv, out=du)
+        np.minimum(best, du, out=best)
+    best.setflags(write=False)
+    _poly_dist_cache[key] = best
     return best
 
 
@@ -181,6 +208,18 @@ def sample(field, x, z, order=1):
     return map_coordinates(field, [np.atleast_1d(r), np.atleast_1d(c)], order=order, mode="nearest")
 
 
+_stand_h = {}
+
+
+def stand_height(x, z):
+    """walk_h under a world point, memoized: the line-of-sight sweeps test thousands of lines from the same eyes."""
+    k = (x, z)
+    h = _stand_h.get(k)
+    if h is None:
+        h = _stand_h[k] = float(sample(walk_h, x, z)[0])
+    return h
+
+
 def los(p, q, eye_p=EYE, eye_q=EYE, step=0.25):
     """Eye-to-eye line of sight over the occluder raster. p, q = world (x, z)."""
     (x0, z0), (x1, z1) = p, q
@@ -188,8 +227,8 @@ def los(p, q, eye_p=EYE, eye_q=EYE, step=0.25):
     n = max(int(d / step), 2)
     t = np.linspace(0, 1, n)[1:-1]
     xs_, zs_ = x0 + (x1 - x0) * t, z0 + (z1 - z0) * t
-    h0 = float(sample(walk_h, x0, z0)[0]) + eye_p
-    h1 = float(sample(walk_h, x1, z1)[0]) + eye_q
+    h0 = stand_height(x0, z0) + eye_p
+    h1 = stand_height(x1, z1) + eye_q
     line = h0 + (h1 - h0) * t
     return bool(np.all(line > sample(occ, xs_, zs_) + 0.05))
 
@@ -386,24 +425,27 @@ for fid in ("Flag_A", "Flag_C"):
 
 def dijkstra(src_xz):
     r0, c0 = (int(round(v)) for v in grid_index(*src_xz))
-    dist = np.full(ground.shape, np.inf)
-    dist[r0, c0] = 0.0
+    # Plain nested lists: the same float64 values as the arrays, without numpy's per-element indexing cost.
+    dist = np.full(ground.shape, np.inf).tolist()
+    dist[r0][c0] = 0.0
     pq = [(0.0, r0, c0)]
     nbrs = [(-1, 0, 1), (1, 0, 1), (0, -1, 1), (0, 1, 1), (-1, -1, 1.4142), (-1, 1, 1.4142), (1, -1, 1.4142), (1, 1, 1.4142)]
     lim = STEP * math.tan(math.radians(WALK_DEG)) * 1.5 + 0.4
-    ok = walkable & (np.abs(UU) <= HALF_U + 15) & (np.abs(VV) <= HALF_V + 15)
+    ok = (walkable & (np.abs(UU) <= HALF_U + 15) & (np.abs(VV) <= HALF_V + 15)).tolist()
+    wh = walk_h.tolist()
     while pq:
         d, r, c = heapq.heappop(pq)
-        if d > dist[r, c]:
+        if d > dist[r][c]:
             continue
+        h = wh[r][c]
         for dr, dc, w in nbrs:
             rr, cc = r + dr, c + dc
-            if 0 <= rr < RES and 0 <= cc < RES and ok[rr, cc] and abs(walk_h[rr, cc] - walk_h[r, c]) <= lim * w:
+            if 0 <= rr < RES and 0 <= cc < RES and ok[rr][cc] and abs(wh[rr][cc] - h) <= lim * w:
                 nd = d + w * STEP
-                if nd < dist[rr, cc]:
-                    dist[rr, cc] = nd
+                if nd < dist[rr][cc]:
+                    dist[rr][cc] = nd
                     heapq.heappush(pq, (nd, rr, cc))
-    return dist
+    return np.array(dist)
 
 
 def at(dist, x, z):
@@ -466,26 +508,28 @@ g_open = ((slope <= G_DEG) | deck) & ~(blocked & ~wall_cells) & inside
 
 
 def flood(seeds):
-    seen = np.zeros(ground.shape, bool)
+    seen = np.zeros(ground.shape, bool).tolist()  # nested lists, as in dijkstra()
     stack = []
     for x, z in seeds:
         r, c = (int(round(v)) for v in grid_index(x, z))
         win = np.argwhere(g_open[r - 2:r + 3, c - 2:c + 3])
         for dr, dc in win:
-            stack.append((r - 2 + dr, c - 2 + dc))
+            stack.append((r - 2 + int(dr), c - 2 + int(dc)))
     lim = 0.4 + STEP * math.tan(math.radians(G_DEG))
+    is_open, wh = g_open.tolist(), walk_h.tolist()
     while stack:
         r, c = stack.pop()
-        if seen[r, c]:
+        if seen[r][c]:
             continue
-        seen[r, c] = True
+        seen[r][c] = True
+        h = wh[r][c]
         for dr in (-1, 0, 1):
             for dc in (-1, 0, 1):
                 rr, cc = r + dr, c + dc
-                if 0 <= rr < RES and 0 <= cc < RES and g_open[rr, cc] and not seen[rr, cc] \
-                        and abs(walk_h[rr, cc] - walk_h[r, c]) <= lim:
+                if 0 <= rr < RES and 0 <= cc < RES and is_open[rr][cc] and not seen[rr][cc] \
+                        and abs(wh[rr][cc] - h) <= lim:
                     stack.append((rr, cc))
-    return seen
+    return np.array(seen)
 
 
 reach = flood([(stakes[s]["x"], stakes[s]["z"]) for s in ("Spawn_West", "Spawn_East")])

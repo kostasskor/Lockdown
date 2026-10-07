@@ -11,7 +11,6 @@ Tile names: sat_<col>_<row>.jpg, col 0 = west, row 0 = south.
 """
 import io
 import json
-import math
 import urllib.parse
 import urllib.request
 from pathlib import Path

@@ -90,6 +90,14 @@ namespace Lockdown.EditorTools
         [MenuItem("Lockdown/Build/House Materials")]
         public static void BuildAll()
         {
+            filesCache = new Dictionary<string, string[]>();
+            meanCache = new Dictionary<string, Color>();
+            try { BuildAllCached(); }
+            finally { filesCache = null; meanCache = null; }
+        }
+
+        static void BuildAllCached()
+        {
             Directory.CreateDirectory(MatDir);
             EnsureDecalFeature();
             var report = new List<string>();
@@ -170,7 +178,11 @@ namespace Lockdown.EditorTools
             string rid = Path.GetFileName(d.reliefSet ?? d.set);
             string diff = Find(dir, id + "_diff_"), nor = Find(rdir, rid + "_nor_gl_"), rough = Find(rdir, rid + "_rough_");
             string maos = $"{rdir}/{rid}_MAOS.png";
-            if (!File.Exists(maos) && rough != null) maos = LockdownTexturePacker.Pack(rough, false);
+            if (!File.Exists(maos) && rough != null)
+            {
+                maos = LockdownTexturePacker.Pack(rough, false);
+                filesCache?.Remove(rdir); // the folder has a new file now
+            }
             Color mean = MeanSrgb(diff);
             float lum = 0.2126f * mean.r + 0.7152f * mean.g + 0.0722f * mean.b;
             mean = Color.Lerp(mean, new Color(lum, lum, lum), d.desaturate); // the shader greys layer A the same way
@@ -275,7 +287,11 @@ namespace Lockdown.EditorTools
             string rid = Path.GetFileName(d.reliefSet ?? d.set);
             string diff = Find(dir, id + "_diff_"), nor = Find(rdir, rid + "_nor_gl_"), rough = Find(rdir, rid + "_rough_");
             string maos = $"{rdir}/{rid}_MAOS.png";
-            if (!File.Exists(maos) && rough != null) maos = LockdownTexturePacker.Pack(rough, false);
+            if (!File.Exists(maos) && rough != null)
+            {
+                maos = LockdownTexturePacker.Pack(rough, false);
+                filesCache?.Remove(rdir); // the folder has a new file now
+            }
 
             var mat = AssetDatabase.LoadAssetAtPath<Material>(matPath);
             if (mat == null)
@@ -483,15 +499,31 @@ namespace Lockdown.EditorTools
             return mat;
         }
 
+        // During one BuildAll the same folders are listed and the same images decoded many times (one scan feeds
+        // several materials), so both are cached for that build only; any other caller reads the disk as before.
+        static Dictionary<string, string[]> filesCache;
+        static Dictionary<string, Color> meanCache;
+
         static string Find(string dir, string prefix)
         {
             if (!Directory.Exists(dir)) return null;
-            return Directory.GetFiles(dir).Where(f => !f.EndsWith(".meta") && Path.GetFileName(f).StartsWith(prefix))
+            string[] files = null;
+            if (filesCache != null && !filesCache.TryGetValue(dir, out files)) filesCache[dir] = files = Directory.GetFiles(dir);
+            files ??= Directory.GetFiles(dir);
+            return files.Where(f => !f.EndsWith(".meta") && Path.GetFileName(f).StartsWith(prefix))
                 .Select(f => f.Replace('\\', '/')).FirstOrDefault();
         }
 
         // Mean colour of an image file in sRGB 0-1, read straight from disk (the import's compression doesn't matter).
         public static Color MeanSrgb(string path)
+        {
+            if (meanCache != null && meanCache.TryGetValue(path, out var cached)) return cached;
+            Color mean = ReadMeanSrgb(path);
+            if (meanCache != null) meanCache[path] = mean;
+            return mean;
+        }
+
+        static Color ReadMeanSrgb(string path)
         {
             var tex = new Texture2D(2, 2, TextureFormat.RGB24, false, false);
             tex.LoadImage(File.ReadAllBytes(path));

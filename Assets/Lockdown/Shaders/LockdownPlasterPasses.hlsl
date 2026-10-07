@@ -233,19 +233,12 @@ void PlasterDepthNormalsFragment(
 #if defined(LOD_FADE_CROSSFADE)
     LODFadeCrossFade(input.positionCS);
 #endif
-#if defined(_GBUFFER_NORMALS_OCT)
-    float3 normalWS = normalize(input.normalWS);
-    float2 octNormalWS = PackNormalOctQuadEncode(normalWS);
-    float2 remappedOctNormalWS = saturate(octNormalWS * 0.5 + 0.5);
-    half3 packedNormalWS = PackFloat2To888(remappedOctNormalWS);
-    outNormalWS = half4(packedNormalWS, 0.0);
-#else
+    // (The pass never declares _GBUFFER_NORMALS_OCT, so URP Lit's octahedral-normal branch is not carried over.)
     float sgn = input.tangentWS.w;
     float3 bitangent = sgn * cross(input.normalWS.xyz, input.tangentWS.xyz);
     half3 normalTS = PlasterSurfaceNormal(input.uv, input.vcol);
     float3 normalWS = TransformTangentToWorld(normalTS, half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWS.xyz));
     outNormalWS = half4(NormalizeNormalPerPixel(normalWS), 0.0);
-#endif
 #ifdef _WRITE_RENDERING_LAYERS
     outRenderingLayers = EncodeMeshRenderingLayer();
 #endif

@@ -394,7 +394,7 @@ def sun_glyph(d, p, col):
 
 def north_and_sun(d, frame, c):
     cx, cy = c
-    d.ellipse([cx - 85, cy - 85, cx + 85, cy + 85], fill=(0, 0, 0, 160) if False else (25, 25, 25), outline=(255, 255, 255), width=3)
+    d.ellipse([cx - 85, cy - 85, cx + 85, cy + 85], fill=(25, 25, 25), outline=(255, 255, 255), width=3)
 
     def to_screen(dx, dz, r):
         du, dv = frame.frame_dir(dx, dz)
@@ -421,7 +421,6 @@ def draw_panel(layout, frame, times, sight_info, landmark_index, lane_stats):
     for lab, col in LABEL_COLORS.items():
         d.ellipse([24, y, 44, y + 20], fill=col)
         d.text((52, y), lab, font=f_b, fill=col)
-        y += 0
         d.text((52 + 120, y), {"REAL": "exists there", "ADAPTED": "real, moved or changed", "INVENTED": "added for play"}[lab], font=f_t, fill=(200, 200, 200))
         y += 26
     y += 6

@@ -76,8 +76,8 @@ namespace Lockdown.EditorTools
             w = Mathf.Min(w, MaxSize);
             h = Mathf.Min(h, MaxSize);
 
-            // _arm: R = AO, G = roughness, B = metal. Separate maps win over it.
-            Color[] armPx = Read(arm, w, h);
+            // _arm: R = AO, G = roughness, B = metal. Separate maps win over it (so it is only read if one is missing).
+            Color[] armPx = rough != null && metal != null && ao != null ? null : Read(arm, w, h);
             Color[] roughPx = Read(rough, w, h);
             Color[] metalPx = Read(metal, w, h);
             Color[] aoPx = Read(ao, w, h);
@@ -154,8 +154,7 @@ namespace Lockdown.EditorTools
             Graphics.Blit(tex, rt);
             RenderTexture.active = rt;
             var read = new Texture2D(w, h, TextureFormat.RGBAHalf, false, true);
-            read.ReadPixels(new Rect(0, 0, w, h), 0, 0);
-            read.Apply();
+            read.ReadPixels(new Rect(0, 0, w, h), 0, 0); // CPU copy; GetPixels reads it, no GPU upload (Apply) needed
             RenderTexture.active = prev;
             RenderTexture.ReleaseTemporary(rt);
             Color[] px = read.GetPixels();

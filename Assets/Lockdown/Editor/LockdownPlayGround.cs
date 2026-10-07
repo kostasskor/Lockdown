@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Object = UnityEngine.Object;
+using static Lockdown.EditorTools.LockdownEditorUtil;
 
 namespace Lockdown.EditorTools
 {
@@ -293,13 +294,6 @@ namespace Lockdown.EditorTools
             r.shadowCastingMode = ShadowCastingMode.Off;
         }
 
-        static GameObject Group(GameObject parent, string name)
-        {
-            var g = new GameObject(name);
-            g.transform.SetParent(parent.transform, false);
-            return g;
-        }
-
         static Material Lit(string name, Color color)
         {
             string path = $"{MatDir}/{name}.mat";
@@ -318,6 +312,8 @@ namespace Lockdown.EditorTools
         // ---------- EditorOnly placeholders and name labels (Task 7 review) ----------
 
         const string LabelShader = "Lockdown/ReviewLabel";
+        static Font labelFont;
+        static Font LabelFont => labelFont != null ? labelFont : labelFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         const float LabelScale = 1.8f; // readable from about 60 m
 
         [MenuItem("Lockdown/Review/Build Placeholders")]
@@ -400,7 +396,7 @@ namespace Lockdown.EditorTools
             var go = new GameObject(name);
             go.transform.SetParent(parent.transform, false);
             var tm = go.AddComponent<TextMesh>();
-            tm.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            tm.font = LabelFont;
             tm.fontSize = 64;
             tm.characterSize = 0.1f;
             tm.anchor = TextAnchor.LowerCenter;
@@ -418,13 +414,14 @@ namespace Lockdown.EditorTools
         {
             string path = $"{MatDir}/{name}.mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            var shader = Shader.Find(LabelShader);
             if (mat == null)
             {
-                mat = new Material(Shader.Find(LabelShader));
+                mat = new Material(shader);
                 AssetDatabase.CreateAsset(mat, path);
             }
-            mat.shader = Shader.Find(LabelShader);
-            mat.mainTexture = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf").material.mainTexture;
+            mat.shader = shader;
+            mat.mainTexture = LabelFont.material.mainTexture;
             mat.SetVector("_Offset", new Vector4(offset.x, offset.y, 0f, 0f));
             mat.renderQueue = queue;
             EditorUtility.SetDirty(mat);
@@ -467,6 +464,7 @@ namespace Lockdown.EditorTools
             bool walkerOn = walkerCc != null && walkerCc.enabled;
             if (walkerCc != null) walkerCc.enabled = false; // the parked walker must not block a route
             int pass = 0, total = 0;
+            var terrain = GameObject.Find("_Ground/Terrain_Play").GetComponent<Terrain>(); // looked up once, not per step
             try
             {
                 foreach (var r in meta.routes)
@@ -475,7 +473,7 @@ namespace Lockdown.EditorTools
                     total++;
                     int n = r.xs.Length;
                     Func<int, Vector2> wp = i => dir == 0 ? new Vector2(r.xs[i], r.zs[i]) : new Vector2(r.xs[n - 1 - i], r.zs[n - 1 - i]);
-                    string result = Walk(cc, wp, n, out float length, out Vector3 end);
+                    string result = Walk(cc, terrain, wp, n, out float length, out Vector3 end);
                     if (result == null) pass++;
                     lines.Add($"{(result == null ? "PASS" : "FAIL")}  {r.name} ({(dir == 0 ? "forward" : "back")}): " +
                               $"{length:0} m, {length / 6.5f:0.0} s sprint" + (result == null ? "" : $" - {result} at ({end.x:0.0}, {end.y:0.0}, {end.z:0.0})"));
@@ -490,12 +488,12 @@ namespace Lockdown.EditorTools
             return lines;
         }
 
-        static string Walk(CharacterController cc, Func<int, Vector2> wp, int n, out float length, out Vector3 end)
+        static string Walk(CharacterController cc, Terrain terrain, Func<int, Vector2> wp, int n, out float length, out Vector3 end)
         {
             const float dt = 0.02f, speed = 4.5f;
             length = 0f;
             Vector2 s = wp(0);
-            cc.transform.position = new Vector3(s.x, GroundY(s.x, s.y) + 0.1f, s.y);
+            cc.transform.position = new Vector3(s.x, GroundY(terrain, s.x, s.y) + 0.1f, s.y);
             Physics.SyncTransforms();
             float vy = 0f;
             for (int i = 1; i < n; i++)
@@ -516,16 +514,15 @@ namespace Lockdown.EditorTools
                     length += moved;
                     stuck = moved < speed * dt * 0.2f ? stuck + dt : 0f;
                     t += dt;
-                    if (q.y < GroundY(q.x, q.z) - 1f) { end = q; return "fell through"; }
+                    if (q.y < GroundY(terrain, q.x, q.z) - 1f) { end = q; return "fell through"; }
                 }
             }
             end = cc.transform.position;
             return null;
         }
 
-        static float GroundY(float x, float z)
+        static float GroundY(Terrain t, float x, float z)
         {
-            var t = GameObject.Find("_Ground/Terrain_Play").GetComponent<Terrain>();
             return t.SampleHeight(new Vector3(x, 0f, z)) + t.transform.position.y;
         }
 
