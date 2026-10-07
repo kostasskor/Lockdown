@@ -4,7 +4,7 @@
   "frame": {
     "center": [15.0, -10.0],
     "rotation_deg": -27.0,
-    "size": [150.0, 120.0]
+    "size": [150.0, 104.0]
   },
   "metrics": {
     "sprint_mps": 6.5,
@@ -16,21 +16,21 @@
       "name": "Upper lane - the rock road",
       "width": 5.0,
       "surface": "dirt",
-      "points": [[-74, 52], [-58, 54], [-40, 50], [-22, 40], [-4, 34], [12, 32], [30, 30], [46, 30], [62, 32], [74, 34]]
+      "points": [[-74, 44], [-62, 44], [-55, 36], [-42, 36], [-34, 44], [-22, 42], [-12, 34], [12, 32], [24, 32], [31, 41], [46, 41], [54, 32], [74, 32]]
     },
     {
       "id": "main",
       "name": "Main street",
       "width": 7.0,
       "surface": "asphalt west, pavers east",
-      "points": [[-75, 2], [-62, 8], [-48, 10], [-36, 2], [-24, -5], [-8, -5], [5, -2], [18, -5], [32, -1], [46, -9], [60, -6], [75, -8]]
+      "points": [[-75, 2], [-62, 8], [-50, 11], [-42, 11], [-32, -1], [-24, -5], [-8, -5], [5, -2], [16, -4], [21, -5], [27, 8], [40, 8], [47, -6], [62, -6], [75, -8]]
     },
     {
       "id": "lower",
       "name": "Lower lane - gardens and olives",
       "width": 4.0,
       "surface": "concrete and dirt",
-      "points": [[-74, -40], [-58, -44], [-42, -47], [-24, -46], [-6, -44], [6, -47], [22, -49], [40, -46], [56, -41], [74, -37]]
+      "points": [[-74, -37], [-62, -38], [-55, -48], [-40, -48], [-32, -39], [-14, -41], [-4, -48], [22, -49], [42, -49], [48, -40], [58, -40], [64, -47], [74, -47]]
     }
   ],
   "ravine": {
@@ -43,17 +43,18 @@
       {
         "name": "Upper culvert",
         "lane": "upper",
-        "at": [-2, 35]
+        "at": [-2, 33]
       },
       {
         "name": "Main bridge",
         "lane": "main",
-        "at": [5, -2]
+        "at": [5, -2],
+        "deck": [12, 11]
       },
       {
         "name": "Lower footbridge",
         "lane": "lower",
-        "at": [5, -46]
+        "at": [5, -48]
       }
     ]
   },
@@ -62,74 +63,77 @@
       "name": "West stair alley",
       "pair": "upper-main",
       "width": 3.0,
-      "points": [[-56, 53], [-55, 30], [-54, 9]]
+      "points": [[-50, 36.5], [-50, 31], [-58.5, 28], [-51, 22], [-58, 16.5], [-53, 10]]
     },
     {
       "name": "Memorial switchback stair",
       "pair": "upper-main",
       "width": 3.0,
-      "points": [[-26, 43], [-32, 30], [-24, 18], [-26, 4]]
+      "points": [[-26, 42.5], [-32, 30], [-24, 18], [-30, -2]]
     },
     {
       "name": "Ravine east-bank path",
       "pair": "upper-main",
-      "width": 2.5,
-      "points": [[8, 33], [10, 18], [12, -2]]
+      "width": 3.0,
+      "landings": [{"name": "East overwatch", "at": [8.75, 12.25], "size": [4, 3], "height_above_flag_b": 3.3}],
+      "points": [[14, 32.5], [25, 23], [9, 14], [8.5, 10.5], [19, 3.5], [12.5, -3]]
     },
     {
       "name": "East stepped alley",
       "pair": "upper-main",
       "width": 3.0,
-      "points": [[38, 30], [37, 14], [36, -3]]
+      "points": [[38, 41], [30, 31], [50, 24], [36, 15], [37, 8]]
     },
     {
       "name": "Aloni track",
       "pair": "upper-main",
       "width": 3.0,
-      "points": [[62, 31], [62, 18], [62, -5]]
+      "landings": [{"name": "Aloni landing", "at": [71.0, 16.5], "size": [4, 3], "height_above_flag_b": 5.0}],
+      "points": [[62, 32], [72.5, 27], [71, 16.5], [73, 8.5], [56, 7], [62, -6.5]]
     },
     {
       "name": "West garden stair",
       "pair": "main-lower",
       "width": 3.0,
-      "points": [[-60, 5], [-61, -20], [-58, -44]]
+      "points": [[-58, 9], [-61, -20], [-58, -44]]
     },
     {
       "name": "Church stair",
       "pair": "main-lower",
       "width": 3.0,
-      "points": [[-40, 3], [-42, -18], [-38, -36], [-36, -46]]
+      "points": [[-37, 5.5], [-42, -18], [-38, -36], [-37, -44.5]]
     },
     {
       "name": "Ravine floor",
       "pair": "main-lower",
+      "ravine": true,
       "width": 3.0,
-      "points": [[3, -6], [7, -24], [5, -42]]
+      "points": [[2.5, -3], [7, -24], [4.5, -48]]
     },
     {
       "name": "Terrace steps",
       "pair": "main-lower",
       "width": 3.0,
-      "points": [[24, -3], [26, -20], [30, -48]]
+      "points": [[18, -4], [26, -20], [30, -49]]
     },
     {
       "name": "Press path",
       "pair": "main-lower",
       "width": 3.0,
-      "points": [[44, -8], [45, -20], [40, -46]]
+      "points": [[48, -6], [45, -20], [40.5, -48]]
     },
     {
       "name": "East lane",
       "pair": "main-lower",
       "width": 4.0,
-      "points": [[62, -6], [62, -18], [58, -40]]
+      "points": [[62, -6.5], [62, -18], [57.5, -41]]
     },
     {
       "name": "Rooftop route (south side)",
       "pair": "main-lower",
       "width": 3.0,
       "roof": true,
-      "points": [[-16, -8], [-14, -24], [-18, -44]]
+      "points": [[-16, -5], [-14, -24], [-17.5, -41]]
     }
   ],
   "areas": [
@@ -159,7 +163,7 @@
       "name": "Aloni",
       "shape": "circle",
       "center": [62, 18],
-      "radius": 7
+      "radius": 6
     },
     {
       "id": "church_yard",
@@ -214,7 +218,7 @@
     {
       "id": "Spawn_East",
       "callout": "The Threshing Floor",
-      "at": [74, -15]
+      "at": [68, -15]
     }
   ],
   "flags": [
@@ -455,9 +459,9 @@
   ],
   "initial_spawns": {
     "west": [[-70, -2], [-66, -1], [-62, -3], [-70, -9], [-66, -10], [-62, -12]],
-    "east": [[64, -10], [68, -9], [72, -11], [64, -18], [68, -20], [72, -19]]
+    "east": [[62, -10], [66, -9], [70, -11], [62, -18], [66, -20], [70, -19]]
   },
-  "capture_radius": 7.0,
+  "capture_radius": 5.0,
   "callouts": [
     {
       "name": "UPPER ROAD",
@@ -545,7 +549,7 @@
     },
     {
       "name": "Footbridge",
-      "at": [5, -54]
+      "at": [5, -50]
     },
     {
       "name": "Rock Steps",
@@ -555,5 +559,76 @@
       "name": "Church Stair",
       "at": [-50, -8]
     }
-  ]
+  ],
+  "ground": {
+    "notes": "Task 7 play ground (Tools/terrain/lockdown_playground.py -> Lockdown/Build/Play Ground). Heights in metres. balance.targets are heights relative to Flag_B (user-approved, Task 7); keep = frame points whose real height stays. Order: smoothed real ground + balance -> terraces -> connector ramps -> pads -> lane benches. Banks are rise/run. lanes.targets_above_flag_b sets lane heights by u (review 2: Upper +6..+8, Lower -3..-5; Main follows the real ground). Inside the frame the ground between lanes is a design surface interpolated between lane heights. Pads are flat at the area's mean height, a tilted plane (fit: plane, max_tilt default 0.12) or follow a lane (height: lane:<id>); connectors run level through pads from ramp_into metres inside their edge. ravine: terrain cut from layout.ravine, decks and floor ramps are review placeholders (user, Task 7 review 1). buildings/house_rows: EditorOnly review placeholder blocks, replaced by the greybox in Tasks 8-14.",
+    "tile_cells": 64,
+    "tile_resolution": 513,
+    "smooth_sigma": 3.0,
+    "final_smooth": 0.5,
+    "frame_fade": 25.0,
+    "bank_slope": 2.0,
+    "balance": {
+      "radius": 35.0,
+      "targets": [
+        {"id": "Spawn_West", "height": 0.0},
+        {"id": "Spawn_East", "height": -1.0},
+        {"id": "Flag_A", "height": -3.0},
+        {"id": "Flag_C", "height": -4.0}
+      ],
+      "keep": [[-40, 50], [12, 32], [62, 32]]
+    },
+    "lanes": {"shoulder": 0.75, "profile_sigma": 8.0, "max_grade": 0.10, "extend": 30.0, "rock_bank": 4.0, "upper_cliff": {"offset": 3.5, "slope_deg": 55.0, "top_above_flag_b": 14.0}, "targets_above_flag_b": {"upper": [[-74, 6], [74, 8]], "main": [[-75, 1.5], [-30, 0.5], [5, 0], [40, -0.5], [75, -1.5]], "lower": [[-74, -3], [74, -5]]}},
+    "connectors": {"shoulder": 0.75, "max_grade": 0.36, "landing": {"every_rise": 3.5, "length": 3.0}, "overrides": {}},
+    "terraces": {"step": 2.0, "riser_fraction": 0.15, "max_riser": 2.0, "above_upper_lane": false},
+    "ravine": {"cut": true, "bank": 1.0, "floor_max_grade": 0.34, "ramp_offset": 6.0, "ramp_width": 2.0, "ramp_max_grade": 0.36, "bridgehead": 2.0, "depth_at": {"upper": 4.7, "main": 3.8, "lower": 3.8}, "rim": [{"min_above_floor": 5.0, "v": [8, 36], "width": 0.0, "crest": 1.5, "face_deg": 55.0, "clear": 1.0},
+        {"min_above_floor": 4.3, "v": [-48, -10], "width": 0.0, "crest": 1.5, "face_deg": 55.0, "clear": 1.0}], "arch": {"v": [15.0, 20.5], "headroom": 2.5, "top_above_flag_b": 7.5, "width": 15.0}},
+    "house_rows": {"fills": [
+        {"name": "East bridge-line block", "u": [28, 42], "v": [-12, -5], "height": 6.0},
+        {"name": "West bridge-line block", "u": [-46, -34], "v": [-9, -2], "height": 6.0},
+        {"name": "East jog corner", "u": [27, 41], "v": [-4, 3.5], "height": 6.0},
+        {"name": "West jog corner", "u": [-52, -40], "v": [-2, 6], "height": 6.0},
+        {"name": "Upper Road south (west)", "u": [-34, -12], "v": [28, 40], "height": 6.0},
+        {"name": "Upper Road south (centre)", "u": [0, 15], "v": [24, 29.5], "height": 6.0},
+        {"name": "Upper Road south (east bend)", "u": [40, 56], "v": [26, 38], "height": 6.0}], "seed": 7, "setback": 1.0, "width": [6, 12], "min_width": 4, "depth": [7, 10], "gap": [0.5, 1.5], "storey": 3.0,
+                   "storeys": [[1, 0.3], [2, 0.5], [3, 0.2]], "margin": 0.5, "lanes": ["upper", "main", "lower"]},
+    "buildings": [
+      {"name": "Rock Roofs", "at": [-15, 22], "size": [18, 10], "height": 3.0, "top_above_flag_b": 3.5, "walk_top": true, "label": "ADAPTED", "pad": "rock_roofs"},
+      {"name": "Kafeneio", "at": [-5, -18], "size": [10, 8], "height": 6.5, "label": "REAL"},
+      {"name": "Mini-market", "at": [-31.5, -12], "size": [9, 8], "height": 6.0, "label": "REAL"},
+      {"name": "War memorial terrace", "at": [-16.5, 9.5], "size": [8, 6], "height": 2.0, "label": "REAL"},
+      {"name": "The Skeleton", "at": [17.5, -17], "size": [9, 8], "height": 3.6, "label": "ADAPTED", "pad": "skeleton_yard"},
+      {"name": "Community office", "at": [-67, 33.5], "size": [11, 7], "height": 4.0, "label": "ADAPTED"},
+      {"name": "Church", "at": [-50.5, -25], "size": [10, 8], "height": 7.0, "label": "ADAPTED"},
+      {"name": "Bell tower", "at": [-48.5, -19], "size": [4, 4], "height": 14.0, "label": "ADAPTED"},
+      {"name": "Chapel", "at": [-50, -33], "size": [6, 5], "height": 4.5, "label": "ADAPTED"},
+      {"name": "Olive press", "at": [35, -37.5], "size": [5.5, 5], "height": 4.0, "label": "INVENTED", "pad": "press_terraces"},
+      {"name": "Unfinished frame (north)", "at": [-33.5, 17], "size": [8, 7], "height": 6.5, "label": "ADAPTED"},
+      {"name": "Unfinished frame (south)", "at": [-48, -0.5], "size": [7, 7], "height": 6.5, "label": "ADAPTED"},
+      {"name": "West clan courtyard house", "at": [-50.5, -12.3], "size": [9, 8], "height": 6.5, "label": "INVENTED"},
+      {"name": "East clan courtyard house", "at": [53, -21], "size": [8, 8], "height": 6.5, "label": "INVENTED"},
+      {"name": "Primary school (outside the map)", "at": [110, -14], "size": [20, 12], "height": 7.0, "label": "REAL", "outside": true}
+    ],
+    "connector_lips": [{"name": "East-bank path lip", "connector": "Ravine east-bank path", "toward": [4.6, -2.6], "u": [13, 25], "v": [15, 29], "height": 1.2, "width": 1.0, "face_deg": 55.0}],
+    "garden_walls": [{"name": "Olive press terrace wall", "points": [[22, -25], [42, -25]], "height": 3.2},
+      {"name": "Terrace steps screen wall", "points": [[22, -10], [30, -14]], "height": 3.2},
+      {"name": "East overwatch screen wall", "points": [[12.2, 1.6], [14.8, 4.8]], "height": 4.5, "gap_clear": 0.25}],
+    "ridges": [{"name": "B ridge", "u": [-7.5, 15], "v": [14.5, 20], "height_above_flag_b": 7.5, "face_deg": 55.0},
+      {"name": "Culvert-line outcrop", "poly": [[6.5, 18], [12.5, 18], [20.5, 23.2], [14.5, 28], [6.5, 28]], "height_above_flag_b": 11.0, "face_deg": 55.0},
+      {"name": "Cliff spur (west dip)", "poly": [[-56, 41], [-41, 41], [-41, 52], [-56, 52]], "height_above_flag_b": 14.0, "face_deg": 55.0},
+      {"name": "Cliff spur (centre bend)", "poly": [[-16, 38], [6, 36.5], [6, 52], [-16, 52]], "height_above_flag_b": 14.0, "face_deg": 55.0},
+      {"name": "Cliff spur (east straight)", "poly": [[8, 36.5], [25, 36.5], [25, 52], [8, 52]], "height_above_flag_b": 14.0, "face_deg": 55.0}],
+    "pads": [
+      {"area": "plateia", "height": "lane:main"},
+      {"area": "west_yard", "fit": "plane", "max_tilt": 0.03},
+      {"area": "east_yard", "fit": "plane", "max_tilt": 0.03, "ramp_into": 5.0},
+      {"area": "aloni", "height_above_flag_b": 5.0, "ramp_into": 2.0},
+      {"area": "church_yard"},
+      {"area": "press_terraces"},
+      {"area": "skeleton_yard", "height_above_flag_b": -2.0, "ramp_into": 4.0},
+      {"area": "gravel_yard", "fit": "plane"},
+      {"area": "empty_lot", "fit": "plane"},
+      {"area": "rock_roofs", "height_above_flag_b": 0.5}
+    ]
+  }
 }
