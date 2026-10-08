@@ -93957,6 +93957,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: idleDrift
+      value: 0.012
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: idleBreath
+      value: 0.014
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: slideBoost
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: idleSwayDeg
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: idleBreathHz
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: slideMaxTime
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: bobCyclesPerMetre
+      value: 0.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 1267807828048496027, guid: a23c427857f486e4e88736238d4c9665, type: 3}
+      propertyPath: slideDeceleration
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1474919258172488875, guid: a23c427857f486e4e88736238d4c9665, type: 3}
       propertyPath: m_Name
       value: Walker
