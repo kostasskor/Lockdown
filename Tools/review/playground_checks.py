@@ -22,6 +22,14 @@ ROOT = Path(__file__).resolve().parents[2] if '__file__' in globals() else Path.
 PG = ROOT / "SourceData" / "playground"
 LAYOUT = json.loads((ROOT / "Assets" / "Lockdown" / "Data" / "Layout" / "lockdown_layout.json").read_text(encoding="utf-8"))
 META = json.loads((PG / "play_meta.json").read_text())
+# The greybox (Tasks 8-14, Tools/layout/lockdown_greybox.py) replaces some placeholders and adds its blocks; rails
+# are see-through and colliderless parts (door markers) are ignored, canopies block sight but not walking.
+# NO_GREYBOX=1 checks the bare Task 7 placeholders.
+GREYBOX = PG / "greybox_meta.json"
+if GREYBOX.exists() and os.environ.get("NO_GREYBOX") != "1":
+    _gb = json.loads(GREYBOX.read_text())
+    META["boxes"] = [b for b in META["boxes"] if not any(b["name"].startswith(p) for p in _gb["replaces"])]
+    META["boxes"] += [b for b in _gb["boxes"] if not b.get("rail") and (b.get("collider", True) or b.get("overhead"))]
 
 EYE, SPRINT, WALK_DEG = 1.6, 6.5, 36.0
 RES, SIZE, X0, Z0 = META["resolution"], META["size"], META["x0"], META["z0"]
@@ -714,6 +722,62 @@ if ov:
         if fid == "Flag_B" and not seen_:
             ok_ = False
     greport(6, "East overwatch landing -> flags", ", ".join(txt), "B seen, no flag >= 35 m", ok_, "eye to eye")
+
+# ---------------------------------------------------------------- 8. main street and plateia (Task 8)
+
+# Clear width: from each main-street centre point (every 2 m), perpendicular both ways, the distance to the first
+# cell where a block (not a canopy) stands at least 1 m above the walking surface (cover walls count; open ground, pads and
+# connector mouths don't stop it, capped at 15 m a side). Reported where both sides are closed within the cap.
+main = next(l for l in LAYOUT["lanes"] if l["id"] == "main")
+mu, mv = lane_points(main, 2.0)
+tu_, tv_ = np.gradient(mu), np.gradient(mv)
+nn = np.hypot(tu_, tv_)
+tu_, tv_ = tu_ / nn, tv_ / nn
+widths, open_pts = [], 0
+for i in range(len(mu)):
+    side_d = []
+    for sg in (1, -1):
+        d_hit = None
+        for d in np.arange(3.5, 15.0, 0.25):
+            x, z = to_world(mu[i] - tv_[i] * sg * d, mv[i] + tu_[i] * sg * d)
+            r, c = int(round((z - Z0) / STEP)), int(round((x - X0) / STEP))
+            if blocked[r, c] and occ[r, c] - walk_h[r, c] >= 1.0:
+                d_hit = d
+                break
+        side_d.append(d_hit)
+    if None in side_d:
+        open_pts += 1
+    else:
+        widths.append((sum(side_d), mu[i]))
+if widths:
+    ws = np.array([w for w, _ in widths])
+    narrow = [f"{w:.1f} m at u {u:+.0f}" for w, u in widths if w < 6.0]
+    report(8, "Main street clear width (closed both sides)", f"min {ws.min():.1f}, median {np.median(ws):.1f}, max {ws.max():.1f} m "
+           f"over {len(ws)} points; {open_pts} points open on a side" + (f"; under 6 m: {', '.join(narrow)}" if narrow else ""),
+           ">= 6 m (brief 6-9 m street)", ws.min() >= 6.0, "perpendicular from the centre line every 2 m to the first block >= 1 m tall, 15 m cap")
+pl = next(a for a in LAYOUT["areas"] if a["id"] == "plateia")
+pw = []
+x_, z_ = to_world(*pl["center"])
+h_pl = float(np.ravel(sample(walk_h, x_, z_))[0])
+for u0 in np.arange(pl["center"][0] - pl["size"][0] / 2 + 2, pl["center"][0] + pl["size"][0] / 2 - 1, 2.0):
+    lo = hi = None
+    for v0 in np.arange(pl["center"][1], pl["center"][1] + 30, 0.25):
+        x, z = to_world(u0, v0)
+        r, c = int(round((z - Z0) / STEP)), int(round((x - X0) / STEP))
+        if (blocked[r, c] and occ[r, c] - walk_h[r, c] >= 1.0) or abs(walk_h[r, c] - h_pl) >= 1.0:
+            hi = v0
+            break
+    for v0 in np.arange(pl["center"][1], pl["center"][1] - 30, -0.25):
+        x, z = to_world(u0, v0)
+        r, c = int(round((z - Z0) / STEP)), int(round((x - X0) / STEP))
+        if (blocked[r, c] and occ[r, c] - walk_h[r, c] >= 1.0) or abs(walk_h[r, c] - h_pl) >= 1.0:
+            lo = v0
+            break
+    if lo is not None and hi is not None:
+        pw.append(hi - lo)
+if pw:
+    report(8, "Plateia depth across the street", f"{min(pw):.0f}..{max(pw):.0f} m (median {np.median(pw):.0f})", "15-25 m",
+           15.0 <= np.median(pw) <= 25.0, "north-south span of the square floor every 2 m along it, to the first block >= 1 m tall or a 1 m level change (terrace, bank)")
 
 # ---------------------------------------------------------------- print
 

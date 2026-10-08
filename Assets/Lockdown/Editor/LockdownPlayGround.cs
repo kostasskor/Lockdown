@@ -345,8 +345,10 @@ namespace Lockdown.EditorTools
                 { "landmark_invented", Lit("M_Placeholder_Invented", new Color(0.55f, 0.45f, 0.64f)) },
             };
             var groups = new Dictionary<string, GameObject>();
+            var replaced = LockdownGreybox.Replaces(); // superseded by the greybox (Tasks 8-14)
             foreach (var b in meta.boxes)
             {
+                if (LockdownGreybox.IsReplaced(b.name, replaced)) continue;
                 if (!groups.TryGetValue(b.group, out var g)) groups[b.group] = g = Group(root, b.group);
                 var go = GameObject.CreatePrimitive(PrimitiveType.Cube); // keeps its BoxCollider
                 go.name = b.name;
@@ -451,6 +453,8 @@ namespace Lockdown.EditorTools
         {
             var lines = new List<string>();
             var meta = JsonUtility.FromJson<Meta>(File.ReadAllText(Path.Combine(PlayDir, "play_meta.json")));
+            if (File.Exists(LockdownGreybox.MetaPath)) // the greybox adds its own routes (terraces, stairs, passages)
+                meta.routes.AddRange(JsonUtility.FromJson<Meta>(File.ReadAllText(LockdownGreybox.MetaPath)).routes);
             var go = new GameObject("PlayWalkTester");
             var cc = go.AddComponent<CharacterController>();
             var w = Object.FindFirstObjectByType<Lockdown.LockdownWalker>();

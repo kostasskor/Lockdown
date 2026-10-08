@@ -127,6 +127,9 @@ LightingData.asset
 LightingData.asset.meta
 Lightmap-*
 ReflectionProbe-*
+# Bakery bake output (lightmaps, probe/volume data)
+/Assets/BakeryLightmaps/
+/Assets/BakeryLightmaps.meta
 OcclusionCullingData.asset
 OcclusionCullingData.asset.meta
 NavMesh*.asset

@@ -630,5 +630,114 @@
       {"area": "empty_lot", "fit": "plane"},
       {"area": "rock_roofs", "height_above_flag_b": 0.5}
     ]
+  },
+  "greybox": {
+    "notes": "Greybox (Tasks 8-14): Tools/layout/lockdown_greybox.py -> SourceData/playground/greybox_meta.json -> Lockdown/Build/Greybox (_Greybox/...). One section per task, each with its own seed; locked sections are never regenerated (set locked when the task is approved). Frame coords (u along the main street, v uphill). Heights: z = [bottom, top] in metres above the part's reference (ref street = main street height at the nearest station, ground = ground at the part's centre, plateia = main street at the plateia); bottom null = 0.3 m below the lowest ground under the part. replaces = Task 7 placeholder names (prefixes) this section supersedes.",
+    "storey": 3.0,
+    "keepout": {"lane_clear": 0.2, "connector_clear": 0.0, "ravine_clear": 1.0, "box_clear": 0.3},
+    "sections": {
+      "main_street": {
+        "task": 8, "locked": true, "seed": 8, "lane": "main",
+        "replaces": ["House main ", "West bridge-line block", "East bridge-line block", "West jog corner", "East jog corner",
+                     "Kafeneio", "Mini-market", "War memorial terrace", "Unfinished frame (north)", "Unfinished frame (south)"],
+        "landmarks": [
+          {"name": "Kafeneio", "label": "REAL", "ref": "plateia", "parts": [
+            {"name": "body", "at": [-5, -18], "size": [10, 8], "z": [null, 6.5], "mat": "wall"},
+            {"name": "door W", "at": [-7.5, -13.97], "size": [1.3, 0.08], "z": [0, 2.3], "mat": "trim", "collider": false},
+            {"name": "door E", "at": [-2.5, -13.97], "size": [1.3, 0.08], "z": [0, 2.3], "mat": "trim", "collider": false},
+            {"name": "street step", "at": [-5, -13.6], "size": [8, 0.8], "z": [null, 0.15], "mat": "walk", "walk_top": true}]},
+          {"name": "Mini-market", "label": "REAL", "ref": "street", "parts": [
+            {"name": "body", "at": [-31.5, -12], "size": [9, 8], "z": [null, 6.0], "mat": "wall"},
+            {"name": "balcony", "at": [-31.5, -6.9], "size": [9, 2.2], "z": [3.0, 3.25], "mat": "wall", "overhead": true},
+            {"name": "shopfront W", "at": [-33.5, -7.97], "size": [2.6, 0.08], "z": [0, 2.5], "mat": "trim", "collider": false},
+            {"name": "shopfront E", "at": [-29.5, -7.97], "size": [2.6, 0.08], "z": [0, 2.5], "mat": "trim", "collider": false}]},
+          {"name": "War memorial terrace", "label": "REAL", "ref": "plateia", "parts": [
+            {"name": "lower level", "at": [-16.5, 8.25], "size": [8, 3.5], "z": [null, 2.1], "mat": "walk", "walk_top": true},
+            {"name": "upper level", "at": [-16.5, 11.5], "size": [8, 3], "z": [null, 3.6], "mat": "walk", "walk_top": true},
+            {"name": "step 1", "at": [-16.5, 4.7], "size": [2.4, 3.6], "z": [null, 0.3], "mat": "walk", "walk_top": true},
+            {"name": "step 2", "at": [-16.5, 5.0], "size": [2.4, 3.0], "z": [null, 0.6], "mat": "walk", "walk_top": true},
+            {"name": "step 3", "at": [-16.5, 5.3], "size": [2.4, 2.4], "z": [null, 0.9], "mat": "walk", "walk_top": true},
+            {"name": "step 4", "at": [-16.5, 5.6], "size": [2.4, 1.8], "z": [null, 1.2], "mat": "walk", "walk_top": true},
+            {"name": "step 5", "at": [-16.5, 5.9], "size": [2.4, 1.2], "z": [null, 1.5], "mat": "walk", "walk_top": true},
+            {"name": "step 6", "at": [-16.5, 6.2], "size": [2.4, 0.6], "z": [null, 1.8], "mat": "walk", "walk_top": true},
+            {"name": "upper step 1", "at": [-13.25, 8.8], "size": [1.5, 2.4], "z": [1.8, 2.4], "mat": "walk", "walk_top": true},
+            {"name": "upper step 2", "at": [-13.25, 9.1], "size": [1.5, 1.8], "z": [1.8, 2.7], "mat": "walk", "walk_top": true},
+            {"name": "upper step 3", "at": [-13.25, 9.4], "size": [1.5, 1.2], "z": [1.8, 3.0], "mat": "walk", "walk_top": true},
+            {"name": "upper step 4", "at": [-13.25, 9.7], "size": [1.5, 0.6], "z": [1.8, 3.3], "mat": "walk", "walk_top": true},
+            {"name": "inscription wall", "at": [-16.5, 13.2], "size": [8, 0.4], "z": [null, 5.2], "mat": "wall"},
+            {"name": "rail lower W", "at": [-19.15, 6.55], "size": [2.7, 0.06], "z": [2.1, 3.1], "mat": "trim", "rail": true},
+            {"name": "rail lower E", "at": [-13.85, 6.55], "size": [2.7, 0.06], "z": [2.1, 3.1], "mat": "trim", "rail": true},
+            {"name": "rail upper", "at": [-17.55, 10.05], "size": [5.9, 0.06], "z": [3.6, 4.6], "mat": "trim", "rail": true},
+            {"name": "planter W", "at": [-20.0, 4.3], "size": [0.9, 0.9], "z": [null, 0.6], "mat": "cover"},
+            {"name": "planter E", "at": [-13.0, 4.3], "size": [0.9, 0.9], "z": [null, 0.6], "mat": "cover"},
+            {"name": "fountain stele", "at": [-11.3, 5.0], "size": [0.6, 0.4], "z": [null, 1.4], "mat": "cover"}]},
+          {"name": "Plane tree", "label": "ADAPTED", "ref": "plateia", "parts": [
+            {"name": "trunk", "at": [-21, 1.0], "size": [1.0, 1.0], "z": [null, 5.5], "mat": "bark", "shape": "cylinder"},
+            {"name": "canopy", "at": [-21, 1.0], "size": [10, 10], "z": [4.5, 10.0], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true}]},
+          {"name": "East bend corner house", "label": "INVENTED", "ref": "street", "parts": [
+            {"name": "body", "at": [32.75, -0.25], "size": [9.5, 6.5], "z": [null, 6.2], "mat": "wall"},
+            {"name": "door", "at": [30, 3.04], "size": [1.1, 0.08], "z": [0, 2.2], "mat": "trim", "collider": false}]},
+          {"name": "Unfinished frame (south)", "label": "ADAPTED", "ref": "ground", "frame": {"at": [-48.8, -1.0], "size": [10.3, 8.2], "floors": 2, "storey": 3.55, "infill": ["S", "E"]}},
+          {"name": "Unfinished frame (north)", "label": "ADAPTED", "ref": "ground", "frame": {"at": [-33.5, 17], "size": [10.7, 8.6], "floors": 2, "storey": 3.65, "infill": ["N"]}}
+        ],
+        "fills": [
+          {"name": "West jog corner", "u": [-52, -40], "v": [-2, 6], "storeys": 2},
+          {"name": "West low roofs", "u": [-46, -40], "v": [-9, -2], "low_roof": 1.8},
+          {"name": "West bridge-line block", "u": [-40, -34], "v": [-9, -2], "storeys": 2},
+          {"name": "Plateia north-west", "u": [-30, -21], "v": [5.5, 15], "storeys": 2},
+          {"name": "Plateia north-east", "u": [-12, -3], "v": [5.5, 16], "storeys": 2},
+          {"name": "Plateia south-west", "u": [-27, -19], "v": [-23, -13.5], "storeys": 2},
+          {"name": "East bridge-line block", "u": [28, 42], "v": [-8.5, -4.5], "storeys": 2, "gap": 0},
+          {"name": "East low roofs", "u": [28, 42], "v": [-15.5, -9], "low_roof": 1.8}
+        ],
+        "fill_rules": {"width": [6, 12], "gap": 0.5, "min": 2.5},
+        "rows": [
+          {"side": "N", "u": [-58, 58], "width": [6, 11], "min_width": 4, "depth": [7, 10], "gap": [0.0, 0.6], "setback": 0.75,
+           "storeys": [[1, 0.25], [2, 0.5], [3, 0.25]]},
+          {"side": "S", "u": [-58, -46], "width": [6, 10], "min_width": 4, "depth": [7, 9], "gap": [0.0, 0.6], "setback": 0.75,
+           "storeys": [[1, 0.4], [2, 0.6]]},
+          {"side": "S", "u": [38, 46], "width": [5, 8], "min_width": 4, "depth": [5, 7], "gap": [0.0, 0.3], "setback": 0.75,
+           "storeys": [[2, 1.0]]}
+        ],
+        "walls": {"u": [-58, 58], "offset": 0.25, "thickness": 0.5, "north": {"behind": 3.0, "min": 1.0, "max": 4.0, "over": 0.3},
+                  "south": 1.0, "max_piece": 3.0, "rail_from": 2.0,
+                  "gaps": [{"side": "S", "u": [-54.5, -43], "why": "the south unfinished frame opens onto the street"},
+                           {"side": "S", "u": [44, 60], "why": "east entry: sidewalk and guardrail instead"}]},
+        "strips": [
+          {"name": "East entry guardrail", "side": "S", "u": [44, 60], "offset": [5.4, 5.6], "z": [0.15, 0.9], "over_ground": 0.8, "mat": "cover"}
+        ],
+        "posts": [
+          {"name": "Lantern lamp", "side": "S", "u": [46, 60], "every": 7.0, "offset": 4.9, "size": 0.16, "z": [0.15, 4.0], "mat": "trim"}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_MainWest", "at": [-56, 6.5], "eye": 1.6, "look": [-30, -3, 1.0]},
+          {"name": "Cam_Grey_MainEast", "at": [60, -7], "eye": 1.6, "look": [40, 4, 1.5]},
+          {"name": "Cam_Grey_Plateia_FromMemorial", "at": [-17.5, 11.0], "eye": 2.3, "look": [-8, -10, 0.0]},
+          {"name": "Cam_Grey_Plateia_FromKafeneio", "at": [-5.5, -12.0], "eye": 1.6, "look": [-17, 6, 2.0]},
+          {"name": "Cam_Grey_Bridge_LookWest", "at": [13, -3.5], "eye": 1.6, "look": [-20, -4, 1.5]},
+          {"name": "Cam_Grey_Aerial_Center", "at": [-12, -48], "eye": 34.0, "look": [-12, 2, 0.0], "fov": 55}
+        ]
+      },
+      "ravine": {
+        "task": 8, "locked": true, "seed": 88, "kind": "ravine",
+        "replaces": ["Main bridge ", "Upper culvert ", "Lower footbridge "],
+        "crossings": [
+          {"name": "Main bridge", "deck": "Main bridge deck", "kind": "bridge", "thick": 0.6, "parapet": 1.05, "parapet_t": 0.4},
+          {"name": "Upper culvert", "deck": "Upper culvert deck", "kind": "culvert", "thick": 0.8, "parapet": 0.7, "parapet_t": 0.5, "parapet_mat": "wall"},
+          {"name": "Lower footbridge", "deck": "Lower footbridge deck", "kind": "footbridge", "thick": 0.3, "rail": 1.05}
+        ],
+        "rim_walls": {"v": [-52, 52], "max_piece": 3.0, "outset": 0.4, "thickness": 0.5, "height": 1.0},
+        "boulders": {"v": [[-46, -10], [6, 13]], "every": 8.0, "lateral": 2.1, "w": [1.0, 1.6], "d": [0.9, 1.4], "h": [0.8, 1.2]},
+        "trees": {"v": [-50, 50], "every": 10.0, "outset": 3.0, "height": [6.5, 9.0], "canopy": 7.0},
+        "screens": [{"name": "East path screen", "along": "Ravine east-bank path", "side": 1, "offset": 2.75, "thickness": 0.6, "height": 2.4, "u": [9, 25], "v": [9, 32], "mat": "rock"}],
+        "cameras": [
+          {"name": "Cam_Grey_Ravine_Floor", "at": [6.4, -18.6], "eye": 1.6, "look": [4.8, -2.7, 1.0]},
+          {"name": "Cam_Grey_MainBridge_FromEast", "at": [20, -5], "eye": 1.6, "look": [0, 0, 1.5]},
+          {"name": "Cam_Grey_UpperCulvert", "at": [-16, 33.5], "eye": 1.6, "look": [-2, 33, 1.0]},
+          {"name": "Cam_Grey_Footbridge", "at": [-9, -48], "eye": 1.6, "look": [5, -48, 1.0]},
+          {"name": "Cam_Grey_EastPerch", "at": [16.1, 18.3], "eye": 1.6, "look": [4.6, -2.6, 0.0]}
+        ]
+      }
+    }
   }
 }
