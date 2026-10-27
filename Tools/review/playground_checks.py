@@ -28,8 +28,13 @@ META = json.loads((PG / "play_meta.json").read_text())
 GREYBOX = PG / "greybox_meta.json"
 if GREYBOX.exists() and os.environ.get("NO_GREYBOX") != "1":
     _gb = json.loads(GREYBOX.read_text())
-    META["boxes"] = [b for b in META["boxes"] if not any(b["name"].startswith(p) for p in _gb["replaces"])]
-    META["boxes"] += [b for b in _gb["boxes"] if not b.get("rail") and (b.get("collider", True) or b.get("overhead"))]
+    # a "replaces" entry ending in "$" is an exact name (see lockdown_greybox.name_matches)
+    META["boxes"] = [b for b in META["boxes"] if not any((b["name"] == p[:-1]) if p.endswith("$") else b["name"].startswith(p) for p in _gb["replaces"])]
+    # boundary clips and OutOfBounds volumes (Task 16) are invisible: no sight blocking (the physics graph has them)
+    META["boxes"] += [b for b in _gb["boxes"] if not b.get("rail") and not b.get("invisible") and not b.get("trigger")
+                      and (b.get("collider", True) or b.get("overhead"))]
+    _closed = _gb.get("closed_routes", [])   # a closed Task 7 route is checked as the greybox routes that replace it
+    META["routes"] = [r for r in META["routes"] if r["name"] not in _closed] +         [r for r in _gb["routes"] if any(r["name"].startswith(n + " ") for n in _closed)]
 
 EYE, SPRINT, WALK_DEG = 1.6, 6.5, 36.0
 RES, SIZE, X0, Z0 = META["resolution"], META["size"], META["x0"], META["z0"]
@@ -72,6 +77,7 @@ occ = ground.copy()        # what blocks a line of sight
 walk_h = ground.copy()     # the surface you stand on
 blocked = np.zeros(ground.shape, bool)
 deck = np.zeros(ground.shape, bool)
+treads = np.zeros(ground.shape, bool)   # stair treads (Task 9): checked as stairs, not as ramps
 roofs = []
 for b in META["boxes"]:
     y = math.radians(b["yaw"])
@@ -86,6 +92,9 @@ for b in META["boxes"]:
     if (b["group"] == "Bridges" and "deck" in b["name"]) or b.get("walk_top"):
         walk_h[fp] = top
         deck |= fp
+        if " tread " in b["name"]:
+            treads |= fp
+            continue   # a tread belongs to its connector or the ravine floor, not to a deck or roof
         if b.get("walk_top"):
             roofs.append((b["name"] + " (roof)", fp))
     elif b["group"] == "Bridges" and "ramp" not in b["name"].lower():
@@ -200,7 +209,7 @@ for c in LAYOUT["connectors"]:
 add_feature("The ravine floor", poly_dist(chaikin(LAYOUT["ravine"]["points"])) <= LAYOUT["ravine"]["walkable_floor"] / 2 + 0.5)
 for l in LAYOUT["lanes"]:
     add_feature(l["name"], poly_dist(chaikin(l["points"])) <= l["width"] / 2 + 0.75)
-add_feature("Bridge decks", deck)
+add_feature("Bridge decks", deck & ~treads)
 for name, fp in roofs:
     add_feature(name, fp)
 
@@ -275,6 +284,9 @@ for r in META["routes"]:
     h = sample(walk_h, px, pz)
     g = np.abs(np.diff(h)) / 0.5
     g1 = np.convolve(g, np.ones(2) / 2, mode="valid") if len(g) > 2 else g   # 1 m window
+    on_tread = sample(treads.astype(float), px, pz, order=0) > 0.5
+    near_tread = np.convolve(on_tread, np.ones(5), mode="same") > 0         # within 1 m of a tread: a stair, see below
+    g1 = np.where(near_tread[:len(g1)] | near_tread[2:len(g1) + 2], 0.0, g1) if len(g1) else g1
     deg = math.degrees(math.atan(g1.max())) if len(g1) else 0.0
     if deg > worst_grade:
         worst_grade, worst_names[0] = deg, r["name"]
@@ -304,6 +316,22 @@ for r in META["routes"]:
         worst_rise, worst_names[1] = max_rise, r["name"]
 report(1, "Steepest ramp (1 m window, walk routes)", f"{worst_grade:.1f} deg ({worst_names[0]})", "<= 20 deg",
        worst_grade <= 20.0, "surface sampled every 0.5 m along every walk-test route")
+_stairs = {}
+for b in (_gb["boxes"] if GREYBOX.exists() and os.environ.get("NO_GREYBOX") != "1" else []):
+    if " tread " in b["name"]:
+        _stairs.setdefault(b["name"].split(" tread ")[0], []).append(b)
+if _stairs:
+    worst_r, worst_p, txt = 0.0, 0.0, []
+    for name, ts in _stairs.items():
+        ts.sort(key=lambda b: b["name"])
+        tops = np.array([b["y"] + b["sy"] / 2 for b in ts])
+        rs = np.abs(np.diff(tops))
+        rs = rs[rs < 0.5]   # a jump >= 0.5 m is a landing between two flights, not a riser
+        pitch = max(math.degrees(math.atan2(r, b["sz"])) for r, b in zip(rs, ts[1:])) if len(rs) else 0.0
+        worst_r, worst_p = max(worst_r, rs.max() if len(rs) else 0.0), max(worst_p, pitch)
+        txt.append(f"{name} {len(ts)} treads, riser <= {rs.max():.2f} m, {pitch:.0f} deg")
+    report(1, "Stairs (greybox treads)", "; ".join(txt), "riser <= 0.3 m, <= 35 deg (brief)", worst_r <= 0.3 and worst_p <= 35.0,
+           "tread-to-tread rise and rise over tread depth; the ramp grade above leaves out the 1 m around treads")
 report(1, "Rise between landings per connector (info)", ", ".join(f"{k} {v:.1f}" for k, v in sorted(per_rise.items(), key=lambda kv: -kv[1])),
        "<= 3.8 m", max(per_rise.values()) <= 3.8, "same definition, both directions")
 report(1, "Most rise without a 3 m landing", f"{worst_rise:.1f} m ({worst_names[1]})", "<= 3.5 m", worst_rise <= 3.5,
@@ -406,7 +434,8 @@ def exposure(fid, r_min=8.0, r_max=60.0, elev=2.5):
     groups = []
     for k in np.unique(feature[high]):
         cells = high & (feature == k)
-        if k < 0 or cells.sum() * STEP * STEP < 2.0:
+        # a built perch (a walk-top block: roof, terrace) counts from one visible cell, ground places from 2 m2
+        if k < 0 or cells.sum() * STEP * STEP < (STEP * STEP if feature_names[k].endswith("(roof)") else 2.0):
             continue
         gu, gv = to_frame(XX[cells].mean(), ZZ[cells].mean())
         groups.append((gu, gv, float(walk_h[cells].max() - hb), feature_names[k]))
@@ -420,7 +449,7 @@ report(3, "Zone B exposure angles", f"{secB}", "<= 4", secB <= 4, "5 deg bearing
 report(3, "Zone B elevated positions", f"{len(groupsB)} (west {sides['west']}, east {sides['east']}): " +
        "; ".join(f"{g[3]} +{g[2]:.1f} m" for g in groupsB),
        "<= 2, one per side", len(groupsB) <= 2 and sides["west"] <= 1 and sides["east"] <= 1,
-       "named places (lane, connector, pad, ravine floor) with a visible spot >= 2.5 m above the zone centre")
+       "named places (lane, connector, pad, ravine floor; roofs and terraces from one visible cell) with a visible spot >= 2.5 m above the zone centre")
 
 for fid in ("Flag_A", "Flag_C"):
     _, groups, hf, seen = exposure(fid, r_min=cap_r, r_max=60.0, elev=0.0)
@@ -431,7 +460,7 @@ for fid in ("Flag_A", "Flag_C"):
 
 # ---------------------------------------------------------------- 5. sprint times (Dijkstra on the walkable grid)
 
-def dijkstra(src_xz):
+def grid_dijkstra(src_xz):
     r0, c0 = (int(round(v)) for v in grid_index(*src_xz))
     # Plain nested lists: the same float64 values as the arrays, without numpy's per-element indexing cost.
     dist = np.full(ground.shape, np.inf).tolist()
@@ -462,25 +491,176 @@ def at(dist, x, z):
     return float(window.min())
 
 
+# The walker's physics decides (PROGRESS decision 2026-10-13): Lockdown/Review/Containment Test exports the moves the
+# real CharacterController can make (walk, crouch, drop, jump, mantle) as a graph on this 513 grid. Times run on the
+# editor-world graph (placeholders standing in for later buildings); the build world (EditorOnly colliders off) is
+# reported next to it. A graph whose inputs changed since it was made is STALE: the checks then FAIL on it and fall
+# back to the grid (GRID_TIMES=1 forces the grid).
+def _sha1(path):
+    import hashlib
+    return hashlib.sha1(path.read_bytes()).hexdigest() if path.exists() else ""
+
+
+def load_physics(world):
+    hj, hb = PG / f"reach_physics_{world}.json", PG / f"reach_physics_{world}.bin"
+    if not hj.exists() or not hb.exists():
+        return None, "missing"
+    hdr = json.loads(hj.read_text())
+    stale = [n for n, h in hdr["inputs"].items() if _sha1(PG / n) != h]
+    N, E = hdr["nodes"], hdr["edges"]
+    buf = hb.read_bytes()
+    o = 0
+    pos = np.frombuffer(buf, "<f4", 3 * N, o).reshape(N, 3); o += 12 * N
+    col = np.frombuffer(buf, "<i4", N, o); o += 4 * N
+    low = np.frombuffer(buf, "u1", N, o); o += N
+    indptr = np.frombuffer(buf, "<i4", N + 1, o); o += 4 * (N + 1)
+    to = np.frombuffer(buf, "<i4", E, o); o += 4 * E
+    cost = np.frombuffer(buf, "<f4", E, o); o += 4 * E
+    typ = np.frombuffer(buf, "u1", E, o)
+    from scipy.sparse import csr_matrix
+    frm = np.repeat(np.arange(N), np.diff(indptr))
+    keep = np.ones(E, bool)
+    if world == "editor":
+        # placeholders stand in for later buildings as obstacles, but their tops are no routes (not designed yet):
+        # no move onto a node that stands on an EditorOnly collider (bit 1 of the node flags)
+        keep = (low[to] & 2) == 0
+    csr = csr_matrix((cost[keep].astype(np.float64) + 1e-6, (frm[keep], to[keep])), shape=(N, N))
+    P = dict(hdr=hdr, pos=pos, col=col, low=low, indptr=indptr, to=to, cost=cost, type=typ, csr=csr, world=world)
+    return P, ("stale: " + ", ".join(stale)) if stale else None
+
+
+def phys_source(P, x, z, h=None):
+    """Nodes at a stake: within 0.75 m (else 1.5 m) of the point, the layer nearest the stand height."""
+    d = np.hypot(P["pos"][:, 0] - x, P["pos"][:, 2] - z)
+    for rad in (0.75, 1.5, 3.0):
+        near = np.nonzero(d <= rad)[0]
+        if len(near):
+            break
+    else:
+        return []
+    h = stand_height(x, z) if h is None else h
+    dy = np.abs(P["pos"][near, 1] - h)
+    return [int(near[np.argmin(dy)])]
+
+
+def phys_dijkstra(P, src_xz):
+    from scipy.sparse.csgraph import dijkstra as sp_dijkstra
+    src = phys_source(P, *src_xz)
+    out = np.full(RES * RES, np.inf)
+    if src:
+        d = sp_dijkstra(P["csr"], indices=src, min_only=True)
+        ok = (P["col"] >= 0) & np.isfinite(d)
+        np.minimum.at(out, P["col"][ok], d[ok])
+    return out.reshape(RES, RES)
+
+
+PHYS, PHYS_STATE = {}, {}
+for _w in ("editor", "build"):
+    PHYS[_w], PHYS_STATE[_w] = load_physics(_w)
+USE_PHYS = os.environ.get("GRID_TIMES") != "1" and PHYS["editor"] is not None and PHYS_STATE["editor"] is None
+
+
+def dijkstra(src_xz, world="editor"):
+    if world == "editor" and not USE_PHYS:
+        return grid_dijkstra(src_xz)
+    return phys_dijkstra(PHYS[world], src_xz)
+
+
+for _w in ("build", "editor"):
+    P_, st_ = PHYS[_w], PHYS_STATE[_w]
+    if P_ is None or st_:
+        report(0, f"Physics graph ({_w} world)", st_ or "missing", "fresh", False,
+               "run Lockdown/Review/Containment Test (Unity) after every greybox / ground change; times fall back to the grid")
+        continue
+    h_ = P_["hdr"]
+    report(0, f"Containment (physics, {_w} world)", f"{h_['outside_m2']:.0f} m2 reachable outside the frame, {h_['exits']} exits",
+           "0 m2", h_["outside_m2"] == 0, f"Containment Test '{h_['label']}' {h_['time']}: the walker's moves from the 12 starts")
+    _cp = h_.get("closure_crossings_from_placeholder", 0)
+    report(0, f"Closure crossings (physics, {_w} world)", f"{h_['closure_crossings']} ({_cp} only from EditorOnly placeholder tops)",
+           "0 (editor world: 0 apart from placeholder tops)", h_["closure_crossings"] - (_cp if _w == "editor" else 0) == 0,
+           "move clusters crossing a greybox `closures` line")
+
+# roadblock seal: the walker's controller sprints / hops / mantles at the invisible wall on every roadblock (Unity report)
+import glob as _glob
+import re
+_seal = sorted((f for f in _glob.glob(str(ROOT / "Screenshots" / "task09" / "seal_*.txt")) if "control" not in f), key=os.path.getmtime)
+if _seal:
+    _txt = open(_seal[-1], encoding="utf-8").read()
+    _m = re.search(r"TOTAL runs (\d+), leaks (\d+)", _txt)
+    if _m:
+        _stale = os.path.getmtime(_seal[-1]) < os.path.getmtime(PG / "greybox_meta.json")
+        report(0, "Roadblock seal (physics)", f"{_m.group(2)} leaks in {_m.group(1)} runs" + (" (STALE: run Lockdown/Review/Roadblock Seal Test)" if _stale else ""),
+               "0 leaks", _m.group(2) == "0" and not _stale, f"{os.path.basename(_seal[-1])}: sprint, hop and mantle at the wall on the outer barrier row")
+else:
+    report(0, "Roadblock seal (physics)", "no report yet", "0 leaks", False, "run Lockdown/Review/Roadblock Seal Test (Unity)")
+
+
 dW = dijkstra((stakes["Spawn_West"]["x"], stakes["Spawn_West"]["z"]))
 dE = dijkstra((stakes["Spawn_East"]["x"], stakes["Spawn_East"]["z"]))
 bx, bz = stakes["Flag_B"]["x"], stakes["Flag_B"]["z"]
 tW, tE = at(dW, bx, bz) / SPRINT, at(dE, bx, bz) / SPRINT
 report(5, "Sprint spawn -> B", f"West {tW:.1f} s, East {tE:.1f} s (diff {abs(tW - tE):.1f})", "within 1 s",
-       abs(tW - tE) <= 1.0, "shortest walkable path on the 0.5 m grid at 6.5 m/s")
+       abs(tW - tE) <= 1.0, ("shortest path of the walker's physics moves (editor world)" if USE_PHYS else "shortest walkable path on the 0.5 m grid") + " at 6.5 m/s")
 tS = at(dW, stakes["Spawn_East"]["x"], stakes["Spawn_East"]["z"]) / SPRINT
 report(5, "Sprint spawn -> spawn", f"{tS:.1f} s", "20-24 s", 20.0 <= tS <= 24.0, "same")
 for fid in ("Flag_A", "Flag_C"):
     report(5, f"Sprint spawns -> {fid[-1]}", f"West {at(dW, stakes[fid]['x'], stakes[fid]['z']) / SPRINT:.1f} s, "
            f"East {at(dE, stakes[fid]['x'], stakes[fid]['z']) / SPRINT:.1f} s", "info", True, "same")
+if PHYS["build"] is not None and not PHYS_STATE["build"]:
+    dWb = dijkstra((stakes["Spawn_West"]["x"], stakes["Spawn_West"]["z"]), "build")
+    dEb = dijkstra((stakes["Spawn_East"]["x"], stakes["Spawn_East"]["z"]), "build")
+    report(5, "Sprint spawn -> B / A / C (build world)", ", ".join(
+        f"{f[-1]} W {at(dWb, stakes[f]['x'], stakes[f]['z']) / SPRINT:.1f} E {at(dEb, stakes[f]['x'], stakes[f]['z']) / SPRINT:.1f}"
+        for f in ("Flag_B", "Flag_A", "Flag_C")), "info", True, "physics graph without the EditorOnly placeholders")
 rr_area = next(a for a in LAYOUT["areas"] if a["id"] == "rock_roofs")
 rr_cells = (np.abs(UU - rr_area["center"][0]) <= rr_area["size"][0] / 2) & (np.abs(VV - rr_area["center"][1]) <= rr_area["size"][1] / 2)
 t_rr = float(dW[rr_cells].min()) / SPRINT
 ov = next((l for c in LAYOUT["connectors"] for l in c.get("landings", []) if l.get("name") == "East overwatch"), None)
 ov_at = ov["at"] if ov else [10.5, 12.0]
 t_ov = at(dE, *to_world(*ov_at)) / SPRINT
-report(5, "West -> Rock Roofs vs East -> east-bank landing", f"{t_rr:.1f} s vs {t_ov:.1f} s", "within ~2 s",
-       abs(t_rr - t_ov) <= 2.0, f"landing at frame {ov_at}")
+east_roofs = np.zeros(ground.shape, bool)   # Task 9: the East roof cluster, the east side's rooftop high ground
+west_roofs = np.zeros(ground.shape, bool)
+for name, fp in roofs:
+    if name.startswith("East roofs roof"):
+        east_roofs |= fp
+    elif name.startswith("Rock Roofs roof"):
+        west_roofs |= fp
+if east_roofs.any():
+    # Perch balance (user, Task 9): each side has one roof perch and one overwatch over B, and the pairs match:
+    # sprint from the own spawn within 10%, top within 0.5 m, view of the own half of the centre (zones mirrored
+    # about Flag B) within 10 points of 120, and the same B-disc rule (roofs: none; overwatches: both see it).
+    west_ow = np.zeros(ground.shape, bool)
+    for name, fp in roofs:
+        if name.startswith("West overwatch pad"):
+            west_ow |= fp
+    east_ow = (np.abs(UU - ov_at[0]) <= ov["size"][0] / 2) & (np.abs(VV - ov_at[1]) <= ov["size"][1] / 2) if ov else west_ow & False
+
+    def zone_pts(u0, u1):
+        return [to_world(u, v) for u in np.arange(u0, u1 + 0.01, 2) for v in np.arange(-13, 5.01, 2)]
+
+    zone_w, zone_e = zone_pts(-27, -5), zone_pts(15, 37)
+    disc_pts = [to_world(u, v) for u in np.arange(1, 9.01, 2) for v in np.arange(-6, 2.01, 2)]
+
+    def perch(mask, own_d, own, other):
+        eyes = [(XX[r, c], ZZ[r, c]) for r, c in np.argwhere(mask)[::3]]
+        seen = lambda pts: sum(1 for q in pts if any(los(e, q) for e in eyes))
+        return (float(own_d[mask].min()) / SPRINT, float(walk_h[mask].max() - B), seen(own), seen(other), seen(disc_pts))
+
+    pairs = []
+    for kind, wm, em in (("roof", west_roofs, east_roofs), ("overwatch", west_ow, east_ow)):
+        if not wm.any() or not em.any():
+            report(5, f"Perch balance: {kind}", "missing on " + ("west" if not wm.any() else "east"), "one per side", False, "")
+            continue
+        pw, pe = perch(wm, dW, zone_w, zone_e), perch(em, dE, zone_e, zone_w)
+        ok = (abs(pw[0] - pe[0]) <= 0.1 * max(pw[0], pe[0]) and abs(pw[1] - pe[1]) <= 0.5 and abs(pw[2] - pe[2]) <= 10
+              and ((pw[4] == 0 and pe[4] == 0) if kind == "roof" else (pw[4] > 0 and pe[4] > 0)))
+        fmt = lambda p: f"{p[0]:.1f} s, +{p[1]:.1f} m, own half {p[2]}/120, other half {p[3]}/120, B disc {p[4]}/25"
+        report(5, f"Perch balance: {kind}", f"West {fmt(pw)} | East {fmt(pe)}",
+               "sprint 10%, top 0.5 m, own half 10 pts, B disc " + ("none" if kind == "roof" else "both"), ok,
+               "own spawn; eye 1.6 m on every 3rd perch cell; halves u -27..-5 / 15..37, v -13..5; disc 9 m square")
+else:
+    report(5, "West -> Rock Roofs vs East -> east-bank landing", f"{t_rr:.1f} s vs {t_ov:.1f} s", "within ~2 s",
+           abs(t_rr - t_ov) <= 2.0, f"landing at frame {ov_at}")
 
 # ---------------------------------------------------------------- 6. the B circle
 
@@ -490,6 +670,15 @@ share = flat.sum() / circle.sum()
 dev = float(np.abs(walk_h[circle & ~blocked] - hB).max())
 report(6, "B circle on flat walkable ground", f"{share * 100:.0f}% flat, max height step {dev:.1f} m", "100%, ~0 m",
        share >= 0.97 and dev <= 0.6, f"cells within {cap_r} m: deck or surface under 5 deg")
+
+# Flag A sits on the Upper Road since 2026-10-10 (Switchback Head): its circle is held to the same rule.
+ax_, az_ = stakes["Flag_A"]["x"], stakes["Flag_A"]["z"]
+circleA = np.hypot(XX - ax_, ZZ - az_) <= cap_r
+flatA = (deck | ((slope <= 5.0) & surface)) & circleA & ~blocked
+hA0 = float(sample(walk_h, ax_, az_)[0])
+devA = float(np.abs(walk_h[circleA & ~blocked] - hA0).max())
+report(6, "A circle on flat walkable ground", f"{flatA.sum() / circleA.sum() * 100:.0f}% flat, max height step {devA:.1f} m", "100%, ~0 m",
+       flatA.sum() / circleA.sum() >= 0.97 and devA <= 0.6, f"cells within {cap_r} m: deck or surface under 5 deg")
 
 # ---------------------------------------------------------------- geometric mode (the review-3 brief's definitions)
 # Every reachable cell instead of named places: flood fill from the spawns over ground <= 33 deg (steps <= 0.4 m),

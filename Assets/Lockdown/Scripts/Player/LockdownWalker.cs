@@ -106,6 +106,8 @@ namespace Lockdown
         float _slideBlend, _slideBlendVel;
         float _fovAdd, _fovAddVel;
         float _landPos, _landVel;
+        Vector3 _safeSpot;        // last grounded position, where an OutOfBounds volume puts the walker back
+        bool _hasSafeSpot;
 
         void Awake()
         {
@@ -189,6 +191,22 @@ namespace Lockdown
             UpdateHeight();
             UpdateMovement();
             UpdateCameraMotion();
+            if (_controller.isGrounded && OutOfBoundsContacts == 0) { _safeSpot = transform.position; _hasSafeSpot = true; }
+        }
+
+        /// <summary>OutOfBounds volumes the walker is inside (kept by LockdownOutOfBounds); no safe spot is taken there.</summary>
+        public int OutOfBoundsContacts { get; set; }
+
+        /// <summary>Called by LockdownOutOfBounds: back to the last grounded spot, all motion stopped.</summary>
+        public void ReturnToSafeSpot()
+        {
+            if (!_hasSafeSpot) return;
+            _controller.enabled = false;   // a CharacterController ignores a direct move while enabled
+            transform.position = _safeSpot;
+            _controller.enabled = true;
+            _velocity = Vector3.zero;
+            OutOfBoundsContacts = 0;   // the safe spot is outside every volume (an exit event may not come after a teleport)
+            if (IsSliding) EndSlide();
         }
 
         void UpdateCursor()

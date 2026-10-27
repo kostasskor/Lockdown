@@ -57,6 +57,17 @@ namespace Lockdown.EditorTools
                     break;
             }
 
+            // Palette lookups (one flat swatch per UV cell, e.g. the kalderimi stones): neighbouring swatches must never
+            // blend, so no mipmaps, point filtering and no compression.
+            if (name.EndsWith("_pal", StringComparison.OrdinalIgnoreCase))
+            {
+                importer.mipmapEnabled = false;
+                importer.filterMode = FilterMode.Point;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                return;
+            }
+
             importer.mipmapEnabled = true;
             importer.maxTextureSize = MaxSizeFor(assetPath);
 

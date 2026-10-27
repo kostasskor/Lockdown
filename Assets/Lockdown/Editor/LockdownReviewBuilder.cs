@@ -56,6 +56,7 @@ namespace Lockdown.EditorTools
             walker.viewCamera = cam;
             var fps = root.AddComponent<Lockdown.LockdownFpsCounter>();
             fps.walker = walker;
+            root.AddComponent<Lockdown.LockdownCompass>().viewCamera = cam;
 
             PrefabUtility.SaveAsPrefabAsset(root, WalkerPath);
             Object.DestroyImmediate(root);

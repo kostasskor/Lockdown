@@ -44,6 +44,7 @@ namespace Lockdown.EditorTools
             public List<Route> routes;
             public List<Box> boxes;
             public List<Label> labels;
+            public List<string> closed_routes;   // greybox meta: Task 7 routes a later section closes off
         }
         [Serializable] class DemMeta { public float base_height, top_height; public DemGrid village; }
         [Serializable] class DemGrid { public string file; public float size; public int resolution; }
@@ -93,6 +94,18 @@ namespace Lockdown.EditorTools
             Debug.Log($"[Lockdown] Play ground built: {meta.size:F1} m tile at ({meta.x0:F1}, {meta.z0:F1}), " +
                       $"heights {meta.base_height}..{meta.top_height} m, Flag B {meta.flag_b_height:F2} m, " +
                       $"village hole cells x {meta.village_first_x}+{meta.village_cells}, z {meta.village_first_z}+{meta.village_cells}.");
+        }
+
+        // The stakes, start points and posts only (after a layout change that leaves the terrain as it is).
+        [MenuItem("Lockdown/Build/Play Ground Markers")]
+        public static void BuildMarkersOnly()
+        {
+            string metaPath = Path.Combine(PlayDir, "play_meta.json");
+            if (!File.Exists(metaPath)) { Debug.LogError("[Lockdown] " + metaPath + " missing."); return; }
+            var meta = JsonUtility.FromJson<Meta>(File.ReadAllText(metaPath));
+            BuildMarkers(meta);
+            EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+            Debug.Log($"[Lockdown] Play ground markers rebuilt: {meta.stakes.Count} stakes, {meta.posts.Count} posts.");
         }
 
         // ---------- Terrain ----------
@@ -454,7 +467,11 @@ namespace Lockdown.EditorTools
             var lines = new List<string>();
             var meta = JsonUtility.FromJson<Meta>(File.ReadAllText(Path.Combine(PlayDir, "play_meta.json")));
             if (File.Exists(LockdownGreybox.MetaPath)) // the greybox adds its own routes (terraces, stairs, passages)
-                meta.routes.AddRange(JsonUtility.FromJson<Meta>(File.ReadAllText(LockdownGreybox.MetaPath)).routes);
+            {
+                var grey = JsonUtility.FromJson<Meta>(File.ReadAllText(LockdownGreybox.MetaPath));
+                if (grey.closed_routes != null) meta.routes.RemoveAll(r => grey.closed_routes.Contains(r.name));
+                meta.routes.AddRange(grey.routes);
+            }
             var go = new GameObject("PlayWalkTester");
             var cc = go.AddComponent<CharacterController>();
             var w = Object.FindFirstObjectByType<Lockdown.LockdownWalker>();
@@ -497,7 +514,11 @@ namespace Lockdown.EditorTools
             const float dt = 0.02f, speed = 4.5f;
             length = 0f;
             Vector2 s = wp(0);
-            cc.transform.position = new Vector3(s.x, GroundY(terrain, s.x, s.y) + 0.1f, s.y);
+            // Start on the highest surface under the first point (a roof or a tread, else the ground), never inside a block.
+            float y0 = GroundY(terrain, s.x, s.y);
+            foreach (var hit in Physics.RaycastAll(new Vector3(s.x, y0 + 30f, s.y), Vector3.down, 31f, ~0, QueryTriggerInteraction.Ignore))
+                if (hit.collider != cc && hit.point.y > y0) y0 = hit.point.y;
+            cc.transform.position = new Vector3(s.x, y0 + 0.1f, s.y);
             Physics.SyncTransforms();
             float vy = 0f;
             for (int i = 1; i < n; i++)

@@ -111,10 +111,11 @@
       "points": [[2.5, -3], [7, -24], [4.5, -48]]
     },
     {
-      "name": "Terrace steps",
+      "name": "Skeleton yard entrance",
       "pair": "main-lower",
+      "note": "r9 (2026-10-13): what is left of the Task 7 Terrace steps. Ends in the Skeleton yard; the old run down to the C terraces is deleted (ground included), the Olive press terrace wall runs through where it was.",
       "width": 3.0,
-      "points": [[18, -4], [26, -20], [30, -49]]
+      "points": [[18, -4], [24.0, -16.0]]
     },
     {
       "name": "Press path",
@@ -207,6 +208,14 @@
       "shape": "rect",
       "center": [-44, 24],
       "size": [12, 14]
+    },
+    {
+      "id": "upper_zone",
+      "name": "Switchback Head",
+      "shape": "rect",
+      "center": [-27.5, 44.5],
+      "size": [10.3, 10.35],
+      "greybox_keepout": false
     }
   ],
   "spawns": [
@@ -218,14 +227,15 @@
     {
       "id": "Spawn_East",
       "callout": "The Threshing Floor",
-      "at": [68, -15]
+      "at": [69.5, 3.8],
+      "note": "r9 (2026-10-13): moved 19 m north from (68, -15) onto the terrace bench above the Main Street east end, so East reaches Flag C in about the time West reaches Flag A (placement, not blockers)."
     }
   ],
   "flags": [
     {
       "id": "Flag_A",
-      "callout": "Church Yard",
-      "at": [-30, -31]
+      "callout": "Switchback Head",
+      "at": [-27.5, 44.5]
     },
     {
       "id": "Flag_B",
@@ -235,7 +245,7 @@
     {
       "id": "Flag_C",
       "callout": "Olive Press",
-      "at": [32, -33]
+      "at": [30.2, -30.1]
     }
   ],
   "landmarks": [
@@ -458,8 +468,8 @@
     }
   ],
   "initial_spawns": {
-    "west": [[-70, -2], [-66, -1], [-62, -3], [-70, -9], [-66, -10], [-62, -12]],
-    "east": [[62, -10], [66, -9], [70, -11], [62, -18], [66, -20], [70, -19]]
+    "west": [[-64.7, -1.6], [-62.2, -3.2], [-64.8, -6.4], [-62.1, -8.1], [-64.7, -11.2], [-62.2, -12.1]],
+    "east": [[68.2, 0.8], [70.8, 1.9], [68.2, 3.5], [70.8, 4.6], [68.2, 5.2], [70.8, 7.0]]
   },
   "capture_radius": 5.0,
   "callouts": [
@@ -560,6 +570,23 @@
       "at": [-50, -8]
     }
   ],
+  "names": {
+    "note": "One canonical name per place (callouts, reports, checks). Aliases are the older spellings still found in the data; rename them only deliberately, as part of a data review.",
+    "canonical": {
+      "Upper Road": ["Upper lane - the rock road", "UPPER ROAD", "Upper rock road", "upper_lane"],
+      "Main Street": ["Main street", "MAIN STREET"],
+      "Lower Lane": ["Lower lane - gardens and olives", "LOWER LANE"],
+      "The Bridge": ["Flag_B", "Main bridge", "Zone B"],
+      "Switchback Head": ["Flag_A", "Zone A", "Upper zone"],
+      "Church Yard": ["Church yard", "old Flag A (until 2026-10-10)"],
+      "Church Stair": ["Church stair"],
+      "Memorial Terrace": ["War memorial terrace"],
+      "Memorial Switchback": ["Memorial switchback stair", "Rock Steps"],
+      "Rock Roofs": ["Rock-edge rooftops"],
+      "West Overwatch": ["West overwatch"],
+      "East Overwatch": ["East overwatch", "Ravine east-bank path landing"]
+    }
+  },
   "ground": {
     "notes": "Task 7 play ground (Tools/terrain/lockdown_playground.py -> Lockdown/Build/Play Ground). Heights in metres. balance.targets are heights relative to Flag_B (user-approved, Task 7); keep = frame points whose real height stays. Order: smoothed real ground + balance -> terraces -> connector ramps -> pads -> lane benches. Banks are rise/run. lanes.targets_above_flag_b sets lane heights by u (review 2: Upper +6..+8, Lower -3..-5; Main follows the real ground). Inside the frame the ground between lanes is a design surface interpolated between lane heights. Pads are flat at the area's mean height, a tilted plane (fit: plane, max_tilt default 0.12) or follow a lane (height: lane:<id>); connectors run level through pads from ramp_into metres inside their edge. ravine: terrain cut from layout.ravine, decks and floor ramps are review placeholders (user, Task 7 review 1). buildings/house_rows: EditorOnly review placeholder blocks, replaced by the greybox in Tasks 8-14.",
     "tile_cells": 64,
@@ -572,9 +599,9 @@
       "radius": 35.0,
       "targets": [
         {"id": "Spawn_West", "height": 0.0},
-        {"id": "Spawn_East", "height": -1.0},
-        {"id": "Flag_A", "height": -3.0},
-        {"id": "Flag_C", "height": -4.0}
+        {"id": "Spawn_East", "at": [68, -15], "height": -1.0, "note": "the old East spawn site; kept fixed so the ground does not move with the spawn (r9, 2026-10-13)"},
+        {"id": "Church_yard", "at": [-30, -31], "height": -3.0, "note": "the old Flag A site; kept fixed so the approved Task 7 ground does not move with Flag A (2026-10-10)"},
+        {"id": "Flag_C", "at": [32, -33], "height": -4.0, "note": "the old Flag C site; kept fixed so the ground does not move with Flag C (r9, 2026-10-13)"}
       ],
       "keep": [[-40, 50], [12, 32], [62, 32]]
     },
@@ -654,16 +681,6 @@
           {"name": "War memorial terrace", "label": "REAL", "ref": "plateia", "parts": [
             {"name": "lower level", "at": [-16.5, 8.25], "size": [8, 3.5], "z": [null, 2.1], "mat": "walk", "walk_top": true},
             {"name": "upper level", "at": [-16.5, 11.5], "size": [8, 3], "z": [null, 3.6], "mat": "walk", "walk_top": true},
-            {"name": "step 1", "at": [-16.5, 4.7], "size": [2.4, 3.6], "z": [null, 0.3], "mat": "walk", "walk_top": true},
-            {"name": "step 2", "at": [-16.5, 5.0], "size": [2.4, 3.0], "z": [null, 0.6], "mat": "walk", "walk_top": true},
-            {"name": "step 3", "at": [-16.5, 5.3], "size": [2.4, 2.4], "z": [null, 0.9], "mat": "walk", "walk_top": true},
-            {"name": "step 4", "at": [-16.5, 5.6], "size": [2.4, 1.8], "z": [null, 1.2], "mat": "walk", "walk_top": true},
-            {"name": "step 5", "at": [-16.5, 5.9], "size": [2.4, 1.2], "z": [null, 1.5], "mat": "walk", "walk_top": true},
-            {"name": "step 6", "at": [-16.5, 6.2], "size": [2.4, 0.6], "z": [null, 1.8], "mat": "walk", "walk_top": true},
-            {"name": "upper step 1", "at": [-13.25, 8.8], "size": [1.5, 2.4], "z": [1.8, 2.4], "mat": "walk", "walk_top": true},
-            {"name": "upper step 2", "at": [-13.25, 9.1], "size": [1.5, 1.8], "z": [1.8, 2.7], "mat": "walk", "walk_top": true},
-            {"name": "upper step 3", "at": [-13.25, 9.4], "size": [1.5, 1.2], "z": [1.8, 3.0], "mat": "walk", "walk_top": true},
-            {"name": "upper step 4", "at": [-13.25, 9.7], "size": [1.5, 0.6], "z": [1.8, 3.3], "mat": "walk", "walk_top": true},
             {"name": "inscription wall", "at": [-16.5, 13.2], "size": [8, 0.4], "z": [null, 5.2], "mat": "wall"},
             {"name": "rail lower W", "at": [-19.15, 6.55], "size": [2.7, 0.06], "z": [2.1, 3.1], "mat": "trim", "rail": true},
             {"name": "rail lower E", "at": [-13.85, 6.55], "size": [2.7, 0.06], "z": [2.1, 3.1], "mat": "trim", "rail": true},
@@ -706,6 +723,12 @@
         "strips": [
           {"name": "East entry guardrail", "side": "S", "u": [44, 60], "offset": [5.4, 5.6], "z": [0.15, 0.9], "over_ground": 0.8, "mat": "cover"}
         ],
+        "stairs": [
+          {"name": "Memorial Terrace steps", "points": [[-16.5, 2.9], [-16.5, 6.5]], "z": [null, 2.405], "width": 2.4,
+           "riser": 0.19, "even": true, "min_grade": 0.08, "max_tread": 1.4},
+          {"name": "Memorial Terrace upper steps", "points": [[-13.25, 7.6], [-13.25, 10.0]], "z": [2.405, 3.905], "width": 1.5,
+           "riser": 0.19, "even": true, "min_grade": 0.08, "max_tread": 1.4}
+        ],
         "posts": [
           {"name": "Lantern lamp", "side": "S", "u": [46, 60], "every": 7.0, "offset": 4.9, "size": 0.16, "z": [0.15, 4.0], "mat": "trim"}
         ],
@@ -716,6 +739,12 @@
           {"name": "Cam_Grey_Plateia_FromKafeneio", "at": [-5.5, -12.0], "eye": 1.6, "look": [-17, 6, 2.0]},
           {"name": "Cam_Grey_Bridge_LookWest", "at": [13, -3.5], "eye": 1.6, "look": [-20, -4, 1.5]},
           {"name": "Cam_Grey_Aerial_Center", "at": [-12, -48], "eye": 34.0, "look": [-12, 2, 0.0], "fov": 55}
+        ],
+        "routes": [
+          {"name": "Memorial terrace (up and over)", "points": [[-18, 0], [-16.5, 1.5], [-16.5, 7.1], [-13.25, 7.1], [-13.25, 11.0], [-18.5, 11.5]]},
+          {"name": "Plateia crossing (memorial to kafeneio)", "points": [[-16.5, 4.5], [-12, -4], [-5, -12.5]]},
+          {"name": "Into the south unfinished frame (from the west)", "points": [[-55.5, 1.1], [-46.4, 1.1], [-46.4, -3.1]]},
+          {"name": "East entry (south kerb)", "points": [[45, -9.0], [52, -9.6], [59, -9.6]]}
         ]
       },
       "ravine": {
@@ -736,6 +765,253 @@
           {"name": "Cam_Grey_UpperCulvert", "at": [-16, 33.5], "eye": 1.6, "look": [-2, 33, 1.0]},
           {"name": "Cam_Grey_Footbridge", "at": [-9, -48], "eye": 1.6, "look": [5, -48, 1.0]},
           {"name": "Cam_Grey_EastPerch", "at": [16.1, 18.3], "eye": 1.6, "look": [4.6, -2.6, 0.0]}
+        ]
+      },
+      "upper_lane": {
+        "task": 9, "locked": false, "seed": 9, "lane": "upper",
+        "replaces": ["Upper Road south", "House upper ", "Rock Roofs", "Olive press$"],
+        "landmarks": [
+          {"name": "Cliff-toe outcrop", "label": "INVENTED", "ref": "street", "parts": [
+            {"name": "rock", "at": [10.6, 36.3], "size": [5.7, 2.6], "z": [null, 2.4], "mat": "rock"},
+            {"name": "rock spur", "at": [8.9, 35.4], "size": [1.9, 1.2], "z": [null, 1.7], "mat": "rock"}]},
+          {"name": "Switchback stair head", "label": "INVENTED", "ref": "street", "parts": [
+            {"name": "west pier", "at": [-30.55, 38.68], "size": [2.35, 2.55], "z": [null, 2.3], "mat": "wall"}]},
+          {"name": "Rock Roofs", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "roof W", "at": [-20.75, 22.1], "size": [6.6, 10.3], "z": [null, 3.5], "mat": "walk", "walk_top": true},
+            {"name": "roof M", "at": [-14.3, 21.9], "size": [6.3, 9.5], "z": [null, 3.8], "mat": "walk", "walk_top": true},
+            {"name": "roof E", "at": [-8.55, 21.4], "size": [5.1, 9.0], "z": [null, 3.45], "mat": "walk", "walk_top": true},
+            {"name": "west sill", "at": [-24.6, 24.0], "size": [1.2, 4.0], "z": [null, 3.55], "mat": "walk", "walk_top": true},
+            {"name": "parapet S west", "at": [-21.6, 17.25], "size": [4.9, 0.6], "z": [3.5, 4.6], "mat": "cover"},
+            {"name": "parapet W", "at": [-23.75, 19.45], "size": [0.6, 4.95], "z": [3.5, 4.6], "mat": "cover"},
+            {"name": "parapet S middle", "at": [-13.2, 17.45], "size": [3.4, 0.6], "z": [3.8, 4.9], "mat": "cover"},
+            {"name": "parapet E", "at": [-6.3, 22.6], "size": [0.6, 5.3], "z": [3.45, 4.55], "mat": "cover"},
+            {"name": "stair housing", "at": [-22.7, 25.9], "size": [2.4, 2.2], "z": [3.5, 5.9], "mat": "wall"},
+            {"name": "water tank 1", "at": [-18.8, 25.4], "size": [1.1, 1.1], "z": [3.5, 4.9], "mat": "trim", "shape": "cylinder"},
+            {"name": "water tank 2", "at": [-12.5, 25.1], "size": [1.0, 1.0], "z": [3.8, 5.0], "mat": "trim", "shape": "cylinder"},
+            {"name": "solar heater", "at": [-15.6, 25.7], "size": [2.1, 1.2], "z": [3.8, 4.95], "mat": "cover"},
+            {"name": "rebar 1", "at": [-9.6, 18.4], "size": [0.04, 0.04], "z": [3.45, 4.6], "mat": "trim", "collider": false},
+            {"name": "rebar 2", "at": [-8.1, 18.5], "size": [0.04, 0.04], "z": [3.45, 4.5], "mat": "trim", "collider": false},
+            {"name": "rebar 3", "at": [-6.7, 18.3], "size": [0.04, 0.04], "z": [3.45, 4.7], "mat": "trim", "collider": false},
+            {"name": "rebar 4", "at": [-9.5, 24.6], "size": [0.04, 0.04], "z": [3.45, 4.4], "mat": "trim", "collider": false}]},
+          {"name": "East roofs", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "roof W", "at": [28.9, 17.3], "size": [4.7, 5.4], "z": [null, 3.8], "mat": "walk", "walk_top": true},
+            {"name": "roof E", "at": [33.1, 18.0], "size": [3.6, 6.2], "z": [null, 3.5], "mat": "walk", "walk_top": true},
+            {"name": "stair landing", "at": [37.85, 19.03], "size": [3.5, 1.45], "z": [null, 1.85], "mat": "walk", "walk_top": true},
+            {"name": "landing step", "at": [38.92, 17.98], "size": [1.36, 0.68], "z": [null, 1.63], "mat": "walk", "walk_top": true},
+            {"name": "parapet S west", "at": [29.1, 14.9], "size": [4.7, 0.6], "z": [3.8, 4.9], "mat": "cover"},
+            {"name": "parapet S east", "at": [33.05, 15.2], "size": [3.5, 0.6], "z": [3.5, 4.6], "mat": "cover"},
+            {"name": "parapet W", "at": [26.85, 17.3], "size": [0.6, 5.4], "z": [3.8, 4.9], "mat": "cover"},
+            {"name": "stair housing", "at": [27.7, 15.75], "size": [2.2, 2.0], "z": [3.8, 6.2], "mat": "wall"},
+            {"name": "water tank", "at": [27.6, 19.3], "size": [1.1, 1.1], "z": [3.8, 5.15], "mat": "trim", "shape": "cylinder"},
+            {"name": "solar heater", "at": [33.0, 20.1], "size": [2.0, 1.1], "z": [3.5, 4.6], "mat": "cover"},
+            {"name": "rebar 1", "at": [34.4, 15.6], "size": [0.04, 0.04], "z": [3.5, 4.6], "mat": "trim", "collider": false},
+            {"name": "rebar 2", "at": [32.0, 15.5], "size": [0.04, 0.04], "z": [3.5, 4.5], "mat": "trim", "collider": false}]},
+          {"name": "Carob at the bend", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "trunk", "at": [25.4, 12.6], "size": [0.7, 0.7], "z": [null, 4.0], "mat": "bark", "shape": "cylinder"},
+            {"name": "canopy", "at": [25.2, 11.9], "size": [7.2, 7.2], "z": [2.6, 8.4], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true}]},
+          {"name": "West overwatch", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "pad", "at": [-0.8, 12.3], "size": [3.6, 3.2], "z": [null, 3.4], "mat": "walk", "walk_top": true},
+            {"name": "lip S", "at": [-0.3, 10.85], "size": [2.6, 0.3], "z": [3.4, 4.55], "mat": "rock"},
+            {"name": "lip E", "at": [0.85, 12.4], "size": [0.3, 2.9], "z": [3.4, 4.55], "mat": "rock"}]},
+          {"name": "Press lane house", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "body", "at": [39.25, -19.99], "size": [6.45, 8.97], "z": [null, 3.9], "mat": "wall"}]},
+          {"name": "Garden terrace wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [14.92, -27.0], "size": [1.22, 17.6], "z": [null, 1.2], "mat": "wall"}]},
+          {"name": "Lower lane garden wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [14.0, -45.6], "size": [5.85, 0.78], "z": [null, -1.6], "mat": "wall"}]},
+          {"name": "Lower lane pinch", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "garden corner", "at": [20.1, -47.4], "size": [2.45, 1.95], "z": [null, -1.8], "mat": "wall"}]},
+          {"name": "Corner yard wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [32.75, -4.0], "size": [9.4, 0.94], "z": [null, 2.6], "mat": "wall"}]},
+          {"name": "East low roof parapet", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "parapet E", "at": [41.65, -12.25], "size": [0.7, 6.4], "z": [1.0, 2.2], "mat": "cover"}]},
+          {"name": "Church lane wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [-36.2, -17.45], "size": [2.35, 17.3], "z": [null, 1.6], "mat": "wall"}]},
+          {"name": "Mini-market party wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [-27.3, -15.5], "size": [1.4, 3.2], "z": [null, 4.5], "mat": "wall"}]},
+          {"name": "Church yard south wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [-33.0, -36.0], "size": [4.8, 1.4], "z": [null, 1.0], "mat": "wall"}]},
+          {"name": "Kafeneio arcade pier", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "pier", "at": [-10.2, -10.4], "size": [0.95, 4.6], "z": [null, 3.0], "mat": "wall"}]},
+          {"name": "Olive press", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "body", "at": [35.0, -37.5], "size": [5.8, 5.1], "z": [null, 1.7], "mat": "wall"},
+            {"name": "chimney", "at": [37.4, -39.3], "size": [1.1, 1.0], "z": [null, 3.4], "mat": "wall"}]}
+        ],
+        "drop_houses": ["House N 010"], "drop_posts": ["Utility pole 04"],
+        "rows": [
+          {"side": "S", "u": [-62, 64], "width": [5.4, 9.6], "min_width": 4, "depth": [5.2, 8.6], "gap": [0.0, 0.6], "setback": 0.6,
+           "storeys": [[1, 0.35], [2, 0.65]]},
+          {"side": "N", "u": [-74, -63], "width": [5.6, 9.4], "min_width": 4, "depth": [4.6, 6.8], "gap": [0.1, 0.8], "setback": 0.6,
+           "storeys": [[1, 0.5], [2, 0.5]]},
+          {"side": "N", "u": [-34, -23], "width": [5.6, 9.4], "min_width": 4, "depth": [4.6, 6.8], "gap": [0.1, 0.8], "setback": 0.6,
+           "storeys": [[1, 0.5], [2, 0.5]]},
+          {"side": "N", "u": [32, 72], "width": [5.6, 9.4], "min_width": 4, "depth": [4.6, 6.8], "gap": [0.1, 0.8], "setback": 0.6,
+           "storeys": [[1, 0.5], [2, 0.5]]}
+        ],
+        "walls": {"u": [-72, 72], "offset": 0.25, "thickness": 0.45, "south": 1.05, "max_piece": 2.9, "rail_from": 2.0},
+        "posts": [
+          {"name": "Utility pole", "side": "N", "u": [-70, 70], "every": 13.3, "offset": 3.65, "size": 0.24, "z": [0.0, 7.6], "mat": "bark", "on_ground": true, "either_side": true}
+        ],
+        "stairs": [
+          {"along": "West stair alley", "paving": {"lift": 0.04, "piece": 1.6, "kerb": 0.1, "rib": 4.5, "skip_start": 3.0, "skip_end": 3.8, "stones": {"seed": 101, "chunk": 6.0, "bevel": 0.016}},
+           "walls": {"height": 2.2, "thickness": 0.4, "gap": 0.15, "max_piece": 2.9}},
+          {"along": "Memorial switchback stair", "paving": {"lift": 0.04, "piece": 1.6, "kerb": 0.1, "rib": 4.5, "skip_start": 2.4, "skip_end": 3.8, "stones": {"seed": 102, "chunk": 6.0, "bevel": 0.016}},
+           "walls": {"height": 2.2, "thickness": 0.4, "gap": 0.15, "max_piece": 2.9}},
+          {"along": "East stepped alley", "paving": {"lift": 0.04, "piece": 1.6, "kerb": 0.1, "rib": 4.5, "skip_start": 3.4, "skip_end": 3.3, "stones": {"seed": 103, "chunk": 6.0, "bevel": 0.016}},
+           "walls": {"height": 2.2, "thickness": 0.4, "gap": 0.15, "max_piece": 2.9}},
+          {"name": "East roofs outside stair", "points": [[35.5, 19.6], [35.5, 15.2]], "z": [1.75, 3.5], "width": 1.1,
+           "riser": 0.19, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": 1, "height": 0.95, "skip": 1.1}},
+          {"name": "West overwatch stair lower", "points": [[-8.0, 5.0], [-3.6, 5.0]], "z": [null, 1.65], "width": 1.1,
+           "riser": 0.19, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": -1, "height": 0.95, "skip": 1.1}},
+          {"name": "West overwatch stair upper", "points": [[-2.3, 4.9], [-2.3, 10.75]], "z": [1.6, 3.4], "width": 1.1,
+           "riser": 0.19, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": -1, "height": 0.95}},
+          {"along": "Ravine east-bank path", "riser": 0.19, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": 1, "height": 0.95}},
+          {"along": "Aloni track", "paving": {"lift": 0.04, "piece": 1.6, "kerb": 0.1, "rib": 4.5, "skip_start": 5.0, "skip_end": 4.0, "stones": {"seed": 104, "chunk": 6.0, "bevel": 0.016}}},
+          {"along": "West garden stair", "riser": 0.185, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": 1, "height": 0.95}},
+          {"along": "Church stair", "riser": 0.185, "min_grade": 0.08, "max_tread": 1.4, "rail": {"side": -1, "height": 0.95}},
+          {"along": "Ravine floor", "riser": 0.19, "min_grade": 0.08, "max_tread": 1.4, "clear_of_boxes": true}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_Upper_West", "at": [-69, 43.6], "eye": 1.6, "look": [-45, 36.6, 1.5]},
+          {"name": "Cam_Grey_Upper_East", "at": [62, 32.2], "eye": 1.6, "look": [36, 40.5, 1.5]},
+          {"name": "Cam_Grey_Upper_Bend", "at": [-34, 42.8], "eye": 1.6, "look": [5, 33.5, 1.5]},
+          {"name": "Cam_Grey_Upper_Aerial", "at": [0, -6], "eye": 62.0, "look": [0, 34, 0.0], "fov": 60},
+          {"name": "Cam_Grey_Alley_West_Down", "at": [-50, 35.3], "eye": 1.6, "look": [-56, 27.5, 0.0]},
+          {"name": "Cam_Grey_Alley_Switchback_Up", "at": [-25.2, 19.5], "eye": 1.6, "look": [-31, 30, 2.0]},
+          {"name": "Cam_Grey_Alley_East_Down", "at": [33, 32.5], "eye": 1.6, "look": [46, 25.5, 0.0]},
+          {"name": "Cam_Grey_Alley_West_Up", "at": [-53.5, 9.0], "eye": 1.6, "look": [-57.5, 17.0, 2.5]},
+          {"name": "Cam_Grey_Alley_Switchback_Turn", "at": [-30.5, 28.5], "eye": 1.6, "look": [-25.5, 20.5, 0.5]},
+          {"name": "Cam_Grey_WestOverwatch_ToB", "at": [-1.4, 12.9], "eye": 4.3, "look": [5, -2, 1.0]},
+          {"name": "Cam_Grey_EastLanding_ToB", "at": [8.75, 12.25], "eye": 1.6, "look": [5, -2, 1.0]},
+          {"name": "Cam_Grey_RockRoofs_ToPlateia", "at": [-19.0, 17.9], "eye": 4.6, "look": [-16.5, -5, 1.0]},
+          {"name": "Cam_Grey_RockRoofs_ToSkeleton", "at": [-8.5, 19.5], "eye": 5.0, "look": [18, -14, 1.5]},
+          {"name": "Cam_Grey_EastRoofs_ToStreet", "at": [31.5, 16.0], "eye": 5.6, "look": [8, -4, 1.0]},
+          {"name": "Cam_Grey_EastRoofs_Stair", "at": [38.5, 8.0], "eye": 1.6, "look": [29, 15, 3.0]},
+          {"name": "Cam_Grey_R2_LowerVista", "at": [-35, -26], "eye": 1.7, "look": [30, -22, 1.5]},
+          {"name": "Cam_Grey_R2_SouthMainLine", "at": [-43, -3], "eye": 1.7, "look": [55, -13, 1.5]},
+          {"name": "Cam_Grey_R2_FlagC_ToEastSpawn", "at": [30.2, -30.1], "eye": 1.7, "look": [69.5, 3.8, 1.5]},
+          {"name": "Cam_Grey_R2_CornerYardWall", "at": [23.5, -1.5], "eye": 1.7, "look": [32, -4.2, 1.2]},
+          {"name": "Cam_Grey_R2_LowerPinch", "at": [13.5, -49.3], "eye": 1.7, "look": [30, -48.5, 1.0]},
+          {"name": "Cam_Grey_R2_MemorialSteps", "at": [-16.5, -3.5], "eye": 1.7, "look": [-15.5, 9, 2.5]},
+          {"name": "Cam_Grey_R2_AloniTreads", "at": [73, 8.5], "eye": 1.7, "look": [71, 16.5, 4.0]},
+          {"name": "Cam_Grey_R2_EastBankTreads", "at": [12.5, -2.5], "eye": 1.7, "look": [19, 3.5, 2.0]},
+          {"name": "Cam_Grey_R2_ChurchStair", "at": [-38, 4], "eye": 1.7, "look": [-40, -12, -1.0]},
+          {"name": "Cam_Grey_R3_FlagA_North", "at": [-30, -31], "eye": 1.7, "look": [-37, -12, -1.0]},
+          {"name": "Cam_Grey_R3_FlagA_SouthWest", "at": [-30, -31], "eye": 1.7, "look": [-42, -41, -2.5]},
+          {"name": "Cam_Grey_R3_B_EastStreet", "at": [5, -2], "eye": 1.7, "look": [22, 0, 0.5]},
+          {"name": "Cam_Grey_R3_B_SouthWest", "at": [5, -2], "eye": 1.7, "look": [-9, -13, 0.8]},
+          {"name": "Cam_Grey_r8_PathMemorial", "at": [-31.5, 31.0], "eye": 1.7, "look": [-24.5, 19.0, 0.5]},
+          {"name": "Cam_Grey_r8_PathEastAlley", "at": [48.0, 24.5], "eye": 1.7, "look": [37.0, 15.5, 0.5]},
+          {"name": "Cam_Grey_r8_PathWestAlley", "at": [-57.5, 27.5], "eye": 1.7, "look": [-51.5, 22.3, 0.5]},
+          {"name": "Cam_Grey_r8_PathAloni", "at": [72.3, 24.0], "eye": 1.7, "look": [71.5, 15.0, 0.5]},
+          {"name": "Cam_Grey_R3_OlivePress", "at": [30.2, -30.1], "eye": 1.7, "look": [35, -37.5, -1.5]},
+          {"name": "Cam_Grey_r9_C_Overview", "at": [56.0, -60.0], "eye": 26.0, "look": [27.0, -26.0, 0.0], "fov": 60},
+          {"name": "Cam_Grey_r9_YardEntrance", "at": [16.5, 0.5], "eye": 1.7, "look": [23.5, -17.0, -1.0]},
+          {"name": "Cam_Grey_r9_TerraceWall_FromYard", "at": [22.5, -14.0], "eye": 1.7, "look": [28.0, -28.0, -1.0]},
+          {"name": "Cam_Grey_r9_TerraceWall_FromC", "at": [29.0, -34.0], "eye": 1.7, "look": [26.5, -21.0, 0.5]},
+          {"name": "Cam_Grey_r9_C_FromEast", "at": [47.5, -23.5], "eye": 1.7, "look": [30.2, -30.1, 1.0]},
+          {"name": "Cam_Grey_r9_C_FromLowerLane", "at": [25.0, -49.0], "eye": 1.7, "look": [30.2, -30.1, 1.0]},
+          {"name": "Cam_Grey_r9_EastSpawn", "at": [72.5, 8.0], "eye": 1.7, "look": [50.0, -5.0, 1.0]},
+          {"name": "Cam_Grey_R3_OlivePressLane", "at": [18, -48], "eye": 1.7, "look": [35, -37.5, -1.5]}
+        ],
+        "routes": [
+          {"name": "Rock Roofs (switchback to the east roof)", "points": [[-26.5, 22.6], [-22, 22.6], [-14.5, 22], [-8.5, 21]]},
+          {"name": "East roofs (main street, outside stair, both roofs)", "points": [[37.5, 7.0], [37.2, 12.5], [37.8, 16.5], [40.4, 17.8], [38.6, 19.0], [36.4, 19.45], [35.5, 19.45], [35.5, 15.7], [33.0, 16.0], [28.6, 17.2]]},
+          {"name": "Memorial Terrace (steps, upper steps)", "points": [[-16.5, 1.6], [-16.5, 7.3], [-13.25, 7.2], [-13.25, 10.7], [-15.5, 11.6]]},
+          {"name": "West overwatch (plateia edge, two flights, terrace)", "points": [[-10.2, 5.0], [-8.2, 5.0], [-3.6, 5.0], [-2.3, 5.2], [-2.3, 10.9], [-1.0, 12.4], [-0.3, 11.7]]}
+        ]
+      },
+      "switchback_head": {
+        "task": 9, "locked": false, "seed": 92, "lane": "upper",
+        "notes": "Flag A zone on the Upper Road (2026-10-10): capture pad and the screens that keep its rings off the West starts. Built after upper_lane so it never moves that section's houses.",
+        "landmarks": [
+          {"name": "Switchback Head pad", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "paving E-W", "at": [-27.5, 44.5], "size": [10.27, 7.31], "z": [null, 6.84], "mat": "walk", "walk_top": true},
+            {"name": "paving N-S", "at": [-27.5, 44.5], "size": [7.29, 10.33], "z": [null, 6.84], "mat": "walk", "walk_top": true}]},
+          {"name": "Road edge garden wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "west run", "at": [-43.25, 32.1], "size": [8.65, 0.7], "z": [null, 8.95], "mat": "wall"}]},
+          {"name": "Rock Steps screen wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [-33.7, 27.95], "size": [4.95, 0.9], "z": [null, 8.2], "mat": "wall", "dir": [1.6, -4.7]}]}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_r4_A_FromRoadWest", "at": [-45.5, 36.4], "eye": 1.7, "look": [-27.5, 44.5, 1.5]},
+          {"name": "Cam_Grey_r4_A_FromSwitchback", "at": [-30.4, 31.2], "eye": 1.7, "look": [-27.5, 44.5, 1.5]},
+          {"name": "Cam_Grey_r4_A_FromRoadEast", "at": [-8.5, 35.4], "eye": 1.7, "look": [-27.5, 44.5, 1.5]},
+          {"name": "Cam_Grey_r4_A_FromPlateia", "at": [-17.5, -1.5], "eye": 1.7, "look": [-27.5, 44.5, 2.0]},
+          {"name": "Cam_Grey_r4_A_Overview", "at": [-12.0, 22.0], "eye": 30.0, "look": [-26.2, 41.0, 0.0], "fov": 60}
+        ],
+        "routes": [
+          {"name": "Switchback Head (road west, pad, road east)", "points": [[-35.0, 44.3], [-30.5, 44.0], [-27.5, 44.5], [-21.0, 42.6], [-17.0, 41.6]]},
+          {"name": "Switchback Head (pad to the switchback stair)", "points": [[-26.2, 45.5], [-27.5, 44.5], [-26.6, 41.2], [-27.6, 39.2]]}
+        ]
+      },
+      "first_contact": {
+        "task": 9, "locked": false, "seed": 93, "lane": "main",
+        "notes": "Review 5 fix 1 (2026-10-10): breaks the early West/East sight lines along Main Street (plateia south side to the east jog) and the one Lower Lane line, with small street pieces off the clear width. Built last so it never moves an earlier section.",
+        "landmarks": [
+          {"name": "Plateia periptero", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "kiosk", "at": [-15.0, -9.0], "size": [2.93, 1.97], "z": [null, 2.96], "mat": "wall"}]},
+          {"name": "Bridge-head fountain", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "fountain", "at": [18.5, -0.5], "size": [1.58, 1.62], "z": [null, 2.94], "mat": "wall", "dir": [0.26, 0.97]}]},
+          {"name": "Jog corner garden wall", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "wall", "at": [19.5, 2.0], "size": [3.96, 0.82], "z": [null, 2.27], "mat": "wall", "dir": [0.5, 0.87]}]},
+          {"name": "Lower lane garden shed", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "shed", "at": [-17.0, -44.6], "size": [1.63, 1.57], "z": [null, -1.17], "mat": "wall", "dir": [0.5, 0.87]}]}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_r6_OldLine", "at": [-25.8, -10.8], "eye": 1.7, "look": [30.0, 4.2, 1.5]},
+          {"name": "Cam_Grey_r6_Plateia", "at": [-24.0, -4.0], "eye": 1.7, "look": [10.0, -2.5, 1.5]},
+          {"name": "Cam_Grey_r6_MainStreetEast", "at": [33.0, 6.5], "eye": 1.7, "look": [0.0, -4.0, 1.5]},
+          {"name": "Cam_Grey_r6_BridgeDeck", "at": [6.5, -4.5], "eye": 5.5, "look": [30.0, 3.0, 1.5]}
+        ],
+        "routes": [
+          {"name": "Main Street (plateia past the periptero, bridge, fountain, jog)", "points": [[-22.0, -6.0], [-15.0, -5.5], [-6.0, -4.5], [5.0, -2.5], [14.0, -3.5], [21.0, -3.0], [24.5, 2.5], [30.0, 7.0]]}
+        ]
+      },
+      "olive_terrace": {
+        "task": 9, "locked": false, "seed": 95, "lane": "main",
+        "notes": "r10 (2026-10-13): the r9 Zone C bypass. The walker slipped through the 1.4 m slot between the 9d Garden terrace wall's east end and the EditorOnly Task 7 'Olive press terrace wall' strip, down the riser from the Skeleton yard (-2.3) to the press terraces (-4). This rubble olive-terrace retaining wall replaces those strips on the real riser: it starts inside the 9d Garden terrace wall (a north-south wall at u 14.9, no gap), follows the riser along the south edge of the yard-level lobe (v -29), turns up its east edge (u 21.2) and runs east along the press terrace riser to where the riser fades into the Press path ramp (u 41.6). Every course stands >= 1.7 m above the highest ground within 4 m on either face (a sprint jump with its run-up lands 1.3 m up: measured by the Containment Test). Built after first_contact so no earlier block moves.",
+        "replaces": ["Olive press terrace wall "],
+        "retaining": [
+          {"name": "Olive press terrace retaining wall", "label": "INVENTED", "closure": true, "mat": "rubble",
+           "points": [[14.6, -29.0], [17.6, -29.15], [20.3, -29.0], [21.2, -28.4], [21.3, -26.7], [21.65, -25.3], [24.6, -25.05], [28.3, -25.2], [33.1, -25.1], [37.4, -25.25], [41.6, -25.15]],
+           "thickness": [0.72, 0.9], "above": 1.7, "reach": [1.5, 2.5, 4.0], "jitter": 0.14, "course": [2.1, 2.9], "overlap": 0.35}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_r10_ClosureFromC", "at": [29.5, -31.5], "eye": 1.7, "look": [21.8, -25.6, 0.6]},
+          {"name": "Cam_Grey_r10_ClosureFromYard", "at": [25.8, -21.2], "eye": 1.7, "look": [17.5, -28.6, 0.4], "fov": 70.0}
+        ]
+      },
+      "boundary": {
+        "task": 16, "locked": false, "seed": 16, "kind": "boundary",
+        "closes": ["Upper lane - the rock road", "Main street", "Lower lane - gardens and olives"],
+        "lane_routes": {"Upper lane - the rock road": "upper", "Main street": "main", "Lower lane - gardens and olives": "lower"},
+        "notes": "Task 16 Boundaries, pulled forward in Task 9 r10 (user, 2026-10-13). The frame edge is the boundary line; everything outside is scenery. Lane ends: police roadblocks of precast jersey barriers (New Jersey safety shape 0.81 m high, 0.61 base, 0.15 top, forklift slots) with an invisible 4 m clip behind (BO2: visible barrier, invisible clip); the real cordon at u +-92 stays outside (Tasks 62-64). Elsewhere: courtyard walls (E, W) and garden / field walls (S, N) just inside the line with shut gates, clips where the inside is cliff top. OutOfBounds triggers in a ring outside. Built last, never moves an earlier section.",
+        "inset": 0.45, "clip_top_b": 30.0,
+        "barrier": {"profile": [[0.0, 0.305], [0.075, 0.305], [0.33, 0.126], [0.81, 0.0755]], "length": [3.0, 3.95], "yaw_jitter": 4.0,
+                    "gap": [0.08, 0.35], "nudge": 0.15, "slot": [0.3, 0.08, 0.6],
+                    "scale": 1.35, "span_margin": 0.3, "joint": [0.04, 0.1], "row_nudge": [0.04, 0.12], "pitch_max": 8.0,
+                    "set_in_search": [2.0, 4.0], "lap": 3.5},
+        "roadblocks": [
+          {"name": "Upper Road west roadblock", "lane": "upper", "end": "west"},
+          {"name": "Upper Road east roadblock", "lane": "upper", "end": "east"},
+          {"name": "Main Street west roadblock", "lane": "main", "end": "west"},
+          {"name": "Main Street east roadblock", "lane": "main", "end": "east"},
+          {"name": "Lower Lane west roadblock", "lane": "lower", "end": "west"},
+          {"name": "Lower Lane east roadblock", "lane": "lower", "end": "east"}
+        ],
+        "edges": [
+          {"name": "West edge courtyard wall", "side": "W", "range": [-52, 52], "mat": "wall", "above": 2.0, "gate_every": 24, "clip": 4.0},
+          {"name": "East edge courtyard wall", "side": "E", "range": [-52, 52], "mat": "wall", "above": 2.0, "gate_every": 27, "clip": 4.0},
+          {"name": "South edge garden wall", "side": "S", "range": [-75, 75], "mat": "rubble", "above": 1.9, "thickness": [0.6, 0.78], "gate_every": 31, "clip": 4.0},
+          {"name": "North edge field wall", "side": "N", "range": [-75, 75], "mat": "rubble", "above": 1.9, "thickness": [0.6, 0.78], "clip_above_b": 10.0, "gate_every": 33, "clip": 4.0}
+        ],
+        "jogs": [
+          {"name": "East spawn yard", "side": "E", "v": [-0.4, 8.6], "depth": 6.83, "note": "review 7 / r15 (user, 2026-10-17): the East edge courtyard wall steps out round the East starts onto the existing +1.7 m bench, so the rearmost start (u 70.8) gets 10.3 m of rear depth with no start moved and no timing changed. The yard is a declared frame extension (greybox meta `extensions`). Task 12 builds the courtyard."}
+        ],
+        "oob": {"depth": 30.0, "gap": 1.0, "z": [-30.0, 40.0]},
+        "cameras": [
+          {"name": "Cam_Grey_r10_Overview", "at": [-10.0, -105.0], "eye": 85.0, "look": [2.0, -2.0, 0.0], "fov": 55.0}
         ]
       }
     }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1834656935436320994}
   - component: {fileID: 1267807828048496027}
   - component: {fileID: 829554083664944649}
+  - component: {fileID: 5100832075414209875}
   m_Layer: 0
   m_Name: Walker
   m_TagString: Untagged
@@ -82,9 +83,41 @@ MonoBehaviour:
   sprintSpeed: 6.5
   crouchSpeed: 2.2
   acceleration: 40
+  deceleration: 55
   airControl: 0.3
   jumpHeight: 1
   gravity: -20
+  coyoteTime: 0.1
+  jumpBufferTime: 0.12
+  slideBoost: 1.25
+  slideDeceleration: 6
+  slideMaxTime: 1.8
+  slideSteerDegPerSec: 45
+  slideCooldown: 0.35
+  slideBufferTime: 0.3
+  slideEyeDrop: 0.15
+  cameraMotion: 1
+  bobCyclesPerMetre: 0.22
+  bobWalk: 0.022
+  bobSprint: 0.04
+  bobCrouch: 0.012
+  bobSway: 0.3
+  bobPitchDeg: 0.3
+  bobRollDeg: 0.1
+  bobRandomness: 0.25
+  cadenceJitter: 0.1
+  idleBreath: 0.014
+  idleBreathHz: 0.3
+  idleSwayDeg: 0.6
+  idleDrift: 0.012
+  strafeRollDeg: 1.4
+  landingImpulse: 0.25
+  landingMinSpeed: 4.5
+  jumpDip: 1
+  airPitchPerMps: 0.12
+  jumpFovKick: 1.5
+  sprintFovKick: 2.5
+  slideFovKick: 4
   viewCamera: {fileID: 4296857459096320062}
   mouseSensitivity: 0.1
   gamepadLookSpeed: 180
@@ -106,6 +139,22 @@ MonoBehaviour:
   sampleWindow: 0.5
   walker: {fileID: 1267807828048496027}
   visible: 1
+--- !u!114 &5100832075414209875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474919258172488875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f45da281acf8f4fb3701205a32b838, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Lockdown.LockdownCompass
+  viewCamera: {fileID: 4296857459096320062}
+  visible: 1
+  diameter: 132
+  margin: 16
 --- !u!1 &7988872795814153126
 GameObject:
   m_ObjectHideFlags: 0

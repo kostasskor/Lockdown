@@ -234,6 +234,9 @@ def rbf(centres, values, sigma):
 
 
 bal = G["balance"]
+for t in bal["targets"]:   # a target with its own "at" stays put when the stake of that name moves (Task 9: Flag A)
+    if "at" in t:
+        points[t["id"]] = tuple(t["at"])
 anchor_pts = [points["Flag_B"]] + [points[t["id"]] for t in bal["targets"]] + bal["keep"]
 offsets = [0.0] * (1 + len(bal["targets"]) + len(bal["keep"]))  # the correction passes below find them
 
@@ -634,6 +637,10 @@ def grade(offsets):
         known[z_lo] = lane_height_at(profiles[lo], pts[0])
         known[z_hi] = lane_height_at(profiles[hi], pts[-1])
         soft[z_lo | z_hi] = False
+        if not z_hi.any():  # a connector that stops on a pad short of its lower lane (r9: Skeleton yard entrance)
+            for a_id, fn in pad_fn.items():
+                if area_depth(areas[a_id], (u[-1], v[-1])) > 0:
+                    known[-1], soft[-1] = float(fn(u[-1:], v[-1:])[0]), False
         for ld in c.get("landings", []):  # fixed landings, e.g. the East overwatch on the ravine east bank
             lu_, lv_ = ld["at"]
             on = np.hypot(u - lu_, v - lv_) <= ld["size"][0] / 2 + 0.5  # + smoothing allowance
