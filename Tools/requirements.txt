@@ -1,0 +1,12 @@
+# Python dependencies of the data tools in Tools/ (Python 3.11+).
+# Each script's docstring shows its exact `uv run --with ...` command; this file lists them all, for
+#   pip install -r Tools/requirements.txt
+numpy
+scipy
+pillow
+matplotlib
+contourpy
+scikit-image
+rasterio
+requests
+meshoptimizer

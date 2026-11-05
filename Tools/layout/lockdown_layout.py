@@ -36,14 +36,16 @@ CONTOUR_MINOR, CONTOUR_MAJOR = 5.0, 25.0
 LABEL_COLORS = {"REAL": (70, 200, 90), "ADAPTED": (245, 180, 40), "INVENTED": (190, 110, 255)}
 TEAM_WEST, TEAM_EAST = (60, 200, 255), (255, 90, 170)
 SUN_COLOR, SUN_SOFT, LINE_COLOR = (255, 120, 20), (255, 210, 80), (235, 235, 235)
-FONT_DIR = Path("C:/Windows/Fonts")
 
 
 def font(size, bold=False):
-    try:
-        return ImageFont.truetype(str(FONT_DIR / ("arialbd.ttf" if bold else "arial.ttf")), size)
-    except OSError:
-        return ImageFont.load_default()
+    # Pillow looks font names up in the system font folders (Arial on Windows, DejaVu on most Linux/macOS setups).
+    for name in (("arialbd.ttf", "DejaVuSans-Bold.ttf") if bold else ("arial.ttf", "DejaVuSans.ttf")):
+        try:
+            return ImageFont.truetype(name, size)
+        except OSError:
+            pass
+    return ImageFont.load_default()
 
 
 # ---------------------------------------------------------------- frame and ground

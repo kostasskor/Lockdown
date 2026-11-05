@@ -1365,10 +1365,13 @@ def to_px(u, v):
 
 
 def font(size, bold=False):
-    try:
-        return ImageFont.truetype("C:/Windows/Fonts/" + ("arialbd.ttf" if bold else "arial.ttf"), size)
-    except OSError:
-        return ImageFont.load_default()
+    # Pillow looks font names up in the system font folders (Arial on Windows, DejaVu on most Linux/macOS setups).
+    for name in (("arialbd.ttf", "DejaVuSans-Bold.ttf") if bold else ("arial.ttf", "DejaVuSans.ttf")):
+        try:
+            return ImageFont.truetype(name, size)
+        except OSError:
+            pass
+    return ImageFont.load_default()
 
 
 BOX_COLORS = {"house": (235, 235, 235), "bridge": (80, 220, 255), "landmark_real": (70, 200, 90),
