@@ -1,4 +1,4 @@
-"""Shared loader for the layout reviews (docs/reviews/review_2_task9.md).
+"""Shared loader for the layout review scripts (review2_layout.py, ring_probe.py).
 
 Reuses the ground, blocker, line-of-sight and pathing code of Tools/review/playground_checks.py (same raster, same
 occluders, same eye heights) by running it silently and handing back its namespace. Nothing in the project is written.

@@ -1,4 +1,4 @@
-"""Layout review 2 (post Task 9): measurements behind docs/reviews/review_2_task9.md.
+"""Layout review measurements: flag and spawn timings, sightlines, peeks, height, containment, sun, routes, perches.
 
 Run from the project root:
     uv run --with numpy --with scipy --with pillow Tools/review/review2_layout.py [section ...] [--checks PATH]
