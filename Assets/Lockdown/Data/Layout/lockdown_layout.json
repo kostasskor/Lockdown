@@ -768,7 +768,8 @@
         ]
       },
       "upper_lane": {
-        "task": 9, "locked": false, "seed": 9, "lane": "upper",
+        "task": 9, "locked": true, "seed": 9, "lane": "upper",
+        "removed": "2026-10-27 (user, Task 10a review): the Church lane wall and the Church yard south wall (Zone A peek blockers from review 3, step 9f) are deleted: Flag A left the Church yard on 2026-10-10 and the church moved onto the yard pad, facing west across it.",
         "replaces": ["Upper Road south", "House upper ", "Rock Roofs", "Olive press$"],
         "landmarks": [
           {"name": "Cliff-toe outcrop", "label": "INVENTED", "ref": "street", "parts": [
@@ -825,12 +826,8 @@
             {"name": "wall", "at": [32.75, -4.0], "size": [9.4, 0.94], "z": [null, 2.6], "mat": "wall"}]},
           {"name": "East low roof parapet", "label": "INVENTED", "ref": "b", "parts": [
             {"name": "parapet E", "at": [41.65, -12.25], "size": [0.7, 6.4], "z": [1.0, 2.2], "mat": "cover"}]},
-          {"name": "Church lane wall", "label": "INVENTED", "ref": "b", "parts": [
-            {"name": "wall", "at": [-36.2, -17.45], "size": [2.35, 17.3], "z": [null, 1.6], "mat": "wall"}]},
           {"name": "Mini-market party wall", "label": "INVENTED", "ref": "b", "parts": [
             {"name": "wall", "at": [-27.3, -15.5], "size": [1.4, 3.2], "z": [null, 4.5], "mat": "wall"}]},
-          {"name": "Church yard south wall", "label": "INVENTED", "ref": "b", "parts": [
-            {"name": "wall", "at": [-33.0, -36.0], "size": [4.8, 1.4], "z": [null, 1.0], "mat": "wall"}]},
           {"name": "Kafeneio arcade pier", "label": "INVENTED", "ref": "b", "parts": [
             {"name": "pier", "at": [-10.2, -10.4], "size": [0.95, 4.6], "z": [null, 3.0], "mat": "wall"}]},
           {"name": "Olive press", "label": "INVENTED", "ref": "b", "parts": [
@@ -922,7 +919,7 @@
         ]
       },
       "switchback_head": {
-        "task": 9, "locked": false, "seed": 92, "lane": "upper",
+        "task": 9, "locked": true, "seed": 92, "lane": "upper",
         "notes": "Flag A zone on the Upper Road (2026-10-10): capture pad and the screens that keep its rings off the West starts. Built after upper_lane so it never moves that section's houses.",
         "landmarks": [
           {"name": "Switchback Head pad", "label": "INVENTED", "ref": "b", "parts": [
@@ -946,7 +943,7 @@
         ]
       },
       "first_contact": {
-        "task": 9, "locked": false, "seed": 93, "lane": "main",
+        "task": 9, "locked": true, "seed": 93, "lane": "main",
         "notes": "Review 5 fix 1 (2026-10-10): breaks the early West/East sight lines along Main Street (plateia south side to the east jog) and the one Lower Lane line, with small street pieces off the clear width. Built last so it never moves an earlier section.",
         "landmarks": [
           {"name": "Plateia periptero", "label": "INVENTED", "ref": "b", "parts": [
@@ -969,7 +966,7 @@
         ]
       },
       "olive_terrace": {
-        "task": 9, "locked": false, "seed": 95, "lane": "main",
+        "task": 9, "locked": true, "seed": 95, "lane": "main",
         "notes": "r10 (2026-10-13): the r9 Zone C bypass. The walker slipped through the 1.4 m slot between the 9d Garden terrace wall's east end and the EditorOnly Task 7 'Olive press terrace wall' strip, down the riser from the Skeleton yard (-2.3) to the press terraces (-4). This rubble olive-terrace retaining wall replaces those strips on the real riser: it starts inside the 9d Garden terrace wall (a north-south wall at u 14.9, no gap), follows the riser along the south edge of the yard-level lobe (v -29), turns up its east edge (u 21.2) and runs east along the press terrace riser to where the riser fades into the Press path ramp (u 41.6). Every course stands >= 1.7 m above the highest ground within 4 m on either face (a sprint jump with its run-up lands 1.3 m up: measured by the Containment Test). Built after first_contact so no earlier block moves.",
         "replaces": ["Olive press terrace wall "],
         "retaining": [
@@ -983,7 +980,7 @@
         ]
       },
       "boundary": {
-        "task": 16, "locked": false, "seed": 16, "kind": "boundary",
+        "task": 16, "locked": true, "seed": 16, "kind": "boundary",
         "closes": ["Upper lane - the rock road", "Main street", "Lower lane - gardens and olives"],
         "lane_routes": {"Upper lane - the rock road": "upper", "Main street": "main", "Lower lane - gardens and olives": "lower"},
         "notes": "Task 16 Boundaries, pulled forward in Task 9 r10 (user, 2026-10-13). The frame edge is the boundary line; everything outside is scenery. Lane ends: police roadblocks of precast jersey barriers (New Jersey safety shape 0.81 m high, 0.61 base, 0.15 top, forklift slots) with an invisible 4 m clip behind (BO2: visible barrier, invisible clip); the real cordon at u +-92 stays outside (Tasks 62-64). Elsewhere: courtyard walls (E, W) and garden / field walls (S, N) just inside the line with shut gates, clips where the inside is cliff top. OutOfBounds triggers in a ring outside. Built last, never moves an earlier section.",
@@ -1012,6 +1009,214 @@
         "oob": {"depth": 30.0, "gap": 1.0, "z": [-30.0, 40.0]},
         "cameras": [
           {"name": "Cam_Grey_r10_Overview", "at": [-10.0, -105.0], "eye": 85.0, "look": [2.0, -2.0, 0.0], "fov": 55.0}
+        ]
+      },
+      "church_block": {
+        "task": 10, "locked": true, "seed": 10, "lane": "lower",
+        "notes": "Task 10a r2 (2026-10-27, user after the Task 10 critique): the church block from houses/landmark_church, oriented (entrance west, altar east) and in proportion to the photos. A closed stone church (nave ~11.9 x 6.4 m, eaves ~4.6 m, tiled gable roof, half-round apse east) stands on the north half of the Church yard pad (-3.0), its west front (pointed main door, small round-arched door, rose window) facing a wide paved yard: in front of it (to the Church Stair foot) and along its south side to the Lower Lane. The square bell tower (~13.6 m, two-arch belfry) stands at the front's south corner, flush with the facade. A small freestanding chapel (curved gable, door west, a row of pithoi in front) stands across the yard's south-east corner; the 2.5 m gap between them is the yard's east way out to the gardens. A stone bench runs along the church's south side (split at the south door). The old church terrace west of the Church Stair becomes a garden terrace with olives and a small whitewashed old building under the bank. Enterable on the ground floor only (user, 2026-10-27: the Church yard zone covers the church): 3 doorways (west pointed main door 1.3 m onto the yard, north door onto the alley, south door near the east end onto the side yard), a templon screen in front of the apse, stasidia rows along the walls and a candle stand as cover; the roof is unreachable. Heights ref b (metres above Flag B). Built after boundary so no earlier block moves.",
+        "replaces": ["Church$", "Bell tower$", "Chapel$"],
+        "landmarks": [
+          {"name": "Church", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "wall N west", "at": [-30.705, -24.41], "size": [3.31, 0.62], "z": [null, 1.62], "mat": "rubble"},
+            {"name": "north door lintel", "at": [-28.4, -24.41], "size": [1.3, 0.62], "z": [-0.6, 1.6], "mat": "rubble"},
+            {"name": "wall N east", "at": [-24.125, -24.41], "size": [7.25, 0.62], "z": [null, 1.63], "mat": "rubble"},
+            {"name": "wall S west", "at": [-29.005, -30.21], "size": [6.71, 0.62], "z": [null, 1.61], "mat": "rubble"},
+            {"name": "south door lintel", "at": [-25.0, -30.21], "size": [1.3, 0.62], "z": [-0.6, 1.6], "mat": "rubble"},
+            {"name": "wall S east", "at": [-22.425, -30.21], "size": [3.85, 0.62], "z": [null, 1.62], "mat": "rubble"},
+            {"name": "west front south", "at": [-32.05, -29.085], "size": [0.62, 2.87], "z": [null, 1.64], "mat": "rubble"},
+            {"name": "main door lintel", "at": [-32.05, -27.0], "size": [0.62, 1.3], "z": [-0.35, 1.62], "mat": "rubble"},
+            {"name": "west front north", "at": [-32.05, -25.225], "size": [0.62, 2.25], "z": [null, 1.63], "mat": "rubble"},
+            {"name": "east wall", "at": [-20.81, -27.31], "size": [0.62, 6.42], "z": [null, 1.6], "mat": "rubble"},
+            {"name": "apse", "at": [-20.5, -27.31], "size": [4.2, 4.2], "z": [null, 0.92], "mat": "rubble", "shape": "cylinder"},
+            {"name": "apse roof", "at": [-20.5, -27.31], "size": [4.45, 4.45], "z": [0.92, 1.17], "mat": "low", "shape": "cylinder"},
+            {"name": "templon screen", "at": [-22.85, -27.31], "size": [0.3, 5.3], "z": [null, -0.5], "mat": "wall"},
+            {"name": "roof eaves", "at": [-26.43, -27.31], "size": [12.4, 6.94], "z": [1.6, 2.13], "mat": "low"},
+            {"name": "roof middle", "at": [-26.43, -27.31], "size": [12.4, 4.6], "z": [2.13, 2.66], "mat": "low"},
+            {"name": "roof ridge", "at": [-26.43, -27.31], "size": [12.4, 2.3], "z": [2.66, 3.18], "mat": "low"},
+            {"name": "stasidia N", "at": [-25.15, -25.02], "size": [3.5, 0.58], "z": [null, -2.0], "mat": "cover"},
+            {"name": "stasidia S", "at": [-28.75, -29.6], "size": [5.1, 0.58], "z": [null, -2.0], "mat": "cover"},
+            {"name": "candle stand", "at": [-30.6, -28.7], "size": [0.6, 0.6], "z": [null, -1.95], "mat": "cover", "shape": "cylinder"},
+            {"name": "main door pointed tympanum", "at": [-32.4, -27.0], "size": [0.06, 1.3], "z": [-0.3, 0.25], "mat": "trim", "collider": false},
+            {"name": "small arched door (shut)", "at": [-32.4, -29.55], "size": [0.06, 0.85], "z": [-3.0, -1.05], "mat": "trim", "collider": false},
+            {"name": "small window", "at": [-32.4, -29.55], "size": [0.06, 0.45], "z": [-0.45, 0.05], "mat": "trim", "collider": false},
+            {"name": "rose window", "at": [-32.4, -27.31], "size": [0.06, 0.82], "z": [0.38, 1.2], "mat": "trim", "collider": false},
+            {"name": "arched window S1", "at": [-27.9, -30.55], "size": [0.62, 0.06], "z": [-1.25, 0.2], "mat": "trim", "collider": false},
+            {"name": "arched window S2", "at": [-23.1, -30.55], "size": [0.6, 0.06], "z": [-1.2, 0.22], "mat": "trim", "collider": false},
+            {"name": "royal doors", "at": [-23.02, -27.31], "size": [0.04, 1.2], "z": [-3.0, -1.0], "mat": "trim", "collider": false},
+            {"name": "side bench west", "at": [-28.5, -30.74], "size": [5.0, 0.56], "z": [null, -2.47], "mat": "walk"},
+            {"name": "side bench east", "at": [-22.7, -30.74], "size": [2.6, 0.56], "z": [null, -2.48], "mat": "walk"}]},
+          {"name": "Bell tower", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "shaft", "at": [-30.64, -32.27], "size": [3.68, 3.7], "z": [null, 7.4], "mat": "rubble"},
+            {"name": "belfry pier NE", "at": [-29.225, -30.845], "size": [0.85, 0.85], "z": [7.4, 9.7], "mat": "rubble"},
+            {"name": "belfry pier NW", "at": [-32.055, -30.845], "size": [0.85, 0.85], "z": [7.4, 9.7], "mat": "rubble"},
+            {"name": "belfry pier SE", "at": [-29.225, -33.695], "size": [0.85, 0.85], "z": [7.4, 9.7], "mat": "rubble"},
+            {"name": "belfry pier SW", "at": [-32.055, -33.695], "size": [0.85, 0.85], "z": [7.4, 9.7], "mat": "rubble"},
+            {"name": "belfry cap", "at": [-30.64, -32.27], "size": [3.9, 3.92], "z": [9.7, 10.22], "mat": "rubble"},
+            {"name": "roof step", "at": [-30.64, -32.27], "size": [2.4, 2.38], "z": [10.22, 10.6], "mat": "low"},
+            {"name": "bell", "at": [-30.64, -32.27], "size": [0.8, 0.8], "z": [8.0, 8.9], "mat": "trim", "shape": "cylinder", "collider": false},
+            {"name": "cross", "at": [-30.64, -32.27], "size": [0.12, 0.12], "z": [10.6, 11.8], "mat": "trim", "collider": false},
+            {"name": "cross arm", "at": [-30.64, -32.27], "size": [0.7, 0.12], "z": [11.2, 11.32], "mat": "trim", "collider": false}]},
+          {"name": "Chapel", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "body", "at": [-22.75, -35.0], "size": [4.5, 4.0], "z": [null, -0.15], "mat": "rubble"},
+            {"name": "curved gable", "at": [-24.81, -35.0], "size": [0.42, 4.0], "z": [-0.15, 0.55], "mat": "rubble"},
+            {"name": "gable crown", "at": [-24.81, -35.0], "size": [0.42, 2.0], "z": [0.55, 1.02], "mat": "rubble"},
+            {"name": "roof", "at": [-22.72, -35.0], "size": [4.66, 4.16], "z": [-0.15, 0.1], "mat": "low"},
+            {"name": "door (shut)", "at": [-25.03, -35.05], "size": [0.06, 1.0], "z": [-3.0, -0.95], "mat": "trim", "collider": false},
+            {"name": "tympanum", "at": [-25.03, -35.05], "size": [0.06, 1.0], "z": [-0.9, -0.45], "mat": "trim", "collider": false}]},
+          {"name": "Church yard", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "well head", "at": [-30.2, -36.4], "size": [1.25, 1.25], "z": [null, -2.1], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos front N", "at": [-32.95, -25.15], "size": [0.7, 0.7], "z": [null, -2.15], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos front S", "at": [-32.95, -28.65], "size": [0.68, 0.68], "z": [null, -2.18], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos NW 1", "at": [-36.8, -25.0], "size": [0.84, 0.84], "z": [null, -1.86], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos NW 2", "at": [-35.85, -24.35], "size": [0.8, 0.8], "z": [null, -1.9], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos chapel 1", "at": [-25.9, -36.55], "size": [0.84, 0.84], "z": [null, -1.85], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos chapel 2", "at": [-25.95, -33.45], "size": [0.8, 0.8], "z": [null, -1.9], "mat": "cover", "shape": "cylinder"},
+            {"name": "pithos chapel 3", "at": [-26.85, -36.2], "size": [0.78, 0.78], "z": [null, -1.93], "mat": "cover", "shape": "cylinder"},
+            {"name": "lane wall", "at": [-35.9, -37.85], "size": [3.4, 0.5], "z": [null, -1.97], "mat": "cover"},
+            {"name": "pine 1 trunk", "at": [-37.4, -34.6], "size": [0.52, 0.52], "z": [null, 4.2], "mat": "bark", "shape": "cylinder"},
+            {"name": "pine 1 canopy", "at": [-37.4, -34.6], "size": [6.0, 6.0], "z": [2.6, 7.9], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "pine 2 trunk", "at": [-34.6, -20.4], "size": [0.5, 0.5], "z": [null, 4.6], "mat": "bark", "shape": "cylinder"},
+            {"name": "pine 2 canopy", "at": [-34.6, -20.4], "size": [5.6, 5.6], "z": [3.1, 8.3], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true}]},
+          {"name": "Old garden terrace", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "whitewashed old building", "at": [-52.75, -22.65], "size": [5.7, 4.5], "z": [null, 1.45], "mat": "wall"},
+            {"name": "garden wall", "at": [-45.3, -28.4], "size": [3.6, 0.5], "z": [null, -1.27], "mat": "cover"},
+            {"name": "olive 1 trunk", "at": [-53.2, -30.6], "size": [0.42, 0.42], "z": [null, 0.0], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 1 canopy", "at": [-53.2, -30.6], "size": [4.4, 4.4], "z": [-0.2, 2.4], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 2 trunk", "at": [-46.4, -25.9], "size": [0.4, 0.4], "z": [null, -0.1], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 2 canopy", "at": [-46.4, -25.9], "size": [4.0, 4.0], "z": [-0.2, 2.2], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 3 trunk", "at": [-50.6, -36.7], "size": [0.44, 0.44], "z": [null, 0.0], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 3 canopy", "at": [-50.6, -36.7], "size": [4.6, 4.6], "z": [-0.15, 2.5], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true}]}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_t10_Overview", "at": [-22.0, -66.0], "eye": 32.0, "look": [-35.0, -28.0, 0.0], "fov": 55.0},
+          {"name": "Cam_Grey_t10_ChurchFront", "at": [-41.2, -36.6], "eye": 1.7, "look": [-32.4, -27.0, 3.2], "fov": 70.0},
+          {"name": "Cam_Grey_t10_ChurchFromLane", "at": [-36.5, -44.5], "eye": 1.7, "look": [-28.0, -29.0, 3.0], "fov": 70.0},
+          {"name": "Cam_Grey_t10_GardenTerrace", "at": [-44.6, -35.2], "eye": 1.7, "look": [-55.0, -22.0, 1.5], "fov": 70.0},
+          {"name": "Cam_Grey_t10_NaveWest", "at": [-31.2, -26.4], "eye": 1.6, "look": [-23.2, -27.3, 1.4], "fov": 75.0},
+          {"name": "Cam_Grey_t10_NaveEast", "at": [-23.6, -27.6], "eye": 1.6, "look": [-32.0, -27.0, 1.2], "fov": 75.0},
+          {"name": "Cam_Grey_t10_SideYard", "at": [-30.4, -39.0], "eye": 1.7, "look": [-24.6, -30.0, 1.3], "fov": 72.0}
+        ],
+        "routes": [
+          {"name": "Church yard (stair foot, front, south side, east passage)", "points": [[-39.2, -35.5], [-34.6, -27.3], [-34.4, -35.0], [-27.5, -35.0], [-27.5, -31.8], [-22.8, -31.75], [-20.4, -30.7]]},
+          {"name": "Church yard to the Lower Lane", "points": [[-35.5, -34.0], [-32.5, -36.8], [-32.0, -40.4]]},
+          {"name": "Church north alley", "points": [[-33.6, -22.8], [-24.0, -22.8], [-19.0, -22.9]]},
+          {"name": "Garden terrace to the Lower Lane", "points": [[-50.0, -26.5], [-55.5, -36.0], [-55.0, -41.5], [-55.0, -46.0]]},
+          {"name": "Church (west door, nave, north door)", "points": [[-34.6, -27.0], [-30.0, -27.0], [-28.4, -26.6], [-28.4, -22.8]]},
+          {"name": "Church (south door, nave, west door)", "points": [[-25.0, -32.2], [-25.0, -28.5], [-27.5, -27.3], [-34.0, -27.0]]}
+        ]
+      },
+      "lower_lane": {
+        "task": 10, "locked": false, "seed": 101, "lane": "lower",
+        "notes": "Task 10b (2026-10-27): the Lower Lane between the spawn ends (u -56..+56; Tasks 11/12 build the ends). Downhill (south) side stays gardens with low dry-stone walls, olives and cypresses (the vista side; also keeps the lane corridor wide), uphill (north) side: the church terrace's retaining wall with two gaps down to the lane (W), the upper and lower garden terraces behind the kafeneio with a garden house on the step and garden steps down by the ravine (centre), the hut by the olive press (same footprint as the Task 7 block) and a lane house between Flag C and the East lane (E). Stone steps where a terrain step is too steep to climb (church terrace gaps, incl. the 1 m drainage ditch along the lane bench; the east garden pocket up to the lane). Checked by Tools/review/lower_lane_ways.py: every cut has >= 2 two-way ways or >= 8 m of open way. The Church yard's east way out stays a one-way drop over the terrace step (u -21..-20): the Task 14 Rooftop route placeholders stand where steps would land. Heights ref b. Built after church_block so no earlier block moves.",
+        "replaces": ["House lower N 018$", "House lower N 019$", "House lower N 020$", "House lower N 021$", "House lower N 022$", "House lower S 026$", "House lower S 027$", "House lower S 028$", "Terrace wall 005$", "Terrace wall 006$", "Terrace wall 007$", "Terrace wall 008$", "Terrace wall 010$", "Terrace wall 011$", "Terrace wall 012$", "Terrace wall 013$", "Terrace wall 014$"],
+        "landmarks": [
+          {"name": "Church terrace wall", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "piece W", "at": [-52.5, -42.47], "size": [3.53, 0.6], "z": [null, -1.2], "mat": "rubble", "dir": [0.963, 0.269]},
+            {"name": "piece M", "at": [-47.0, -40.93], "size": [3.32, 0.62], "z": [null, -1.15], "mat": "rubble", "dir": [0.963, 0.269]},
+            {"name": "piece E", "at": [-42.6, -39.71], "size": [1.66, 0.58], "z": [null, -1.22], "mat": "rubble", "dir": [0.963, 0.269]},
+            {"name": "gap W step 01", "at": [-49.7, -41.145], "size": [2.0, 0.291], "z": [null, -2.333], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 02", "at": [-49.7, -41.436], "size": [2.0, 0.291], "z": [null, -2.392], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 03", "at": [-49.7, -41.727], "size": [2.0, 0.291], "z": [null, -2.506], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 04", "at": [-49.7, -42.018], "size": [2.0, 0.291], "z": [null, -2.639], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 05", "at": [-49.7, -42.309], "size": [2.0, 0.291], "z": [null, -2.83], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 06", "at": [-49.7, -42.6], "size": [2.0, 0.291], "z": [null, -3.03], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 07", "at": [-49.7, -42.891], "size": [2.0, 0.291], "z": [null, -3.25], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 08", "at": [-49.7, -43.182], "size": [2.0, 0.291], "z": [null, -3.469], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 09", "at": [-49.7, -43.473], "size": [2.0, 0.291], "z": [null, -3.67], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 10", "at": [-49.7, -43.764], "size": [2.0, 0.291], "z": [null, -3.852], "mat": "walk", "walk_top": true},
+            {"name": "gap W step 11", "at": [-49.7, -44.055], "size": [2.0, 0.291], "z": [null, -3.98], "mat": "walk", "walk_top": true},
+            {"name": "gap W ditch step 01", "at": [-49.7, -44.56], "size": [2.0, 0.32], "z": [null, -3.721], "mat": "walk", "walk_top": true},
+            {"name": "gap W ditch step 02", "at": [-49.7, -44.88], "size": [2.0, 0.32], "z": [null, -3.471], "mat": "walk", "walk_top": true},
+            {"name": "gap W ditch step 03", "at": [-49.7, -45.2], "size": [2.0, 0.32], "z": [null, -3.336], "mat": "walk", "walk_top": true},
+            {"name": "gap W ditch step 04", "at": [-49.7, -45.52], "size": [2.0, 0.32], "z": [null, -3.282], "mat": "walk", "walk_top": true},
+            {"name": "gap W ditch step 05", "at": [-49.7, -45.84], "size": [2.0, 0.32], "z": [null, -3.268], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 01", "at": [-44.4, -39.555], "size": [1.8, 0.309], "z": [null, -2.319], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 02", "at": [-44.4, -39.864], "size": [1.8, 0.309], "z": [null, -2.369], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 03", "at": [-44.4, -40.173], "size": [1.8, 0.309], "z": [null, -2.481], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 04", "at": [-44.4, -40.482], "size": [1.8, 0.309], "z": [null, -2.617], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 05", "at": [-44.4, -40.791], "size": [1.8, 0.309], "z": [null, -2.811], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 06", "at": [-44.4, -41.1], "size": [1.8, 0.309], "z": [null, -3.023], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 07", "at": [-44.4, -41.409], "size": [1.8, 0.309], "z": [null, -3.256], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 08", "at": [-44.4, -41.718], "size": [1.8, 0.309], "z": [null, -3.485], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 09", "at": [-44.4, -42.027], "size": [1.8, 0.309], "z": [null, -3.706], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 10", "at": [-44.4, -42.336], "size": [1.8, 0.309], "z": [null, -3.88], "mat": "walk", "walk_top": true},
+            {"name": "gap E step 11", "at": [-44.4, -42.645], "size": [1.8, 0.309], "z": [null, -4.04], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 01", "at": [-44.4, -44.043], "size": [1.8, 0.286], "z": [null, -4.169], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 02", "at": [-44.4, -44.329], "size": [1.8, 0.286], "z": [null, -3.949], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 03", "at": [-44.4, -44.614], "size": [1.8, 0.286], "z": [null, -3.699], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 04", "at": [-44.4, -44.9], "size": [1.8, 0.286], "z": [null, -3.496], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 05", "at": [-44.4, -45.186], "size": [1.8, 0.286], "z": [null, -3.408], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 06", "at": [-44.4, -45.471], "size": [1.8, 0.286], "z": [null, -3.37], "mat": "walk", "walk_top": true},
+            {"name": "gap E ditch step 07", "at": [-44.4, -45.757], "size": [1.8, 0.286], "z": [null, -3.344], "mat": "walk", "walk_top": true}]},
+          {"name": "South gardens", "label": "REAL", "ref": "b", "parts": [
+            {"name": "lane wall W", "at": [-27.0, -43.3], "size": [5.2, 0.55], "z": [null, -2.75], "mat": "cover", "dir": [0.994, -0.11]},
+            {"name": "lane wall E", "at": [-20.6, -44.0], "size": [4.0, 0.52], "z": [null, -2.78], "mat": "cover", "dir": [0.994, -0.11]},
+            {"name": "olive 1 trunk", "at": [-26.8, -47.0], "size": [0.42, 0.42], "z": [null, -2.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 1 canopy", "at": [-26.8, -47.0], "size": [4.4, 4.4], "z": [-2.45, 0.15], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 2 trunk", "at": [-21.4, -48.2], "size": [0.4, 0.4], "z": [null, -2.35], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 2 canopy", "at": [-21.4, -48.2], "size": [4.1, 4.1], "z": [-2.4, 0.1], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "cypress 1", "at": [-29.0, -50.0], "size": [1.55, 1.55], "z": [null, 4.6], "mat": "foliage", "shape": "cylinder"},
+            {"name": "cypress 2", "at": [-11.6, -49.2], "size": [1.6, 1.6], "z": [null, 4.9], "mat": "foliage", "shape": "cylinder"},
+            {"name": "cypress 3", "at": [-7.2, -50.2], "size": [1.5, 1.5], "z": [null, 4.3], "mat": "foliage", "shape": "cylinder"},
+            {"name": "cypress at the bend", "at": [-32.2, -43.6], "size": [1.6, 1.6], "z": [null, 5.4], "mat": "foliage", "shape": "cylinder"}]},
+          {"name": "Garden terraces", "label": "REAL", "ref": "b", "parts": [
+            {"name": "garden house", "at": [-10.5, -33.15], "size": [4.8, 5.9], "z": [null, 1.72], "mat": "wall"},
+            {"name": "olive 3 trunk", "at": [-10.9, -39.0], "size": [0.42, 0.42], "z": [null, -2.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 3 canopy", "at": [-10.9, -39.0], "size": [4.3, 4.3], "z": [-2.4, 0.15], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 4 trunk", "at": [-7.6, -26.0], "size": [0.4, 0.4], "z": [null, -0.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 4 canopy", "at": [-7.6, -26.0], "size": [4.2, 4.2], "z": [-0.4, 2.1], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 5 trunk", "at": [-11.2, -25.0], "size": [0.44, 0.44], "z": [null, -0.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 5 canopy", "at": [-11.2, -25.0], "size": [4.5, 4.5], "z": [-0.35, 2.2], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "step 01", "at": [-3.2, -30.567], "size": [2.2, 0.333], "z": [null, -2.304], "mat": "walk", "walk_top": true},
+            {"name": "step 02", "at": [-3.2, -30.9], "size": [2.2, 0.333], "z": [null, -2.383], "mat": "walk", "walk_top": true},
+            {"name": "step 03", "at": [-3.2, -31.233], "size": [2.2, 0.333], "z": [null, -2.509], "mat": "walk", "walk_top": true},
+            {"name": "step 04", "at": [-3.2, -31.567], "size": [2.2, 0.333], "z": [null, -2.759], "mat": "walk", "walk_top": true},
+            {"name": "step 05", "at": [-3.2, -31.9], "size": [2.2, 0.333], "z": [null, -3.009], "mat": "walk", "walk_top": true},
+            {"name": "step 06", "at": [-3.2, -32.233], "size": [2.2, 0.333], "z": [null, -3.259], "mat": "walk", "walk_top": true},
+            {"name": "step 07", "at": [-3.2, -32.567], "size": [2.2, 0.333], "z": [null, -3.509], "mat": "walk", "walk_top": true},
+            {"name": "step 08", "at": [-3.2, -32.9], "size": [2.2, 0.333], "z": [null, -3.759], "mat": "walk", "walk_top": true},
+            {"name": "step 09", "at": [-3.2, -33.233], "size": [2.2, 0.333], "z": [null, -4.009], "mat": "walk", "walk_top": true},
+            {"name": "step 10", "at": [-3.2, -33.567], "size": [2.2, 0.333], "z": [null, -4.179], "mat": "walk", "walk_top": true},
+            {"name": "step 11", "at": [-3.2, -33.9], "size": [2.2, 0.333], "z": [null, -4.164], "mat": "walk", "walk_top": true},
+            {"name": "step 12", "at": [-3.2, -34.233], "size": [2.2, 0.333], "z": [null, -4.164], "mat": "walk", "walk_top": true}]},
+          {"name": "Garden hut", "label": "INVENTED", "ref": "b", "parts": [
+            {"name": "hut", "at": [18.71, -41.23], "size": [3.96, 7.69], "z": [null, -1.25], "mat": "wall", "dir": [1.0, -0.031]},
+            {"name": "cypress by the footbridge", "at": [12.4, -44.3], "size": [1.5, 1.5], "z": [null, 5.1], "mat": "foliage", "shape": "cylinder"}]},
+          {"name": "Lane house E", "label": "ADAPTED", "ref": "b", "parts": [
+            {"name": "body", "at": [50.6, -31.4], "size": [5.2, 8.9], "z": [null, 1.42], "mat": "wall", "dir": [0.97, 0.243]}]},
+          {"name": "East garden pocket", "label": "REAL", "ref": "b", "parts": [
+            {"name": "olive 6 trunk", "at": [50.0, -47.8], "size": [0.42, 0.42], "z": [null, -4.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 6 canopy", "at": [50.0, -47.8], "size": [4.3, 4.3], "z": [-4.4, -1.85], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "olive 7 trunk", "at": [54.2, -49.3], "size": [0.4, 0.4], "z": [null, -4.3], "mat": "bark", "shape": "cylinder"},
+            {"name": "olive 7 canopy", "at": [54.2, -49.3], "size": [4.0, 4.0], "z": [-4.4, -1.9], "mat": "foliage", "shape": "sphere", "collider": false, "overhead": true},
+            {"name": "cypress 4", "at": [46.0, -50.3], "size": [1.55, 1.55], "z": [null, 2.6], "mat": "foliage", "shape": "cylinder"},
+            {"name": "pocket step 01", "at": [49.6, -46.433], "size": [2.0, 0.333], "z": [null, -6.177], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 02", "at": [49.6, -46.1], "size": [2.0, 0.333], "z": [null, -5.991], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 03", "at": [49.6, -45.767], "size": [2.0, 0.333], "z": [null, -5.741], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 04", "at": [49.6, -45.433], "size": [2.0, 0.333], "z": [null, -5.491], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 05", "at": [49.6, -45.1], "size": [2.0, 0.333], "z": [null, -5.241], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 06", "at": [49.6, -44.767], "size": [2.0, 0.333], "z": [null, -4.991], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 07", "at": [49.6, -44.433], "size": [2.0, 0.333], "z": [null, -4.789], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 08", "at": [49.6, -44.1], "size": [2.0, 0.333], "z": [null, -4.676], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 09", "at": [49.6, -43.767], "size": [2.0, 0.333], "z": [null, -4.601], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 10", "at": [49.6, -43.433], "size": [2.0, 0.333], "z": [null, -4.601], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 11", "at": [49.6, -43.1], "size": [2.0, 0.333], "z": [null, -4.601], "mat": "walk", "walk_top": true},
+            {"name": "pocket step 12", "at": [49.6, -42.767], "size": [2.0, 0.333], "z": [null, -4.602], "mat": "walk", "walk_top": true},
+            {"name": "cypress 5", "at": [56.0, -44.6], "size": [1.5, 1.5], "z": [null, 3.4], "mat": "foliage", "shape": "cylinder"}]}
+        ],
+        "cameras": [
+          {"name": "Cam_Grey_t10b_Overview", "at": [5.0, -78.0], "eye": 42.0, "look": [0.0, -36.0, 0.0], "fov": 70.0},
+          {"name": "Cam_Grey_t10b_LaneWest", "at": [-56.0, -46.5], "eye": 1.7, "look": [-36.0, -40.5, 1.5], "fov": 70.0},
+          {"name": "Cam_Grey_t10b_LaneCentre", "at": [-34.0, -41.5], "eye": 1.7, "look": [-6.0, -45.0, 1.5], "fov": 70.0},
+          {"name": "Cam_Grey_t10b_GardenTerraces", "at": [-1.9, -25.5], "eye": 1.7, "look": [-11.0, -40.0, 0.0], "fov": 72.0},
+          {"name": "Cam_Grey_t10b_LaneEast", "at": [40.0, -49.0], "eye": 1.7, "look": [56.0, -38.0, 2.0], "fov": 70.0}
+        ],
+        "routes": [
+          {"name": "Church terrace gap W to the Lower Lane", "points": [[-49.7, -37.5], [-49.7, -41.8], [-49.7, -46.5]]},
+          {"name": "Church terrace gap E to the Lower Lane", "points": [[-44.4, -37.0], [-44.4, -40.6], [-44.4, -45.5]]},
+          {"name": "Upper garden terrace steps to the Lower Lane", "points": [[-1.9, -27.0], [-3.2, -30.2], [-3.2, -34.8], [-5.0, -36.8], [-6.0, -41.5]]},
+          {"name": "South gardens gate", "points": [[-23.5, -41.0], [-23.5, -45.5], [-25.5, -48.0]]},
+          {"name": "East garden pocket", "points": [[49.6, -41.5], [49.6, -46.9], [52.6, -47.4], [52.6, -50.2]]}
         ]
       }
     }

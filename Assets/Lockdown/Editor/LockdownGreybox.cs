@@ -152,6 +152,14 @@ namespace Lockdown.EditorTools
             BuildCameras(meta.cameras);
             EditorSceneManager.MarkSceneDirty(root.scene);
             AssetDatabase.SaveAssets();
+            // The GPU Resident Drawer keeps drawing blocks destroyed above (even after a scene reload): switching it
+            // off and on again re-syncs it, so review captures never show the previous build.
+            if (GraphicsSettings.currentRenderPipeline is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset urp)
+            {
+                var mode = urp.gpuResidentDrawerMode;
+                urp.gpuResidentDrawerMode = GPUResidentDrawerMode.Disabled;
+                urp.gpuResidentDrawerMode = mode;
+            }
             Debug.Log($"[Lockdown] Greybox built: {count} blocks ({skipped} in locked sections kept), {removed} placeholders removed.");
         }
 

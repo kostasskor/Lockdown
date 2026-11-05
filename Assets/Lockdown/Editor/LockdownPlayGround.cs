@@ -34,6 +34,7 @@ namespace Lockdown.EditorTools
         [Serializable] class Route { public string name; public float[] xs, zs; }
         [Serializable] class Box { public string name, group, mat; public float x, y, z, sx, sy, sz, yaw, pitch; }
         [Serializable] class Label { public string text, sub, kind; public float x, y, z, size; }
+        [Serializable] class GreyLabels { public List<Label> labels; }
         [Serializable] class Meta
         {
             public string file, mask;
@@ -378,7 +379,17 @@ namespace Lockdown.EditorTools
             foreach (var d in new[] { new Vector2(o, 0f), new Vector2(-o, 0f), new Vector2(0f, o), new Vector2(0f, -o),
                                       new Vector2(o, o) * 0.7f, new Vector2(-o, o) * 0.7f, new Vector2(o, -o) * 0.7f, new Vector2(-o, -o) * 0.7f })
                 outline.Add(LabelMaterial($"M_ReviewLabel_Outline_{outline.Count}", d, 3019));
-            foreach (var l in meta.labels) MakeLabel(labels, l, text, outline);
+            // A landmark the greybox rebuilt somewhere else (e.g. the Task 10 church) keeps its name label over the
+            // greybox block, not over the Task 7 spot.
+            var moved = new Dictionary<string, Label>();
+            if (File.Exists(LockdownGreybox.MetaPath))
+                foreach (var g in JsonUtility.FromJson<GreyLabels>(File.ReadAllText(LockdownGreybox.MetaPath)).labels ?? new List<Label>())
+                    moved[g.text] = g;
+            foreach (var l in meta.labels)
+            {
+                if (moved.TryGetValue(l.text, out var g)) { l.x = g.x; l.y = g.y; l.z = g.z; }
+                MakeLabel(labels, l, text, outline);
+            }
 
             foreach (var t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.tag = EditorOnly;
         }

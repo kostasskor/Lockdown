@@ -1564,7 +1564,7 @@ for b in kept_boxes:
     if b["group"] != "Walls" and "outside" not in b["name"]:
         draw_box(b, (200, 200, 200), (150, 150, 150))
 cols = {"wall": (120, 120, 125), "low": (160, 150, 120), "walk": (190, 140, 80), "cover": (110, 140, 100),
-        "trim": (40, 40, 40), "foliage": (90, 150, 90), "bark": (100, 80, 60)}
+        "trim": (40, 40, 40), "foliage": (90, 150, 90), "bark": (100, 80, 60), "rubble": (150, 132, 105)}
 for b in sorted(boxes, key=lambda b: b["y"] + b["sy"] / 2):
     if b.get("overhead"):
         continue
