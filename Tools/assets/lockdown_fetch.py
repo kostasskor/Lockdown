@@ -46,7 +46,7 @@ BAND_DECALS = {"Leaking009": 1.6}  # id: alpha boost
 PH_MAPS = {"Diffuse": "diff", "nor_gl": "nor_gl", "Rough": "rough", "AO": "ao"}
 
 session = requests.Session()
-session.headers["User-Agent"] = "Lockdown-Lockdown-asset-fetch"
+session.headers["User-Agent"] = "Lockdown-asset-fetch"
 
 
 def get(url):

@@ -1,4 +1,4 @@
-"""Layout diagram for LOCKDOWN (Task 6): draws the condensed Lockdown plan on the real ground.
+"""Layout diagram for LOCKDOWN (Task 6): draws the condensed village plan on the real ground.
 
 Run from the project root, after lockdown_dem.py and lockdown_satellite.py:
     uv run --with numpy --with pillow --with matplotlib Tools/layout/lockdown_layout.py

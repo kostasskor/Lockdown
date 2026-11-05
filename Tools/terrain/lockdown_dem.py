@@ -3,7 +3,7 @@
 Run from the project root:
     uv run --with rasterio --with numpy Tools/terrain/lockdown_dem.py
 
-Downloads the four GLO-30 tiles around Lockdown into SourceData/dem/ (public AWS bucket, no account),
+Downloads the four GLO-30 tiles around the village into SourceData/dem/ (public AWS bucket, no account),
 reprojects them to a local transverse Mercator centred on the village (true north, true metres)
 and writes two 16-bit RAW heightmaps plus dem_meta.json for Lockdown/Build/Real Ground:
   - village_513.r16   2031.25 m square, 513 samples, centred on the origin

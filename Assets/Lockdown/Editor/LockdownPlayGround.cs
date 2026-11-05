@@ -65,7 +65,7 @@ namespace Lockdown.EditorTools
             }
             var meta = JsonUtility.FromJson<Meta>(File.ReadAllText(metaPath));
             Terrain village = GameObject.Find("_Ground/Terrain_Village")?.GetComponent<Terrain>();
-            if (village == null) { Debug.LogError("[Lockdown] _Ground/Terrain_Village not found: open Lockdown_Lockdown.unity."); return; }
+            if (village == null) { Debug.LogError("[Lockdown] _Ground/Terrain_Village not found: open Lockdown.unity."); return; }
 
             CutVillageHole(village.terrainData, meta);
             TerrainData data = BuildData(meta, village);

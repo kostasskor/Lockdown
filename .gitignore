@@ -153,3 +153,17 @@ NavMesh*.asset.meta
 
 # Python bytecode
 __pycache__/
+
+# Bakery GPU Lightmapper: a paid Asset Store tool, never committed. Install it from the Asset Store after cloning.
+/Assets/Bakery/
+/Assets/Bakery.meta
+/Assets/Editor/x64/
+/Assets/Editor/x64.meta
+/Assets/Editor.meta
+/Assets/Settings/BakeryProjectSettings.asset
+/Assets/Settings/BakeryProjectSettings.asset.meta
+/Assets/Settings.meta
+
+# Unity crash-recovery scenes
+/Assets/_Recovery/
+/Assets/_Recovery.meta

@@ -34,7 +34,7 @@ The project is about **level design and technical art**. The map is built by dat
  Lockdown/Build/Real Ground       Lockdown/Build/Play Ground  Lockdown/Build/Greybox
           └──────────────┬─────────────────────┴──────────────┘
                          ▼
-               Lockdown_Lockdown.unity  ◄── houses: HouseSpec ─► LockdownHouseBuilder ─► meshes + LOD prefab
+               Lockdown.unity  ◄── houses: HouseSpec ─► LockdownHouseBuilder ─► meshes + LOD prefab
                          │              ◄── props:  CC0 scans ─► lockdown_props.py ─► LockdownPropBuilder
                          ▼
      QA: Containment / Seal / Walk tests (Unity)  +  Tools/review/*.py (timings, sightlines, balance)
@@ -51,7 +51,7 @@ Assets/Lockdown/
   Scripts/          Runtime: Player/ (walker, compass), Gameplay/ (out-of-bounds), Review/ (fps counter)
   Shaders/          Plaster, greybox grid, decal and prop shaders (URP)
   Materials/ Models/ Prefabs/ Textures/ Terrain/   generated and authored content (Models/Generated = generator output)
-  Scenes/           Lockdown_Lockdown.unity (the map) + Review_* scenes (test house, test corner, walker test area)
+  Scenes/           Lockdown.unity (the map) + Review_* scenes (test house, test corner, walker test area)
   Settings/         URP asset/renderer, volume profiles, review lighting settings
   ThirdParty/       Downloaded CC0 assets (Poly Haven, ambientCG), listed in thirdparty_manifest.json
 Tools/              Python pipeline: terrain/, layout/, assets/, review/ (see Tools/README.md)
@@ -65,10 +65,10 @@ All C# lives in the `Lockdown` (runtime) and `Lockdown.EditorTools` (editor) nam
 **Requirements:** Unity **6000.2.9f1** (URP 17.2), Git LFS, and optionally Python 3.11+ with [uv](https://docs.astral.sh/uv/) for the data tools.
 
 1. `git lfs install`, clone, then open the project in Unity Hub.
-2. Open `Assets/Lockdown/Scenes/Lockdown_Lockdown.unity` and press Play. Controls: WASD, mouse, Shift sprint, Ctrl or C crouch (slide while sprinting), Space jump, F switches the FOV, Esc releases the mouse, F1 shows the fps counter, F2 the compass.
+2. Open `Assets/Lockdown/Scenes/Lockdown.unity` and press Play. Controls: WASD, mouse, Shift sprint, Ctrl or C crouch (slide while sprinting), Space jump, F switches the FOV, Esc releases the mouse, F1 shows the fps counter, F2 the compass.
 3. To rebuild from source data, run the Python tools (see `Tools/README.md`; downloaded source data goes to `SourceData/`, which isn't committed), then use the `Lockdown/Build/*` menu items.
 
-Baked lighting data isn't committed. It's regenerated from the committed lighting settings.
+Baked lighting data isn't committed. It's regenerated from the committed lighting settings. Baking uses Bakery (a paid Asset Store tool, not included). Everything else (playing, building, all the `Lockdown/*` tools) works without it.
 
 ## Technical targets
 
@@ -79,5 +79,5 @@ Baked lighting data isn't committed. It's regenerated from the committed lightin
 ## Credits & license
 
 - Third-party assets (all CC0: Poly Haven, ambientCG) are listed with source, author and license in [`Assets/Lockdown/thirdparty_manifest.json`](Assets/Lockdown/thirdparty_manifest.json). Elevation data: Copernicus GLO-30 DEM © DLR e.V. / Airbus, provided under COPERNICUS by the European Union and ESA.
-- Baked lighting uses Bakery (a paid Asset Store tool). It isn't part of this project's license and isn't redistributed in public copies.
+- Baked lighting uses Bakery (a paid Asset Store tool). It isn't included in this repository and isn't covered by its license.
 - Source code (C#, shaders, Python) is under the MIT License (see [LICENSE](LICENSE)). The map's own design, layout data, scenes and generated content are © Konstantinos Skordilis, all rights reserved.

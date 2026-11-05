@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Lockdown/Scenes/Lockdown_Lockdown.unity
+    path: Assets/Lockdown/Scenes/Lockdown.unity
     guid: bbc5e08b56b709946a6a0841d8bfbb71
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
